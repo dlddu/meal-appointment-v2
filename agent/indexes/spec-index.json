@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "spec_path": "agent/specs/meal-appointment-domain-spec.md",
+    "summary": "닉네임 기반 식사 약속 조율 앱의 초기 도메인 요구사항과 단일 시간 슬롯 템플릿 규칙을 정의한다.",
+    "keywords": [
+      "meal appointment",
+      "time slot template",
+      "availability"
+    ],
+    "tags": [
+      "domain",
+      "v1",
+      "scheduling"
+    ]
+  }
+]
