@@ -3,5 +3,15 @@
     "source_spec": "agent/specs/meal-appointment-architecture-spec.md",
     "target_spec": "agent/specs/meal-appointment-domain-spec.md",
     "relationship": "implements-domain"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-local-testing-spec.md",
+    "target_spec": "agent/specs/meal-appointment-domain-spec.md",
+    "relationship": "supports-domain"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-local-testing-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "supports-architecture"
   }
 ]
