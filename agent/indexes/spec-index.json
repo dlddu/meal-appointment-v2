@@ -12,5 +12,19 @@
       "v1",
       "scheduling"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-architecture-spec.md",
+    "summary": "식사 약속 조율 앱의 SPA-Express-PostgreSQL 기반 단순 아키텍처와 기술 스택을 정의한다.",
+    "keywords": [
+      "architecture",
+      "react",
+      "express"
+    ],
+    "tags": [
+      "architecture",
+      "v1",
+      "web"
+    ]
   }
 ]

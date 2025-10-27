@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "source_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "target_spec": "agent/specs/meal-appointment-domain-spec.md",
+    "relationship": "implements-domain"
+  }
+]
