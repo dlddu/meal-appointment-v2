@@ -26,5 +26,19 @@
       "v1",
       "web"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-local-testing-spec.md",
+    "summary": "Docker 없이 로컬 환경에서 단위/통합/E2E 테스트를 실행하기 위한 절차와 준비 사항을 정의한다.",
+    "keywords": [
+      "testing",
+      "local",
+      "playwright"
+    ],
+    "tags": [
+      "testing",
+      "v1",
+      "workflow"
+    ]
   }
 ]
