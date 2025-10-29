@@ -40,5 +40,19 @@
       "v1",
       "workflow"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-create-appointment-user-spec.md",
+    "summary": "로그인 없이 식사 약속을 생성할 때 필요한 사용자 입력, 시스템 응답, 오류 처리 규칙을 정의한다.",
+    "keywords": [
+      "appointment creation",
+      "user flow",
+      "validation"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "user-spec"
+    ]
   }
 ]

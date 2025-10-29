@@ -13,5 +13,15 @@
     "source_spec": "agent/specs/meal-appointment-local-testing-spec.md",
     "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
     "relationship": "supports-architecture"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-create-appointment-user-spec.md",
+    "target_spec": "agent/specs/meal-appointment-domain-spec.md",
+    "relationship": "refines-domain-flow"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-create-appointment-user-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "aligns-with-architecture"
   }
 ]
