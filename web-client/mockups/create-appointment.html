@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>식사 약속 생성 샘플 디자인</title>
+    <style>
+      :root {
+        --primary: #2a6f97;
+        --secondary: #f4a261;
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --border: #d0d7e2;
+        --success: #2f9e44;
+        --error: #d64545;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        font-family: "Inter", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, rgba(42, 111, 151, 0.12) 0%, rgba(248, 250, 252, 0.9) 40%, #f8fafc 100%);
+        color: var(--text-primary);
+        font-size: 16px;
+      }
+
+      .page {
+        min-height: 100vh;
+        padding: 64px 24px 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .hero-card,
+      .form-card,
+      .footer-info {
+        width: min(960px, 100%);
+        background: var(--surface);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        padding: 40px 48px;
+      }
+
+      .hero-card {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+      }
+
+      .hero-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: rgba(244, 162, 97, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        color: var(--secondary);
+      }
+
+      .hero-text h1 {
+        margin: 0 0 12px;
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .hero-text p {
+        margin: 0 0 10px;
+        font-size: 18px;
+        color: var(--text-secondary);
+      }
+
+      .hero-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(244, 162, 97, 0.15);
+        color: var(--secondary);
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+
+      .form-card {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      label {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      input[type="text"],
+      textarea {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 16px;
+        font-family: inherit;
+        background: #fff;
+        color: var(--text-primary);
+        transition: border 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(42, 111, 151, 0.15);
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .template-options {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .template-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 24px;
+        transition: border 0.2s ease, background 0.2s ease;
+        cursor: pointer;
+      }
+
+      .template-card.selected {
+        border-color: var(--primary);
+        background: rgba(42, 111, 151, 0.08);
+      }
+
+      .template-card .details {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .template-card .details span {
+        font-size: 15px;
+      }
+
+      .template-card .details .title {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .template-card .details .description {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      .badge {
+        background: rgba(244, 162, 97, 0.15);
+        color: var(--secondary);
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+      }
+
+      .error-message {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--error);
+        font-size: 13px;
+      }
+
+      .submit-area {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .primary-button {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        box-shadow: 0 8px 16px rgba(42, 111, 151, 0.22);
+      }
+
+      .primary-button:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .result-panel {
+        border-top: 1px dashed rgba(148, 163, 184, 0.6);
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .result-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .result-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(47, 158, 68, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--success);
+        font-size: 20px;
+      }
+
+      .result-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .result-description {
+        font-size: 15px;
+        color: var(--text-secondary);
+      }
+
+      .url-card {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .url-card .url-text {
+        font-family: "JetBrains Mono", "Menlo", "Roboto Mono", monospace;
+        font-size: 14px;
+        color: var(--text-secondary);
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .secondary-button,
+      .ghost-button {
+        border-radius: 10px;
+        padding: 12px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .secondary-button {
+        background: transparent;
+        border: 2px solid var(--secondary);
+        color: var(--secondary);
+      }
+
+      .ghost-button {
+        background: transparent;
+        border: none;
+        color: var(--primary);
+        text-decoration: underline;
+      }
+
+      .footer-info {
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      .footer-info strong {
+        color: var(--text-primary);
+      }
+
+      .toast {
+        position: fixed;
+        top: 32px;
+        right: 32px;
+        background: var(--success);
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 12px;
+        box-shadow: 0 16px 32px rgba(47, 158, 68, 0.2);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .page {
+          padding: 32px 16px 48px;
+        }
+
+        .hero-card,
+        .form-card,
+        .footer-info {
+          padding: 28px 24px;
+          border-radius: 16px;
+        }
+
+        .hero-card {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .hero-text h1 {
+          font-size: 26px;
+        }
+
+        .hero-icon {
+          width: 56px;
+          height: 56px;
+          font-size: 26px;
+        }
+
+        .url-card {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="hero-card">
+        <div class="hero-icon">🍱</div>
+        <div class="hero-text">
+          <h1>식사 약속 만들기</h1>
+          <p>팀원들과 간편하게 식사 시간을 조율하고, 링크를 공유해 참여를 받아보세요.</p>
+          <div class="hero-hint">현재는 주간 기본 템플릿만 선택할 수 있어요.</div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-field">
+          <label for="title">약속 제목 *</label>
+          <input id="title" type="text" placeholder="예: 제품팀 목요 점심" value="제품팀 목요 점심" />
+        </div>
+
+        <div class="form-field">
+          <label for="description">설명 (선택)</label>
+          <textarea id="description" placeholder="약속 목적이나 참고 사항을 200자 이내로 입력하세요.">신입 환영을 겸한 캐주얼 점심 모임입니다. 알레르기나 선호 음식을 알려주세요.</textarea>
+        </div>
+
+        <div class="form-field">
+          <label>시간 슬롯 템플릿 *</label>
+          <div class="template-options">
+            <div class="template-card selected">
+              <div class="details">
+                <span class="title">주간 기본 템플릿</span>
+                <span class="description">월~금, 11:30 - 13:30</span>
+              </div>
+              <div class="badge">기본 제공</div>
+            </div>
+            <div class="template-card">
+              <div class="details">
+                <span class="title">(추가 예정) 야간 템플릿</span>
+                <span class="description">추가 템플릿 준비 중입니다.</span>
+              </div>
+              <div class="badge" style="opacity:0.4;">Locked</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="error-message" style="display:none;">
+          <span>⚠️</span>
+          <span>제목은 60자를 넘을 수 없습니다.</span>
+        </div>
+
+        <div class="submit-area">
+          <button class="primary-button">약속 만들기</button>
+          <span class="ghost-button">네트워크가 불안정한가요? 다시 시도</span>
+        </div>
+
+        <div class="result-panel">
+          <div class="result-header">
+            <div class="result-icon">✔</div>
+            <div>
+              <div class="result-title">약속이 생성되었어요!</div>
+              <div class="result-description">아래 링크를 복사해 참여자를 초대하세요.</div>
+            </div>
+          </div>
+          <div class="url-card">
+            <span class="url-text">https://meal.app/appointments/a1b2c3d4</span>
+            <button class="secondary-button">링크 복사</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-info">
+        <strong>보안 안내</strong>
+        <span>로그인 없이 링크로 약속에 참여할 수 있습니다. 개인정보 입력은 요구하지 않아요.</span>
+        <span>중복 생성을 방지하려면 네트워크 상태를 확인하고 제출 버튼은 한 번만 눌러주세요.</span>
+      </div>
+    </div>
+
+    <div class="toast">
+      <span>📋</span>
+      <span>링크가 복사되었습니다.</span>
+    </div>
+  </body>
+</html>
