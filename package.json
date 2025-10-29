@@ -1,0 +1,17 @@
+{
+  "name": "meal-appointment-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "api-server",
+    "web-client"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "test": "./scripts/run-tests.sh all",
+    "test:web:unit": "./scripts/run-tests.sh web-unit",
+    "test:api:unit": "./scripts/run-tests.sh api-unit",
+    "test:api:integration": "./scripts/run-tests.sh api-integration",
+    "test:web:e2e": "./scripts/run-tests.sh e2e"
+  }
+}
