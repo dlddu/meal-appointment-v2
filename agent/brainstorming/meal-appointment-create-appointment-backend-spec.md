@@ -12,7 +12,7 @@
   - `timeSlotTemplateId`: 문자열, 현재는 `default_weekly` 하나만 유효. 향후 템플릿 확장을 고려해 목록 기반 검증 구조 유지.
 - **응답 201(JSON)**
   - `appointmentId`: UUID v4.
-  - `shareUrl`: `/appointments/{appointmentId}` 상대 경로. 베이스 URL 합성은 클라이언트 책임으로 남기되 서버는 환경변수 `PUBLIC_BASE_URL`이 설정된 경우 절대 URL을 반환하도록 유연성 확보.
+  - `shareUrl`: `/appointments/{appointmentId}` 상대 경로만 반환한다. 베이스 URL 합성은 항상 클라이언트 책임으로 남긴다.
   - `title`, `summary`, `timeSlotTemplateId`, `createdAt`(ISO-8601) 포함하여 생성 직후 확인 화면에서 재사용 가능하도록 한다.
 - **헤더**: `Content-Type: application/json` 요청/응답.
 
@@ -26,13 +26,13 @@
 ## 4. 서비스 계층 동작
 1. 트랜잭션 시작(Prisma `appointment` create는 단일 insert이지만 향후 확장을 위해 서비스 함수 내부에서 에러 처리 일관성 유지).
 2. `AppointmentRepository.create` 호출: UUID 생성은 DB(default uuid_generate_v4()) 또는 Prisma에서 처리.
-3. 생성된 엔티티 반환 후 `ShareUrlBuilder` 유틸에서 `appointmentId` 기반 경로 생성. 절대 URL 반환 조건은 환경설정(`config.createAppointment.shareAbsoluteUrl`)을 확인.
+3. 생성된 엔티티 반환 후 `ShareUrlBuilder` 유틸에서 `appointmentId` 기반 상대 경로(`/appointments/{id}`)를 생성한다.
 4. 응답 DTO 매핑: 저장된 레코드의 필드를 camelCase로 변환하여 JSON 직렬화.
 5. 감시 로그: `info` 레벨로 `appointment.created` 이벤트 기록(식별자, 템플릿, truncated title).
 
 ## 5. 데이터 계층 및 스키마 고려
-- `appointments` 테이블 컬럼: `id UUID PK`, `title VARCHAR(60) NOT NULL`, `summary VARCHAR(200) NULL DEFAULT ''`, `time_slot_template_id TEXT NOT NULL`, `created_at TIMESTAMP WITH TIME ZONE DEFAULT now()`.
-- Prisma 모델 정의 시 `summary`를 선택적 필드로 지정하고, 생성 시 `summary ?? ''` 처리.
+- `appointments` 테이블 컬럼: `id UUID PK`, `title VARCHAR(60) NOT NULL`, `summary VARCHAR(200) NOT NULL DEFAULT ''`, `time_slot_template_id TEXT NOT NULL`, `created_at TIMESTAMP WITH TIME ZONE DEFAULT now()`.
+- Prisma 모델 정의 시 `summary`를 필수 문자열로 선언하고 기본값 `""`를 지정하며, 서비스 계층에서 `summary ?? ''` 처리를 통해 일관성을 유지한다.
 - 템플릿 유효성 검증을 위해 초기 시드 데이터 `time_slot_templates`에 `default_weekly` 등록. 서비스는 활성 템플릿 목록을 캐시(예: 메모리 5분)하여 반복 검증 비용을 줄인다.
 - 트랜잭션 로그/감사 필요 시 향후 `appointment_events` 테이블을 추가할 수 있도록 리포지터리 레이어에서 이벤트 저장 훅을 허용.
 
@@ -44,7 +44,7 @@
 
 ## 7. 보안 및 운영 고려
 - 인증 없이 접근 가능한 엔드포인트이므로 레이트 리밋(예: IP 기준 분당 30회)을 적용.
-- CORS 정책에서 `POST /appointments` 허용 도메인 제한(프런트엔드 배포 도메인, 로컬 개발 도메인).
+- CORS 처리는 백엔드 애플리케이션에서 수행하지 않으며, 필요 시 인프라 레이어(예: 리버스 프록시)에서 설정할 수 있도록 운영 문서에 명시한다.
 - 입력 필드에 대한 HTML/스크립트 포함은 허용하되 저장 시 escaping 하지 않고 조회 시 클라이언트에서 이스케이프하도록 명세. 단, 로깅 시 XSS 방지를 위해 제목/설명 문자열은 200자 이하로 잘라 기록.
 - Pino logger + request ID 미들웨어 도입으로 추적성 확보.
 
