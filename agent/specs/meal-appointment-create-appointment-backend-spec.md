@@ -60,9 +60,9 @@
 ## 3. HTTP 레이어 설계
 - 라우터: `api/routes/appointments.ts`에 `router.post('/')`로 정의.
 - 미들웨어 체인:
-  1. 요청 ID 부여(`requestIdMiddleware`)
-  2. Pino 요청 로거(요청/응답 요약 기록, 본문은 200자 내로 잘라 로그에 포함)
-  3. 스키마 기반 입력 검증(`validateBody(createAppointmentSchema)`) → 실패 시 §2.3의 400 응답 형식 반환
+  1. Pino 요청 로거(요청/응답 요약 기록, 본문은 200자 내로 잘라 로그에 포함)
+     - 인프라 계층에서 부여한 `X-Request-Id` 헤더를 로거 컨텍스트에 포함시키며, 백엔드는 새 요청 ID를 생성하지 않는다.
+  2. 스키마 기반 입력 검증(`validateBody(createAppointmentSchema)`) → 실패 시 §2.3의 400 응답 형식 반환
 - 검증 통과 시 정제된 DTO `{ title, summary, timeSlotTemplateId }`만을 서비스 계층에 전달하고, 원본 `req.body`는 이후 로직에서 사용하지 않는다.
 
 ## 4. 서비스 레이어 설계
@@ -88,6 +88,7 @@
 ## 6. 관측 가능성 및 모니터링
 - 로깅
   - 모든 성공/실패 요청에 대해 Pino 구조적 로그 작성.
+  - 인프라 계층이 전달한 `requestId`를 로그 바인딩에 포함하여 추적 가능성을 확보하고, 백엔드에서 임의 생성하지 않는다.
   - 성공 시 `event: 'appointment.created'`, `appointmentId`, `templateId` 포함.
   - 사용자 입력 문자열은 로그에 포함 시 최대 200자로 잘라내고, 추가 이스케이프 없이 원문을 저장소에는 그대로 저장.
 - 메트릭
@@ -140,7 +141,7 @@
   - DB 장애 시 模擬하여 503 응답과 카운터 증가 여부 검증.
 - 회귀 테스트
   - `appointments_created_total` 메트릭 노출 엔드포인트(`/metrics`)에서 카운터 증가를 확인.
-  - 요청 ID/로그 이벤트가 기록되는지 로그 캡처 기반 검증.
+  - 인프라가 제공한 `X-Request-Id`를 로그가 그대로 반영하는지 로그 캡처 기반 검증.
 
 ## 11. 연계 명세
 - 사용자 경험 및 입력 규칙은 `meal-appointment-create-appointment-user-spec.md`와 일치해야 한다.
