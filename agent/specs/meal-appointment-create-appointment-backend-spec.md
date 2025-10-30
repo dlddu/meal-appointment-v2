@@ -8,7 +8,7 @@
 ## 2. 엔드포인트 정의
 - 경로 및 메서드: `POST /appointments`
 - 인증: 로그인 불필요. 익명 요청만 허용한다.
-- 요청 헤더: `Content-Type: application/json` 필수. 추적을 위해 요청 ID 미들웨어가 `x-request-id`를 생성/전파한다.
+- 요청 헤더: `Content-Type: application/json` 필수. `x-request-id`는 API 게이트웨이 등 인프라 계층에서 생성해 전달하며, 백엔드는 전달된 값을 그대로 로깅/응답 컨텍스트에 사용한다.
 - 요청 본문 JSON 스키마:
   ```json
   {
@@ -86,9 +86,9 @@
 ## 7. 응답 직렬화 및 로깅
 - 응답 DTO는 camelCase로 직렬화한다 (Express 기본 JSON 직렬화 사용).
 - 로깅: Pino 로거를 사용하여 다음 정보를 기록한다.
-  - 성공 시: `appointment.created` 이벤트, payload에 `appointmentId`, `timeSlotTemplateId`, `requestId` 포함. `title`과 `summary`는 200자까지 잘라서 로그에 기록한다.
+  - 성공 시: `appointment.created` 이벤트, payload에 `appointmentId`, `timeSlotTemplateId`, `requestId` 포함. `title`과 `summary`는 200자까지 잘라서 로그에 기록한다. `requestId`는 인프라에서 전달된 값을 그대로 사용하며, 재발급하거나 기본값을 대체하지 않는다.
   - 검증 실패, 시스템 오류 시: `error` 레벨 로그에 `requestId`, 오류 코드, 메시지.
-- 요청 ID 미들웨어가 모든 로그에 `requestId` 필드를 추가하도록 설정한다.
+- 인프라에서 전달한 `requestId`가 모든 로그에 포함되도록 로거 컨텍스트를 설정한다.
 
 ## 8. 오류 처리
 - 검증 실패: HTTP 400 + `VALIDATION_ERROR` 구조 (섹션 3 참조).
