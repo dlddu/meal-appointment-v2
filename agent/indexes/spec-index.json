@@ -68,5 +68,19 @@
       "v1",
       "uiux"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-create-appointment-backend-spec.md",
+    "summary": "비로그인 약속 생성 API의 검증, 서비스 트랜잭션, 영속화, 로깅, 모니터링 요구사항을 정의한다.",
+    "keywords": [
+      "appointment creation",
+      "backend",
+      "validation"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "backend"
+    ]
   }
 ]
