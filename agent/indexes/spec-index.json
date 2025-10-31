@@ -68,20 +68,5 @@
       "v1",
       "uiux"
     ]
-  },
-  {
-    "spec_path": "agent/specs/meal-appointment-create-appointment-backend-spec.md",
-    "summary": "약속 생성 API의 Express 계층, 서비스, 저장소, 검증 및 관측 가능성 요구사항을 정의한다.",
-    "keywords": [
-      "appointment creation",
-      "backend",
-      "validation",
-      "prisma"
-    ],
-    "tags": [
-      "feature",
-      "v1",
-      "backend"
-    ]
   }
 ]
