@@ -53,5 +53,20 @@
     "source_spec": "agent/specs/meal-appointment-create-appointment-backend-spec.md",
     "target_spec": "agent/specs/meal-appointment-create-appointment-uiux-spec.md",
     "relationship": "supports-uiux"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-create-appointment-backend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-create-appointment-backend-spec.md",
+    "relationship": "verifies-backend"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-create-appointment-backend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-create-appointment-user-spec.md",
+    "relationship": "validates-user-flow"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-create-appointment-backend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-create-appointment-uiux-spec.md",
+    "relationship": "validates-ui-contract"
   }
 ]

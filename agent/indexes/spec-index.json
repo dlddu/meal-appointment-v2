@@ -83,5 +83,20 @@
       "v1",
       "backend"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-create-appointment-backend-test-spec.md",
+    "summary": "약속 생성 API의 백엔드 단위·통합·관측 테스트 전략과 케이스를 체계화한다.",
+    "keywords": [
+      "appointment creation",
+      "backend",
+      "testing",
+      "prometheus"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "testing"
+    ]
   }
 ]
