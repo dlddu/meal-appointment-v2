@@ -82,5 +82,19 @@
       "v1",
       "backend-spec"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-create-appointment-frontend-spec.md",
+    "summary": "약속 생성 페이지의 React 기반 컴포넌트 구조, 상태 관리, API 연동, 스타일 규칙을 정의한다.",
+    "keywords": [
+      "frontend",
+      "appointment creation",
+      "react"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "frontend-spec"
+    ]
   }
 ]
