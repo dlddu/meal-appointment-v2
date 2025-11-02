@@ -182,6 +182,12 @@ function bootstrap_local_postgres_database() {
   fi
 }
 
+function prepare_local_postgres() {
+  local db_url="$1"
+  attempt_start_postgres_service "$db_url" || true
+  bootstrap_local_postgres_database "$db_url"
+}
+
 function ensure_db_connection() {
   local env_file="$1"
   load_env_file "$env_file"
@@ -190,22 +196,21 @@ function ensure_db_connection() {
     echo "[run-tests] DATABASE_URL is not defined in $env_file" >&2
     exit 1
   fi
-  attempt_start_postgres_service "$db_url" || true
-  bootstrap_local_postgres_database "$db_url"
+
   echo "[run-tests] Verifying database connectivity for ${db_url}"
-  if ! PGCONNECT_TIMEOUT=5 "$PSQL" "$db_url" -c 'SELECT 1;' >/dev/null; then
-    echo "[run-tests] Initial connection failed. Checking PostgreSQL service status..."
-    if attempt_start_postgres_service "$db_url"; then
-      bootstrap_local_postgres_database "$db_url"
-      PGCONNECT_TIMEOUT=5 "$PSQL" "$db_url" -c 'SELECT 1;' >/dev/null || {
-        echo "[run-tests] Unable to connect to PostgreSQL after starting the service." >&2
-        exit 1
-      }
-    else
-      echo "[run-tests] PostgreSQL service could not be started automatically. Please start it manually." >&2
-      exit 1
-    fi
+  if PGCONNECT_TIMEOUT=5 "$PSQL" "$db_url" -c 'SELECT 1;' >/dev/null; then
+    return
   fi
+
+  echo "[run-tests] Initial connection failed. Attempting to prepare local PostgreSQL service..."
+  prepare_local_postgres "$db_url"
+
+  if PGCONNECT_TIMEOUT=5 "$PSQL" "$db_url" -c 'SELECT 1;' >/dev/null; then
+    return
+  fi
+
+  echo "[run-tests] Unable to establish a PostgreSQL connection automatically. Please verify the service is running and credentials are correct." >&2
+  exit 1
 }
 
 function run_web_unit() {
