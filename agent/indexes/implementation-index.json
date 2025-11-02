@@ -3,8 +3,12 @@
     "spec": "agent/specs/meal-appointment-local-testing-spec.md",
     "files": [
       "scripts/run-tests.sh",
-      "README.md"
+      "README.md",
+      "api-server/.gitignore",
+      "api-server/.env.example",
+      "api-server/.env.test.example",
+      "api-server/.env.e2e.example"
     ],
-    "summary": "Ensure the test runner auto-starts PostgreSQL before integration and E2E suites and document the service startup command."
+    "summary": "Ensure the test runner auto-starts and bootstraps PostgreSQL, provision default API env templates, and document the service startup command."
   }
 ]
