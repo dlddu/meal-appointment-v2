@@ -30,6 +30,12 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE meal_appointment_test
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE meal_appointment_e2e TO meal_user;"
 ```
 
+Start the PostgreSQL service before running tests. On Ubuntu-based systems this can be done with:
+
+```bash
+sudo service postgresql start
+```
+
 ## Installation
 
 ```bash
