@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "spec": "agent/specs/meal-appointment-local-testing-spec.md",
+    "files": [
+      "scripts/run-tests.sh",
+      "README.md"
+    ],
+    "summary": "Ensure the test runner auto-starts PostgreSQL before integration and E2E suites and document the service startup command."
+  }
+]
