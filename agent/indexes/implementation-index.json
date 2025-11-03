@@ -10,5 +10,37 @@
       "api-server/.env.e2e.example"
     ],
     "summary": "Ensure the test runner auto-starts and bootstraps PostgreSQL, provision default API env templates, and document the service startup command."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-create-appointment-backend-spec.md",
+    "files": [
+      "api-server/jest.config.ts",
+      "api-server/package.json",
+      "api-server/prisma/schema.prisma",
+      "api-server/prisma/migrations/20240301000000_update_appointments_table/migration.sql",
+      "api-server/scripts/apply-migrations.ts",
+      "api-server/src/app.ts",
+      "api-server/src/application/appointments/activeTemplateService.ts",
+      "api-server/src/application/appointments/createAppointment.service.ts",
+      "api-server/src/application/errors.ts",
+      "api-server/src/domain/shareUrlBuilder.ts",
+      "api-server/src/infrastructure/appointments/appointmentRepository.ts",
+      "api-server/src/infrastructure/logger.ts",
+      "api-server/src/infrastructure/metrics/appointmentMetrics.ts",
+      "api-server/src/infrastructure/prismaClient.ts",
+      "api-server/src/infrastructure/templates/defaultTemplateProvider.ts",
+      "api-server/src/presentation/appointments.router.ts",
+      "api-server/src/server.ts",
+      "api-server/src/types/express.d.ts",
+      "api-server/tests/integration/appointments-endpoint.test.ts",
+      "api-server/tests/unit/active-template-service.test.ts",
+      "api-server/tests/unit/appointments-validation.test.ts",
+      "api-server/tests/unit/create-appointment-service.test.ts",
+      "api-server/tests/unit/share-url-builder.test.ts",
+      "api-server/tsconfig.build.json",
+      "api-server/tsconfig.jest.json",
+      "package-lock.json"
+    ],
+    "summary": "Implement the POST /appointments pipeline with validation, cached template verification, transactional persistence, observability hooks, and comprehensive unit/integration coverage."
   }
 ]

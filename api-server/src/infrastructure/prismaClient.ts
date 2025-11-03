@@ -10,6 +10,18 @@ if (!connectionString) {
   throw new Error('DATABASE_URL is not set.');
 }
 
+export interface TransactionClient {
+  query<T extends pg.QueryResultRow = pg.QueryResultRow>(text: string, params?: unknown[]): Promise<pg.QueryResult<T>>;
+}
+
+class PoolTransactionClient implements TransactionClient {
+  constructor(private readonly client: pg.PoolClient) {}
+
+  async query<T extends pg.QueryResultRow = pg.QueryResultRow>(text: string, params?: unknown[]): Promise<pg.QueryResult<T>> {
+    return this.client.query<T>(text, params as unknown[] | undefined);
+  }
+}
+
 class PrismaLikeClient {
   private pool: pg.Pool;
 
@@ -30,8 +42,24 @@ class PrismaLikeClient {
     return this.pool.query(text, values as unknown[]);
   }
 
-  async query(text: string, params?: unknown[]) {
-    return this.pool.query(text, params as unknown[] | undefined);
+  async query<T extends pg.QueryResultRow = pg.QueryResultRow>(text: string, params?: unknown[]) {
+    return this.pool.query<T>(text, params as unknown[] | undefined);
+  }
+
+  async $transaction<T>(callback: (tx: TransactionClient) => Promise<T>): Promise<T> {
+    const client = await this.pool.connect();
+    try {
+      await client.query('BEGIN');
+      const tx = new PoolTransactionClient(client);
+      const result = await callback(tx);
+      await client.query('COMMIT');
+      return result;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 }
 

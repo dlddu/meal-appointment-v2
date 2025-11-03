@@ -1,9 +1,7 @@
 import 'dotenv/config';
 import app from './app';
-import pino from 'pino';
 import prisma from './infrastructure/prismaClient';
-
-const logger = pino({ level: process.env.LOG_LEVEL ?? 'info' });
+import { logger } from './infrastructure/logger';
 
 const port = Number(process.env.PORT ?? 4000);
 
