@@ -8,13 +8,13 @@ datasource db {
 }
 
 model Appointment {
-  id                   String                @id @default(uuid())
-  title                String
-  summary              String?
-  timeSlotTemplateId   String
-  createdAt            DateTime              @default(now())
-  participants         Participant[]
-  slotAvailability     SlotAvailability[]
+  id                  String   @id @default(uuid()) @db.Uuid
+  title               String   @db.VarChar(60)
+  summary             String   @default("") @db.VarChar(200)
+  timeSlotTemplateId  String   @map("time_slot_template_id") @db.VarChar(64)
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("appointments")
 }
 
 model TimeSlotTemplate {

@@ -21,6 +21,10 @@ async function applyMigrations(databaseUrl: string) {
       DROP TABLE IF EXISTS "Participant" CASCADE;
       DROP TABLE IF EXISTS "Appointment" CASCADE;
       DROP TABLE IF EXISTS "TimeSlotTemplate" CASCADE;
+      DROP TABLE IF EXISTS "slot_availability" CASCADE;
+      DROP TABLE IF EXISTS "participants" CASCADE;
+      DROP TABLE IF EXISTS "appointments" CASCADE;
+      DROP TABLE IF EXISTS "time_slot_templates" CASCADE;
     `);
     const migrationsDir = path.resolve('prisma/migrations');
     const directories = fs
