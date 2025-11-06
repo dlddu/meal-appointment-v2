@@ -118,20 +118,5 @@
     "source_spec": "agent/specs/meal-appointment-view-appointment-spec.md",
     "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
     "relationship": "aligns-with-architecture"
-  },
-  {
-    "source_spec": "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
-    "target_spec": "agent/specs/meal-appointment-view-appointment-spec.md",
-    "relationship": "visualizes-user-spec"
-  },
-  {
-    "source_spec": "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
-    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
-    "relationship": "aligns-with-architecture"
-  },
-  {
-    "source_spec": "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
-    "target_spec": "agent/specs/meal-appointment-create-appointment-uiux-spec.md",
-    "relationship": "shares-design-system"
   }
 ]
