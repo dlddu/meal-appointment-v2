@@ -124,19 +124,5 @@
       "v1",
       "backend"
     ]
-  },
-  {
-    "spec_path": "agent/specs/meal-appointment-view-appointment-spec.md",
-    "summary": "공개 약속 조회 페이지에서 제공해야 하는 정보 구조, 슬롯 지표, 오류 처리, 읽기 전용 정책을 정의한다.",
-    "keywords": [
-      "appointment view",
-      "public link",
-      "availability summary"
-    ],
-    "tags": [
-      "feature",
-      "v1",
-      "user-spec"
-    ]
   }
 ]
