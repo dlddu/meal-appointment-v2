@@ -138,5 +138,19 @@
       "v1",
       "user-spec"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
+    "summary": "공개 약속 조회 화면의 레이아웃, 디자인 토큰, 컴포넌트 상태 패턴을 정의한 UI/UX 명세를 제공한다.",
+    "keywords": [
+      "appointment view",
+      "ui",
+      "ux"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "uiux"
+    ]
   }
 ]

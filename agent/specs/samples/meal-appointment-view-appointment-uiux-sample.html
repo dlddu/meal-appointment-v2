@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>식사 약속 조회 - UI/UX 샘플</title>
+    <style>
+      :root {
+        --primary: #2e7d32;
+        --secondary: #1565c0;
+        --neutral-100: #f5f7f8;
+        --neutral-0: #ffffff;
+        --border: #e0e3e7;
+        --success: #1b5e20;
+        --warning: #f9a825;
+        --error: #c62828;
+        --font-family: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background-color: var(--neutral-100);
+        font-family: var(--font-family);
+        color: #1f2933;
+      }
+
+      header {
+        background-color: var(--neutral-0);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      header .brand {
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--primary);
+      }
+
+      header .title {
+        flex: 1;
+        font-weight: 600;
+        font-size: 20px;
+        color: #102a43;
+      }
+
+      header .actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      button.primary {
+        background-color: var(--primary);
+        color: var(--neutral-0);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.16);
+      }
+
+      button.secondary {
+        background-color: var(--secondary);
+        color: var(--neutral-0);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      main {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 32px 24px 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .card {
+        background-color: var(--neutral-0);
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(15, 23, 42, 0.03);
+      }
+
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 12px;
+      }
+
+      .appointment-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #102a43;
+        margin: 0 0 8px;
+      }
+
+      .appointment-description {
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 0 0 16px;
+      }
+
+      .meta-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: #486581;
+      }
+
+      .meta-row span::before {
+        margin-right: 4px;
+      }
+
+      .template-badge {
+        margin-top: 20px;
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background-color: var(--neutral-100);
+        color: var(--primary);
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .slots-grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .slot-card {
+        background-color: var(--neutral-0);
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .slot-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .slot-date {
+        font-weight: 600;
+        color: #102a43;
+      }
+
+      .slot-time {
+        background-color: rgba(21, 101, 192, 0.1);
+        color: var(--secondary);
+        font-size: 14px;
+        border-radius: 999px;
+        padding: 4px 10px;
+      }
+
+      .slot-stats {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 14px;
+      }
+
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .stat .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--primary);
+      }
+
+      .stat.warning .dot {
+        background-color: var(--warning);
+      }
+
+      .stat.danger {
+        background-color: rgba(198, 40, 40, 0.08);
+        border-radius: 8px;
+        padding: 4px 8px;
+      }
+
+      .stat.danger .dot {
+        background-color: var(--error);
+      }
+
+      .slot-footer {
+        font-size: 14px;
+        color: #334e68;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 12px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 20px;
+      }
+
+      .tab {
+        padding: 12px 16px;
+        border-radius: 12px 12px 0 0;
+        font-weight: 600;
+        color: #486581;
+      }
+
+      .tab.active {
+        background-color: rgba(21, 101, 192, 0.12);
+        color: var(--secondary);
+      }
+
+      .responders-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .responder-item {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .responder-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        color: #102a43;
+      }
+
+      .responder-slots {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .responder-slots span {
+        background-color: rgba(46, 125, 50, 0.12);
+        color: var(--success);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 14px;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 720px;
+      }
+
+      thead {
+        background-color: rgba(21, 101, 192, 0.08);
+        color: var(--secondary);
+      }
+
+      th,
+      td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      th {
+        font-weight: 600;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 500;
+        background-color: rgba(46, 125, 50, 0.12);
+        color: var(--success);
+      }
+
+      footer {
+        max-width: 1120px;
+        margin: 0 auto 48px;
+        padding: 0 24px;
+        font-size: 14px;
+        color: #829ab1;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .alert {
+        border-radius: 12px;
+        padding: 16px;
+        background-color: rgba(198, 40, 40, 0.08);
+        color: var(--error);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        font-weight: 500;
+      }
+
+      @media (max-width: 1023px) {
+        .slots-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 767px) {
+        header {
+          flex-wrap: wrap;
+          align-items: flex-start;
+        }
+
+        header .title {
+          order: 3;
+          width: 100%;
+        }
+
+        header .actions {
+          width: 100%;
+          justify-content: flex-end;
+        }
+
+        main {
+          padding: 24px 16px 64px;
+        }
+
+        .card {
+          padding: 20px;
+        }
+
+        .slots-grid {
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">MealTogether</div>
+      <div class="title">5월 프로젝트 킥오프 점심 약속</div>
+      <div class="actions">
+        <button class="primary">재시도</button>
+        <button class="secondary">공유 링크 복사</button>
+      </div>
+    </header>
+    <main>
+      <section class="card">
+        <div class="section-title">약속 개요</div>
+        <h1 class="appointment-title">팀 목표 정렬을 위한 점심 미팅</h1>
+        <p class="appointment-description">
+          신규 프로젝트 킥오프를 위한 오프라인 점심 모임입니다. 인원 확인 후 식당 예약을 진행하니, 가능한 시간을 확인해 주세요.
+        </p>
+        <div class="meta-row">
+          <span>⏱ 생성: 2024.05.01 09:20</span>
+          <span>🔄 마지막 업데이트: 2024.05.03 11:45</span>
+        </div>
+        <div class="template-badge">템플릿 기반 슬롯만 표시</div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">시간 슬롯 요약</div>
+        <div class="slots-grid">
+          <article class="slot-card">
+            <div class="slot-header">
+              <span class="slot-date">2024.05.07 (화)</span>
+              <span class="slot-time">점심 12:00</span>
+            </div>
+            <div class="slot-stats">
+              <div class="stat">
+                <span class="dot"></span>
+                <span>응답 6명</span>
+              </div>
+              <div class="stat">
+                <span class="dot"></span>
+                <span>가능 4명</span>
+              </div>
+              <div class="stat warning">
+                <span class="dot"></span>
+                <span>응답률 66%</span>
+              </div>
+            </div>
+            <div class="slot-footer">템플릿: 주중 점심 · 설명: 팀 선호도 조사 기반</div>
+          </article>
+
+          <article class="slot-card">
+            <div class="slot-header">
+              <span class="slot-date">2024.05.08 (수)</span>
+              <span class="slot-time">점심 12:00</span>
+            </div>
+            <div class="slot-stats">
+              <div class="stat">
+                <span class="dot"></span>
+                <span>응답 6명</span>
+              </div>
+              <div class="stat">
+                <span class="dot"></span>
+                <span>가능 5명</span>
+              </div>
+              <div class="stat">
+                <span class="dot"></span>
+                <span>응답률 83%</span>
+              </div>
+            </div>
+            <div class="slot-footer">템플릿: 주중 점심 · 설명: 팀 선호도 조사 기반</div>
+          </article>
+
+          <article class="slot-card">
+            <div class="slot-header">
+              <span class="slot-date">2024.05.09 (목)</span>
+              <span class="slot-time">점심 12:00</span>
+            </div>
+            <div class="slot-stats">
+              <div class="stat">
+                <span class="dot"></span>
+                <span>응답 6명</span>
+              </div>
+              <div class="stat">
+                <span class="dot"></span>
+                <span>가능 2명</span>
+              </div>
+              <div class="stat danger">
+                <span class="dot"></span>
+                <span>응답률 33%</span>
+              </div>
+            </div>
+            <div class="slot-footer">템플릿: 주중 점심 · 설명: 팀 선호도 조사 기반</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">응답자 상세</div>
+        <div class="tabs">
+          <div class="tab active">응답자 목록</div>
+          <div class="tab">슬롯별 상세</div>
+        </div>
+        <div class="responders-list">
+          <article class="responder-item">
+            <div class="responder-header">
+              <span>민지</span>
+              <span class="status-pill">최종 업데이트 2024.05.02</span>
+            </div>
+            <div class="responder-slots">
+              <span>05.07 점심</span>
+              <span>05.08 점심</span>
+            </div>
+          </article>
+          <article class="responder-item">
+            <div class="responder-header">
+              <span>재훈</span>
+              <span class="status-pill">최종 업데이트 2024.05.03</span>
+            </div>
+            <div class="responder-slots">
+              <span>05.08 점심</span>
+            </div>
+          </article>
+          <article class="responder-item">
+            <div class="responder-header">
+              <span>소라</span>
+              <span class="status-pill">최종 업데이트 2024.05.01</span>
+            </div>
+            <div class="responder-slots">
+              <span>05.07 점심</span>
+              <span>05.09 점심</span>
+            </div>
+          </article>
+        </div>
+        <div class="table-wrapper" style="margin-top: 32px;">
+          <table>
+            <thead>
+              <tr>
+                <th>슬롯</th>
+                <th>민지</th>
+                <th>재훈</th>
+                <th>소라</th>
+                <th>현우</th>
+                <th>가영</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>05.07 (화) 점심</td>
+                <td><span class="status-pill">가능</span></td>
+                <td><span class="status-pill" style="background-color: rgba(198, 40, 40, 0.12); color: var(--error);">불가</span></td>
+                <td><span class="status-pill">가능</span></td>
+                <td><span class="status-pill">가능</span></td>
+                <td><span class="status-pill">미응답</span></td>
+              </tr>
+              <tr>
+                <td>05.08 (수) 점심</td>
+                <td><span class="status-pill">가능</span></td>
+                <td><span class="status-pill">가능</span></td>
+                <td><span class="status-pill" style="background-color: rgba(198, 40, 40, 0.12); color: var(--error);">불가</span></td>
+                <td><span class="status-pill">가능</span></td>
+                <td><span class="status-pill">가능</span></td>
+              </tr>
+              <tr>
+                <td>05.09 (목) 점심</td>
+                <td><span class="status-pill" style="background-color: rgba(198, 40, 40, 0.12); color: var(--error);">불가</span></td>
+                <td><span class="status-pill">가능</span></td>
+                <td><span class="status-pill">가능</span></td>
+                <td><span class="status-pill" style="background-color: rgba(198, 40, 40, 0.12); color: var(--error);">불가</span></td>
+                <td><span class="status-pill">미응답</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">오류 상태 예시</div>
+        <div class="alert">
+          <span>⚠️</span>
+          <div>일시적인 문제로 약속 정보를 불러오지 못했습니다. 잠시 후 다시 시도하세요.</div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>이 페이지는 공유 링크로 누구나 열람할 수 있습니다.</span>
+      <span>응답 수정이 필요하면 응답 작성 페이지에서 닉네임과 PIN을 다시 입력하세요.</span>
+    </footer>
+  </body>
+</html>
