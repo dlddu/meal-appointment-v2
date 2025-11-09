@@ -138,5 +138,20 @@
     "source_spec": "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
     "target_spec": "agent/specs/meal-appointment-domain-spec.md",
     "relationship": "supports-domain"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
+    "target_spec": "agent/specs/meal-appointment-domain-spec.md",
+    "relationship": "implements-domain-flow"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "aligns-with-architecture"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-user-spec.md",
+    "relationship": "supports-user-spec"
   }
 ]

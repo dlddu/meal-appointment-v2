@@ -152,5 +152,19 @@
       "v1",
       "uiux"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
+    "summary": "공개 GET /api/appointments/{id} 조회 계약과 응답 구조, 오류 규칙을 정의한다.",
+    "keywords": [
+      "appointment view",
+      "api contract",
+      "availability"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "backend-spec"
+    ]
   }
 ]
