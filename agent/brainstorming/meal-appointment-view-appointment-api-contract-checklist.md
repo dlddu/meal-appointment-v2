@@ -21,8 +21,9 @@
 20. (상태: 승인) 응답에 닉네임 미등록 사용자 정보가 포함되지 않고 `participants` 배열이 실제 응답 제출자만 노출하는지 확인한다.
 21. (상태: 미확인) 경로 변수 `appointmentId`만 사용하며 추가 쿼리 파라미터를 허용하지 않는지 확인한다.
 22. (상태: 미확인) 성공 응답 최상위 객체가 `appointment`, `template`, `participants`, `aggregates`로 제한되는지 확인한다.
-23. (상태: 미확인) `template.rules`가 규칙의 원본 속성(`ruleId`, `dayPattern`, `mealTypes` 등)을 요약 없이 그대로 노출하는지 확인한다.
+23. (상태: 반려 - `ruleId`를 노출하지 않음) `template.rules`가 규칙의 원본 속성(`ruleId`, `dayPattern`, `mealTypes` 등)을 요약 없이 그대로 노출하는지 확인한다.
 24. (상태: 미확인) `responses` 목록에 선택된 슬롯의 `slotKey`만 포함되고 미선택 슬롯이 누락되는지 확인한다.
 25. (상태: 미확인) `slotKey`가 `YYYY-MM-DD#MEALTYPE` 형식으로 날짜와 규칙의 `mealType`을 결합해 안정적으로 생성되는지 확인한다.
 26. (상태: 미확인) `aggregates.slotSummaries`가 `slotKey`, `date`, `mealType`, `availableCount`, `availabilityRatio`만 포함하는지 확인한다.
 27. (상태: 미확인) `availabilityRatio`가 `availableCount / participantCount` 계산 결과와 일치하며 `totalResponses`가 추가로 노출되지 않는지 확인한다.
+28. (상태: 미확인) `template.rules`가 `dayPattern`과 `mealTypes` 원본 속성만 노출하고 `ruleId`를 포함하지 않는지 확인한다.

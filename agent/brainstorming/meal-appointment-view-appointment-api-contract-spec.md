@@ -31,7 +31,7 @@
 | `id` | string | 템플릿 식별자 (`timeSlotTemplateId`). |
 | `name` | string | 템플릿 이름. |
 | `description` | string | 템플릿 설명. |
-| `rules` | array of object | 템플릿 규칙 전체 데이터. 각 항목은 `ruleId`(임의 UUID), `dayPattern`(예: `WEEKDAY`, `WEEKEND`), `mealTypes` 배열을 포함한다. `mealTypes` 각 요소는 `mealType`(예: `LUNCH`, `DINNER`)과 템플릿이 정의한 원본 속성(예: `startTime`, `durationMinutes`)을 그대로 노출한다. 요약 라벨은 제공하지 않는다. |
+| `rules` | array of object | 템플릿 규칙 전체 데이터. 각 항목은 `dayPattern`(예: `WEEKDAY`, `WEEKEND`)과 `mealTypes` 배열을 포함한다. `mealTypes` 각 요소는 `mealType`(예: `LUNCH`, `DINNER`)과 템플릿이 정의한 원본 속성(예: `startTime`, `durationMinutes`)을 그대로 노출한다. 요약 라벨이나 별도 `ruleId`는 제공하지 않는다. |
 
 ### 3.3 `participants` 배열
 - 약속에 응답한 닉네임별 세션 목록.

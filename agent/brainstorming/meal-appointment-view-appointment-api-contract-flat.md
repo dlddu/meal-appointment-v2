@@ -3,7 +3,7 @@
 2. 경로 변수 `appointmentId`만 사용하며 추가 쿼리 파라미터는 지원하지 않는다.
 3. 성공 시 응답 객체는 `appointment`, `template`, `participants`, `aggregates` 필드를 포함한다.
 4. `appointment` 객체는 `id`, `title`, `summary`, `createdAt`, `updatedAt`, `timeSlotTemplateId`를 ISO-8601 시각 형식과 함께 제공한다.
-5. `template` 객체는 템플릿 `id`, `name`, `description`과 전체 규칙(`rules`) 목록을 담고, 각 규칙은 `ruleId`, `dayPattern`, `mealTypes`에 정의된 원본 속성을 그대로 노출한다.
+5. `template` 객체는 템플릿 `id`, `name`, `description`과 전체 규칙(`rules`) 목록을 담고, 각 규칙은 `dayPattern`과 `mealTypes`에 정의된 원본 속성을 요약 없이 그대로 노출하며 별도 `ruleId`를 제공하지 않는다.
 6. `participants` 배열은 응답 제출자별 `participantId`, `nickname`, `submittedAt`, `responses` 목록을 노출한다.
 7. 각 `responses` 항목은 선택된 슬롯의 `slotKey`만 포함하며, 미선택 슬롯은 목록에 나타나지 않는다.
 8. `slotKey`는 날짜(`YYYY-MM-DD`)와 규칙의 `mealType`을 `#`으로 결합한 안정적 식별자다.
