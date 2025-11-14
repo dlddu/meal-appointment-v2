@@ -166,5 +166,19 @@
       "v1",
       "backend-spec"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-view-appointment-backend-implementation-spec.md",
+    "summary": "GET /api/appointments/{id} 약속 조회 백엔드의 계층 구조, 데이터 로딩, 집계, 캐싱 구현 규칙을 정의한다.",
+    "keywords": [
+      "appointment view",
+      "backend implementation",
+      "availability aggregation"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "backend-spec"
+    ]
   }
 ]
