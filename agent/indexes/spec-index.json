@@ -180,5 +180,19 @@
       "v1",
       "backend-spec"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-view-appointment-backend-test-spec.md",
+    "summary": "GET /api/appointments/{id} 백엔드 구현의 단위·통합·관측성 테스트 전략과 시나리오를 정의한다.",
+    "keywords": [
+      "backend testing",
+      "appointment view",
+      "jest"
+    ],
+    "tags": [
+      "testing",
+      "v1",
+      "backend"
+    ]
   }
 ]
