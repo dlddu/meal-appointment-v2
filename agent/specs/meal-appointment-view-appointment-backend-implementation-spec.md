@@ -73,12 +73,11 @@
     appointmentId  String   @map("appointment_id") @db.Uuid
     slotDate       DateTime @map("slot_date") @db.Date
     mealType       String   @map("meal_type") @db.VarChar(16)
-    isAvailable    Boolean  @map("is_available")
     @@index([appointmentId])
     @@index([participantId])
   }
   ```
-- `SlotAvailabilityRepository`는 `isAvailable = true` 레코드만 조회한다. 불가능 응답은 저장하지 않는다.
+- `SlotAvailabilityRepository`는 참가자별로 선택한 슬롯만 저장/조회하며, 불가능 응답은 저장하지 않는다.
 
 ### 5.2 쿼리 최적화 지침
 - 참가자와 응답을 별도 쿼리로 가져오고 서비스 계층에서 매핑한다. 조인보다 캐싱된 템플릿 조합을 우선한다.
@@ -97,7 +96,7 @@
 - `SlotAggregator`는 다음 단계를 따른다.
   1. 템플릿 규칙과 구성값 `APPOINTMENT_VIEW_DAYS`(기본 14일)를 조합하여 약속 생성일 이후 일정 범위의 모든 후보 슬롯을 계산한다.
   2. 각 슬롯에 대해 `slotKey = formatISODate(slotDate) + '#' + mealType.toUpperCase()`를 생성한다.
-  3. `slot_availabilities`에서 `isAvailable = true`인 레코드를 `slotKey`로 그룹화하여 `availableCount`를 계산한다.
+  3. `slot_availabilities`의 레코드를 `slotKey`로 그룹화하여 `availableCount`를 계산한다. 저장된 레코드는 모두 가용 응답을 의미한다.
   4. `participantCount = participants.length`로 설정하고, 0일 경우 `availabilityRatio`는 0으로 고정한다. 0이 아닌 경우 소수 둘째 자리까지 반올림한다.
   5. `participants` 배열은 제출 시각 내림차순(가장 최근 응답 우선)으로 정렬하고, 각 참가자별 `responses`는 날짜 오름차순·동일 날짜 내 `mealType` 사전순으로 정렬한다.
   6. `aggregates.slotSummaries`는 날짜 오름차순, 동일 날짜 내 `mealType` 사전순으로 정렬한다.
