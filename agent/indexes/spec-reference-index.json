@@ -153,5 +153,25 @@
     "source_spec": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
     "target_spec": "agent/specs/meal-appointment-view-appointment-user-spec.md",
     "relationship": "supports-user-spec"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-backend-implementation-spec.md",
+    "target_spec": "agent/specs/meal-appointment-domain-spec.md",
+    "relationship": "implements-domain-flow"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-backend-implementation-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "implements-architecture"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-backend-implementation-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
+    "relationship": "implements-backend-contract"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-backend-implementation-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-user-spec.md",
+    "relationship": "supports-user-spec"
   }
 ]
