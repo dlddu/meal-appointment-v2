@@ -9,35 +9,22 @@ export class TemplateParsingError extends Error {
   }
 }
 
-const templateRulesSchema = z.object({
-  rules: z
-    .array(
-      z.object({
-        dayPattern: z.string(),
-        mealTypes: z.array(z.string())
-      })
-    )
-    .default([]),
-  slots: z
-    .array(
-      z.object({
-        slotKey: z.string(),
-        date: z.string(),
-        mealType: z.string()
-      })
-    )
-    .default([])
-});
+const templateRulesSchema = z
+  .array(
+    z.object({
+      dayPattern: z.string(),
+      mealTypes: z.array(z.string())
+    })
+  )
+  .default([]);
 
-export type TemplateRule = z.infer<typeof templateRulesSchema>['rules'][number];
-export type TemplateSlot = z.infer<typeof templateRulesSchema>['slots'][number];
+export type TemplateRule = z.infer<typeof templateRulesSchema>[number];
 
 export interface TemplateRecord {
   id: string;
   name: string;
   description: string | null;
   rules: TemplateRule[];
-  slots: TemplateSlot[];
 }
 
 export interface TemplateRepository {
@@ -74,8 +61,7 @@ export class PrismaTemplateRepository implements TemplateRepository {
       id: row.id,
       name: row.name,
       description: row.description,
-      rules: parsed.data.rules,
-      slots: parsed.data.slots
+      rules: parsed.data
     };
   }
 }

@@ -1,17 +1,18 @@
 import request from 'supertest';
 import app from '../../src/app';
 import prisma from '../../src/infrastructure/prismaClient';
+import type { TemplateRule } from '../../src/infrastructure/templates/templateRepository';
 
 const ROUTE = '/api/appointments';
 const ROUTE_LABEL = 'GET /api/appointments/:appointmentId';
 
-async function insertTemplate(templateId: string, ruleset: unknown) {
+async function insertTemplate(templateId: string, rules: TemplateRule[]) {
   await prisma.query(
     `
       INSERT INTO time_slot_templates (id, name, description, ruleset_json)
       VALUES ($1, $2, $3, $4::jsonb)
     `,
-    [templateId, 'Weekly template', 'desc', JSON.stringify(ruleset)]
+    [templateId, 'Weekly template', 'desc', JSON.stringify(rules)]
   );
 }
 
@@ -67,17 +68,10 @@ describe('GET /api/appointments/:appointmentId', () => {
     const templateId = 'tmpl-weekly';
     const appointmentId = '00000000-0000-0000-0000-000000000001';
 
-    await insertTemplate(templateId, {
-      rules: [
-        { dayPattern: '2024-03-05', mealTypes: ['DINNER'] },
-        { dayPattern: '2024-03-06', mealTypes: ['BREAKFAST', 'DINNER'] }
-      ],
-      slots: [
-        { slotKey: '2024-03-06#DINNER', date: '2024-03-06', mealType: 'DINNER' },
-        { slotKey: '2024-03-05#DINNER', date: '2024-03-05', mealType: 'DINNER' },
-        { slotKey: '2024-03-06#BREAKFAST', date: '2024-03-06', mealType: 'BREAKFAST' }
-      ]
-    });
+    await insertTemplate(templateId, [
+      { dayPattern: '2024-03-05', mealTypes: ['DINNER'] },
+      { dayPattern: '2024-03-06', mealTypes: ['BREAKFAST', 'DINNER'] }
+    ]);
     await insertAppointment(appointmentId, templateId);
     await insertParticipant('00000000-0000-0000-0000-000000000010', appointmentId, 'Mina', '2024-03-02T09:00:00Z');
     await insertParticipant('00000000-0000-0000-0000-000000000011', appointmentId, 'Hoon', '2024-03-03T09:00:00Z');
@@ -142,7 +136,7 @@ describe('GET /api/appointments/:appointmentId', () => {
   it('returns 503 when template is unavailable', async () => {
     const templateId = 'tmpl-missing';
     const appointmentId = '00000000-0000-0000-0000-000000000021';
-    await insertTemplate('tmpl-other', { rules: [], slots: [] });
+    await insertTemplate('tmpl-other', []);
     await insertAppointment(appointmentId, templateId);
 
     const response = await request(app).get(`${ROUTE}/${appointmentId}`);
@@ -165,10 +159,7 @@ describe('GET /api/appointments/:appointmentId', () => {
     const templateId = 'tmpl-cache';
     const appointmentId = '00000000-0000-0000-0000-000000000031';
 
-    await insertTemplate(templateId, {
-      rules: [{ dayPattern: '2024-03-07', mealTypes: ['LUNCH'] }],
-      slots: [{ slotKey: '2024-03-07#LUNCH', date: '2024-03-07', mealType: 'LUNCH' }]
-    });
+    await insertTemplate(templateId, [{ dayPattern: '2024-03-07', mealTypes: ['LUNCH'] }]);
     await insertAppointment(appointmentId, templateId);
 
     await request(app).get(`${ROUTE}/${appointmentId}`);
@@ -186,7 +177,7 @@ describe('GET /api/appointments/:appointmentId', () => {
     const templateId = 'tmpl-accept';
     const appointmentId = '00000000-0000-0000-0000-000000000041';
 
-    await insertTemplate(templateId, { rules: [], slots: [] });
+    await insertTemplate(templateId, []);
     await insertAppointment(appointmentId, templateId);
 
     const response = await request(app).get(`${ROUTE}/${appointmentId}`).set('Accept', 'text/html');

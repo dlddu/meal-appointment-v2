@@ -23,10 +23,6 @@ const baseTemplate: TemplateRecord = {
   rules: [
     { dayPattern: '2024-03-05', mealTypes: ['DINNER'] },
     { dayPattern: '2024-03-06', mealTypes: ['LUNCH'] }
-  ],
-  slots: [
-    { slotKey: '2024-03-06#LUNCH', date: '2024-03-06', mealType: 'LUNCH' },
-    { slotKey: '2024-03-05#DINNER', date: '2024-03-05', mealType: 'DINNER' }
   ]
 };
 

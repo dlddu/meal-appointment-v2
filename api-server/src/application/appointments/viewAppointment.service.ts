@@ -49,6 +49,8 @@ const mealOrder: Record<string, number> = {
   DINNER: 2
 };
 
+type TemplateSlot = { slotKey: string; date: string; mealType: string };
+
 function compareSlots(a: { date: string; mealType: string }, b: { date: string; mealType: string }) {
   if (a.date !== b.date) {
     return a.date.localeCompare(b.date);
@@ -120,7 +122,7 @@ export class ViewAppointmentService {
       });
       const { participants, availability } = await this.loadParticipantsAndAvailability(appointment.id, context);
 
-      const sortedSlots = [...template.slots].sort(compareSlots);
+      const sortedSlots = this.expandSlotsFromRules(template.rules).sort(compareSlots);
       const slotOrder = new Map(sortedSlots.map((slot, index) => [slot.slotKey, index]));
 
       const availabilityByParticipant = new Map<string, string[]>();
@@ -317,6 +319,24 @@ export class ViewAppointmentService {
       }
       throw new ServiceUnavailableError();
     }
+  }
+
+  private expandSlotsFromRules(rules: TemplateRecord['rules']): TemplateSlot[] {
+    const seen = new Set<string>();
+    const slots: TemplateSlot[] = [];
+
+    for (const rule of rules) {
+      for (const mealType of rule.mealTypes) {
+        const slotKey = `${rule.dayPattern}#${mealType}`;
+        if (seen.has(slotKey)) {
+          continue;
+        }
+        seen.add(slotKey);
+        slots.push({ slotKey, date: rule.dayPattern, mealType });
+      }
+    }
+
+    return slots;
   }
 
   private async loadParticipantsAndAvailability(appointmentId: string, context: ViewAppointmentContext) {
