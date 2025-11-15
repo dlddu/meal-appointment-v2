@@ -8,7 +8,8 @@ const requestId = 'req-1';
 
 function createService() {
   const repository: jest.Mocked<AppointmentRepository> = {
-    create: jest.fn()
+    create: jest.fn(),
+    findById: jest.fn()
   } as unknown as jest.Mocked<AppointmentRepository>;
   const shareUrlBuilder = new ShareUrlBuilder();
   const activeTemplateService = new ActiveTemplateService({
@@ -16,7 +17,14 @@ function createService() {
       return ['default_weekly'];
     }
   });
-  const metrics = { incrementAppointmentsCreated: jest.fn(), getRegistry: jest.fn(), reset: jest.fn() };
+  const metrics = {
+    incrementAppointmentsCreated: jest.fn(),
+    recordHttpRequest: jest.fn(),
+    observeAppointmentViewDuration: jest.fn(),
+    updateTemplateCacheHitRatio: jest.fn(),
+    getRegistry: jest.fn(),
+    reset: jest.fn()
+  };
   const logger = { info: jest.fn(), error: jest.fn() } as any;
   const database = {
     $transaction: jest.fn(async (handler) => handler({} as any))
@@ -42,7 +50,8 @@ describe('CreateAppointmentService', () => {
       title: 'Lunch',
       summary: 'Discuss roadmap',
       timeSlotTemplateId: 'default_weekly',
-      createdAt: new Date('2024-01-01T00:00:00.000Z')
+      createdAt: new Date('2024-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2024-01-01T00:00:00.000Z')
     });
 
     const result = await service.execute(
@@ -78,7 +87,8 @@ describe('CreateAppointmentService', () => {
       title: 'Lunch',
       summary: 'Discuss roadmap',
       timeSlotTemplateId: 'default_weekly',
-      createdAt: new Date('2024-01-01T00:00:00.000Z')
+      createdAt: new Date('2024-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2024-01-01T00:00:00.000Z')
     });
 
     await service.execute({ title: 'Lunch', summary: 'Discuss roadmap', timeSlotTemplateId: 'default_weekly' }, { requestId });

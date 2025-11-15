@@ -8,8 +8,15 @@ import { DefaultActiveTemplateProvider } from './infrastructure/templates/defaul
 import { PrismaAppointmentRepository } from './infrastructure/appointments/appointmentRepository';
 import { ShareUrlBuilder } from './domain/shareUrlBuilder';
 import { CreateAppointmentService } from './application/appointments/createAppointment.service';
+import { ViewAppointmentService } from './application/appointments/viewAppointment.service';
 import { PrometheusAppointmentMetrics } from './infrastructure/metrics/appointmentMetrics';
 import { ApplicationError } from './application/errors';
+import { PrismaTemplateRepository } from './infrastructure/templates/templateRepository';
+import { PrismaParticipantRepository } from './infrastructure/participants/participantRepository';
+import { PrismaAvailabilityRepository } from './infrastructure/availability/availabilityRepository';
+import { InMemoryTemplateCache } from './infrastructure/templates/inMemoryTemplateCache';
+import { ViewAppointmentController } from './presentation/viewAppointment.controller';
+import { createAppointmentPublicRouter } from './presentation/appointmentPublic.router';
 
 const app = express();
 
@@ -17,6 +24,10 @@ const activeTemplateService = new ActiveTemplateService(new DefaultActiveTemplat
 const appointmentRepository = new PrismaAppointmentRepository();
 const shareUrlBuilder = new ShareUrlBuilder();
 const metrics = new PrometheusAppointmentMetrics();
+const templateRepository = new PrismaTemplateRepository();
+const participantRepository = new PrismaParticipantRepository();
+const availabilityRepository = new PrismaAvailabilityRepository();
+const templateCache = new InMemoryTemplateCache(5 * 60 * 1000, metrics);
 const createAppointmentService = new CreateAppointmentService(
   appointmentRepository,
   shareUrlBuilder,
@@ -25,10 +36,23 @@ const createAppointmentService = new CreateAppointmentService(
   logger,
   prisma
 );
+const viewAppointmentService = new ViewAppointmentService(
+  appointmentRepository,
+  templateRepository,
+  participantRepository,
+  availabilityRepository,
+  templateCache,
+  metrics,
+  logger
+);
+const viewAppointmentController = new ViewAppointmentController(viewAppointmentService, metrics);
 
 app.locals.metrics = metrics;
 app.locals.activeTemplateService = activeTemplateService;
 app.locals.createAppointmentService = createAppointmentService;
+app.locals.viewAppointmentService = viewAppointmentService;
+app.locals.viewAppointmentController = viewAppointmentController;
+app.locals.templateCache = templateCache;
 
 app.use(express.json());
 
@@ -43,6 +67,7 @@ app.use((req, res, next) => {
 
 app.use('/api', healthRouter);
 app.use('/api/appointments', createAppointmentsRouter({ createAppointmentService, activeTemplateService }));
+app.use('/api/appointments', createAppointmentPublicRouter({ viewAppointmentController }));
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   if (err instanceof ApplicationError) {
