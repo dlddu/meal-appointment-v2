@@ -154,6 +154,20 @@
     ]
   },
   {
+    "spec_path": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "summary": "공개 약속 조회 페이지의 React 컴포넌트 구조, 데이터 패칭, 상호작용, 테스트 지침을 정의한다.",
+    "keywords": [
+      "appointment view",
+      "frontend",
+      "react"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "frontend-spec"
+    ]
+  },
+  {
     "spec_path": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
     "summary": "공개 GET /api/appointments/{id} 조회 계약과 응답 구조, 오류 규칙을 정의한다.",
     "keywords": [

@@ -140,6 +140,26 @@
     "relationship": "supports-domain"
   },
   {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-user-spec.md",
+    "relationship": "implements-user-spec"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
+    "relationship": "realizes-uiux"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
+    "relationship": "consumes-backend-contract"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "aligns-with-architecture"
+  },
+  {
     "source_spec": "agent/specs/meal-appointment-view-appointment-backend-spec.md",
     "target_spec": "agent/specs/meal-appointment-domain-spec.md",
     "relationship": "implements-domain-flow"
