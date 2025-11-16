@@ -7,9 +7,10 @@
       "api-server/.gitignore",
       "api-server/.env.example",
       "api-server/.env.test.example",
-      "api-server/.env.e2e.example"
+      "api-server/.env.e2e.example",
+      "api-server/scripts/seed-database.ts"
     ],
-    "summary": "Ensure the test runner auto-starts and bootstraps PostgreSQL, provision default API env templates, and document the service startup command."
+    "summary": "Ensure the test runner auto-starts and bootstraps PostgreSQL, provision default API env templates, document the service startup command, and keep the database seeding script aligned with the current schema."
   },
   {
     "spec": "agent/specs/meal-appointment-create-appointment-backend-spec.md",
