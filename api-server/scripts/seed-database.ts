@@ -1,3 +1,5 @@
+// Implemented for spec: agent/specs/meal-appointment-local-testing-spec.md
+
 import path from 'node:path';
 import fs from 'node:fs';
 import pg from 'pg';
@@ -17,7 +19,7 @@ async function seed(databaseUrl: string) {
   const pool = new Pool({ connectionString: databaseUrl });
   try {
     await pool.query(
-      `INSERT INTO "TimeSlotTemplate" (id, name, description, "rulesetJson")
+      `INSERT INTO time_slot_templates (id, name, description, ruleset_json)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (id) DO NOTHING;`,
       [
@@ -31,11 +33,12 @@ async function seed(databaseUrl: string) {
       ]
     );
 
+    const seededAppointmentId = '00000000-0000-4000-8000-000000000001';
     await pool.query(
-      `INSERT INTO "Appointment" (id, title, summary, "timeSlotTemplateId")
+      `INSERT INTO appointments (id, title, summary, time_slot_template_id)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (id) DO NOTHING;`,
-      ['seed-appointment', 'Seeded Meal Planning', 'Coordinate dinner schedules', 'demo-default']
+      [seededAppointmentId, 'Seeded Meal Planning', 'Coordinate dinner schedules', 'demo-default']
     );
   } finally {
     await pool.end();
