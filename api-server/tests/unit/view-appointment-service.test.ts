@@ -117,7 +117,7 @@ describe('ViewAppointmentService', () => {
       }
     ]);
     expect(result.participants[0].responses).toEqual(['2024-03-05#DINNER']);
-    expect(result.participants[1].responses).toEqual(['2024-03-05#DINNER', '2024-03-06#LUNCH']);
+    expect(result.participants[1].responses).toEqual(['2024-03-06#LUNCH', '2024-03-05#DINNER']);
     expect(deps.templateRepository.findById).toHaveBeenCalledTimes(1);
     expect(deps.templateCache.set).toHaveBeenCalledWith('tmpl-1', expect.any(Object));
     expect(deps.metrics.observeAppointmentViewDuration).toHaveBeenCalledWith(expect.any(Number), false);

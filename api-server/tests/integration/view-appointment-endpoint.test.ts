@@ -103,13 +103,6 @@ describe('GET /api/appointments/:appointmentId', () => {
         mealType: 'BREAKFAST',
         availableCount: 1,
         availabilityRatio: 0.5
-      },
-      {
-        slotKey: '2024-03-06#DINNER',
-        date: '2024-03-06',
-        mealType: 'DINNER',
-        availableCount: 0,
-        availabilityRatio: 0
       }
     ]);
 

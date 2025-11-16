@@ -49,18 +49,26 @@ const mealOrder: Record<string, number> = {
   DINNER: 2
 };
 
-type TemplateSlot = { slotKey: string; date: string; mealType: string };
+function compareSlotKeys(a: string, b: string) {
+  const [dateA, mealA] = splitSlotKey(a);
+  const [dateB, mealB] = splitSlotKey(b);
 
-function compareSlots(a: { date: string; mealType: string }, b: { date: string; mealType: string }) {
-  if (a.date !== b.date) {
-    return a.date.localeCompare(b.date);
+  if (dateA !== dateB) {
+    return dateA.localeCompare(dateB);
   }
-  const rankA = mealOrder[a.mealType] ?? Number.MAX_SAFE_INTEGER;
-  const rankB = mealOrder[b.mealType] ?? Number.MAX_SAFE_INTEGER;
+
+  const rankA = mealOrder[mealA] ?? Number.MAX_SAFE_INTEGER;
+  const rankB = mealOrder[mealB] ?? Number.MAX_SAFE_INTEGER;
   if (rankA !== rankB) {
     return rankA - rankB;
   }
-  return a.mealType.localeCompare(b.mealType);
+
+  return mealA.localeCompare(mealB);
+}
+
+function splitSlotKey(slotKey: string): [string, string] {
+  const [date, mealType] = slotKey.split('#');
+  return [date ?? '', mealType ?? ''];
 }
 
 export interface ViewAppointmentResult {
@@ -122,9 +130,6 @@ export class ViewAppointmentService {
       });
       const { participants, availability } = await this.loadParticipantsAndAvailability(appointment.id, context);
 
-      const sortedSlots = this.expandSlotsFromRules(template.rules).sort(compareSlots);
-      const slotOrder = new Map(sortedSlots.map((slot, index) => [slot.slotKey, index]));
-
       const availabilityByParticipant = new Map<string, string[]>();
       for (const record of availability) {
         if (!availabilityByParticipant.has(record.participantId)) {
@@ -133,33 +138,24 @@ export class ViewAppointmentService {
         availabilityByParticipant.get(record.participantId)!.push(record.slotKey);
       }
 
-      for (const slotList of availabilityByParticipant.values()) {
-        slotList.sort((a, b) => {
-          const indexA = slotOrder.get(a) ?? Number.MAX_SAFE_INTEGER;
-          const indexB = slotOrder.get(b) ?? Number.MAX_SAFE_INTEGER;
-          if (indexA !== indexB) {
-            return indexA - indexB;
-          }
-          return a.localeCompare(b);
-        });
-      }
-
       const aggregation = this.aggregator.aggregate(
         availability.map((record) => ({ participantId: record.participantId, slotKey: record.slotKey }))
       );
       const participantCount = participants.length;
 
-      const slotSummaries = sortedSlots.map((slot) => {
-        const availableCount = aggregation.availableCountBySlotKey.get(slot.slotKey) ?? 0;
-        const ratio = participantCount === 0 ? 0 : Math.round((availableCount / participantCount) * 100) / 100;
-        return {
-          slotKey: slot.slotKey,
-          date: slot.date,
-          mealType: slot.mealType,
-          availableCount,
-          availabilityRatio: ratio
-        };
-      });
+      const slotSummaries = Array.from(aggregation.availableCountBySlotKey.entries())
+        .sort(([slotKeyA], [slotKeyB]) => compareSlotKeys(slotKeyA, slotKeyB))
+        .map(([slotKey, availableCount]) => {
+          const [date, mealType] = splitSlotKey(slotKey);
+          const ratio = participantCount === 0 ? 0 : Math.round((availableCount / participantCount) * 100) / 100;
+          return {
+            slotKey,
+            date,
+            mealType,
+            availableCount,
+            availabilityRatio: ratio
+          };
+        });
 
       const participantDtos = participants.map((participant) => ({
         participantId: participant.id,
@@ -320,25 +316,6 @@ export class ViewAppointmentService {
       throw new ServiceUnavailableError();
     }
   }
-
-  private expandSlotsFromRules(rules: TemplateRecord['rules']): TemplateSlot[] {
-    const seen = new Set<string>();
-    const slots: TemplateSlot[] = [];
-
-    for (const rule of rules) {
-      for (const mealType of rule.mealTypes) {
-        const slotKey = `${rule.dayPattern}#${mealType}`;
-        if (seen.has(slotKey)) {
-          continue;
-        }
-        seen.add(slotKey);
-        slots.push({ slotKey, date: rule.dayPattern, mealType });
-      }
-    }
-
-    return slots;
-  }
-
   private async loadParticipantsAndAvailability(appointmentId: string, context: ViewAppointmentContext) {
     try {
       const [participants, availability] = await Promise.all([
