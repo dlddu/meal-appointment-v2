@@ -69,5 +69,35 @@
       "api-server/tests/unit/view-appointment-service.test.ts"
     ],
     "summary": "Implement the GET /api/appointments/:appointmentId read path with Prisma repositories, template caching, availability aggregation, metrics/logging integration, and thorough unit/integration test coverage."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-create-appointment-frontend-spec.md",
+    "files": [
+      "api-server/src/app.ts",
+      "package-lock.json",
+      "web-client/package.json",
+      "web-client/postcss.config.cjs",
+      "web-client/src/components/AvailabilityMatrix.tsx",
+      "web-client/src/features/create-appointment/components/AppointmentForm.tsx",
+      "web-client/src/features/create-appointment/components/CreateSuccessPanel.tsx",
+      "web-client/src/features/create-appointment/components/TemplateOptionCard.tsx",
+      "web-client/src/features/create-appointment/hooks/useCreateAppointment.ts",
+      "web-client/src/features/create-appointment/strings.ts",
+      "web-client/src/features/create-appointment/types.ts",
+      "web-client/src/index.css",
+      "web-client/src/pages/App.tsx",
+      "web-client/src/pages/CreateAppointmentPage.tsx",
+      "web-client/src/tests/availability-matrix.test.tsx",
+      "web-client/tailwind.config.ts"
+    ],
+    "summary": "Replace the demo matrix shell with the spec-compliant create-appointment experience, add Tailwind tokens and build tooling, wire up the React Query mutation hook, success panel, template cards, and enable API CORS so the SPA can talk to the backend."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-create-appointment-frontend-test-spec.md",
+    "files": [
+      "web-client/src/tests/e2e/create-appointment.spec.ts",
+      "web-client/src/tests/e2e/health-check.spec.ts"
+    ],
+    "summary": "Replace the placeholder health checks with a Playwright journey that submits the form, waits for the share URL, and verifies the clipboard toast using the rendered UI."
   }
 ]
