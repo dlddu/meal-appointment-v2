@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import healthRouter from './presentation/health.router';
 import prisma from './infrastructure/prismaClient';
 import { logger } from './infrastructure/logger';
@@ -19,6 +20,8 @@ import { ViewAppointmentController } from './presentation/viewAppointment.contro
 import { createAppointmentPublicRouter } from './presentation/appointmentPublic.router';
 
 const app = express();
+
+app.use(cors());
 
 const activeTemplateService = new ActiveTemplateService(new DefaultActiveTemplateProvider());
 const appointmentRepository = new PrismaAppointmentRepository();
