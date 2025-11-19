@@ -95,9 +95,24 @@
   {
     "spec": "agent/specs/meal-appointment-create-appointment-frontend-test-spec.md",
     "files": [
+      "web-client/package.json",
+      "web-client/package-lock.json",
+      "web-client/src/features/create-appointment/__mocks__/createAppointmentHandlers.ts",
+      "web-client/src/features/create-appointment/__tests__/AppointmentFormReducer.test.ts",
+      "web-client/src/features/create-appointment/__tests__/CreateSuccessPanel.test.tsx",
+      "web-client/src/features/create-appointment/__tests__/TemplateOptionCard.test.tsx",
+      "web-client/src/features/create-appointment/__tests__/useCreateAppointment.test.tsx",
+      "web-client/src/features/create-appointment/__tests__/strings.test.ts",
+      "web-client/src/features/create-appointment/components/CreateSuccessPanel.tsx",
+      "web-client/src/features/create-appointment/formReducer.ts",
+      "web-client/src/features/create-appointment/utils/clipboard.ts",
+      "web-client/src/pages/CreateAppointmentPage.tsx",
+      "web-client/src/tests/create-appointment/CreateAppointmentPage.test.tsx",
+      "web-client/src/tests/testUtils.tsx",
       "web-client/src/tests/e2e/create-appointment.spec.ts",
-      "web-client/src/tests/e2e/health-check.spec.ts"
+      "web-client/src/tests/e2e/health-check.spec.ts",
+      "web-client/vitest.setup.ts"
     ],
-    "summary": "Replace the placeholder health checks with a Playwright journey that submits the form, waits for the share URL, and verifies the clipboard toast using the rendered UI."
+    "summary": "Add the full create-appointment Vitest/MSW suite with reducers, hooks, integration tests, clipboard utilities, and keep the Playwright specs aligned with the frontend test plan."
   }
 ]

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { CreateAppointmentResult } from '../types.js';
 import { createAppointmentStrings } from '../strings.js';
+import { getClipboard } from '../utils/clipboard.js';
 
 type CreateSuccessPanelProps = {
   result: CreateAppointmentResult | null;
@@ -35,8 +36,9 @@ export function CreateSuccessPanel({ result, onCopyError }: CreateSuccessPanelPr
     const text = absoluteShareUrl;
     setCopying(true);
     try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text);
+      const clipboard = getClipboard();
+      if (clipboard && clipboard.writeText) {
+        await clipboard.writeText(text);
         setToastMessage(createAppointmentStrings.success.copiedToast);
         return;
       }
@@ -72,6 +74,7 @@ export function CreateSuccessPanel({ result, onCopyError }: CreateSuccessPanelPr
 
   return (
     <div
+      data-testid="create-success-panel"
       className={`transition-[max-height] duration-500 ease-in-out overflow-hidden ${
         result ? 'max-h-[480px]' : 'max-h-0'
       }`}

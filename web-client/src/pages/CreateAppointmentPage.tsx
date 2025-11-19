@@ -6,86 +6,16 @@ import { CreateSuccessPanel } from '../features/create-appointment/components/Cr
 import { createAppointmentStrings, createAppointmentTemplateOptions } from '../features/create-appointment/strings.js';
 import { useCreateAppointment } from '../features/create-appointment/hooks/useCreateAppointment.js';
 import type { CreateAppointmentFormState } from '../features/create-appointment/types.js';
+import { FieldErrors, formReducer, initialFormState, validateForm } from '../features/create-appointment/formReducer.js';
 
 const TEMPLATE_OPTIONS = createAppointmentTemplateOptions;
-
-type FormAction =
-  | { type: 'UPDATE_FIELD'; field: 'title' | 'summary' | 'timeSlotTemplateId'; value: string }
-  | { type: 'SET_TOUCHED'; field: 'title' | 'summary' | 'template'; value: boolean }
-  | { type: 'TOUCH_ALL' };
-
-const initialState: CreateAppointmentFormState = {
-  title: '',
-  summary: '',
-  timeSlotTemplateId: '',
-  touched: {
-    title: false,
-    summary: false,
-    template: false
-  }
-};
-
-function formReducer(state: CreateAppointmentFormState, action: FormAction): CreateAppointmentFormState {
-  switch (action.type) {
-    case 'UPDATE_FIELD':
-      return {
-        ...state,
-        [action.field]: action.value,
-        touched: {
-          ...state.touched,
-          ...(action.field === 'timeSlotTemplateId' ? { template: true } : {})
-        }
-      };
-    case 'SET_TOUCHED':
-      return {
-        ...state,
-        touched: {
-          ...state.touched,
-          [action.field]: action.value
-        }
-      };
-    case 'TOUCH_ALL':
-      return {
-        ...state,
-        touched: {
-          title: true,
-          summary: true,
-          template: true
-        }
-      };
-    default:
-      return state;
-  }
-}
-
-type FieldErrors = Partial<Record<'title' | 'summary' | 'timeSlotTemplateId', string>>;
-
-function validateForm(state: CreateAppointmentFormState): FieldErrors {
-  const errors: FieldErrors = {};
-  const trimmedTitle = state.title.trim();
-  if (!trimmedTitle) {
-    errors.title = createAppointmentStrings.form.titleRequired;
-  } else if (trimmedTitle.length > 60) {
-    errors.title = createAppointmentStrings.form.titleTooLong;
-  }
-
-  if (state.summary.trim().length > 200) {
-    errors.summary = createAppointmentStrings.form.summaryTooLong;
-  }
-
-  if (!state.timeSlotTemplateId) {
-    errors.timeSlotTemplateId = createAppointmentStrings.form.templateRequired;
-  }
-
-  return errors;
-}
 
 type CreateAppointmentPageProps = {
   apiBaseUrl: string;
 };
 
 export function CreateAppointmentPage({ apiBaseUrl }: CreateAppointmentPageProps) {
-  const [state, dispatch] = useReducer(formReducer, initialState);
+  const [state, dispatch] = useReducer(formReducer, initialFormState);
   const { submit, retry, clearError, resetResult, fieldErrors, bannerError, result, isPending } =
     useCreateAppointment(apiBaseUrl);
   const [templateToast, setTemplateToast] = useState<string | null>(null);
@@ -135,7 +65,7 @@ export function CreateAppointmentPage({ apiBaseUrl }: CreateAppointmentPageProps
     return { type: 'network', message: createAppointmentStrings.banners.networkError } as const;
   }, [bannerError, bannerMessage]);
 
-  const isNetworkBanner = showBanner?.type === 'network';
+  const canRetryBanner = showBanner?.type === 'network' || showBanner?.type === 'server';
 
   const handleFieldChange = (field: 'title' | 'summary' | 'timeSlotTemplateId', value: string) => {
     if (bannerMessage) {
@@ -217,7 +147,7 @@ export function CreateAppointmentPage({ apiBaseUrl }: CreateAppointmentPageProps
             className="w-full max-w-[960px] bg-error text-white px-6 py-3 rounded-[12px] flex items-center justify-between"
           >
             <span>{showBanner.message}</span>
-            {isNetworkBanner && (
+            {canRetryBanner && (
               <button
                 type="button"
                 className="bg-white/20 px-4 py-1 rounded-[8px] font-semibold"
