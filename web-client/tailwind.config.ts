@@ -11,7 +11,15 @@ const config: Config = {
         background: 'var(--color-background)',
         border: 'var(--color-border)',
         success: 'var(--color-success)',
-        error: 'var(--color-error)'
+        error: 'var(--color-error)',
+        view: {
+          primary: 'var(--color-view-primary)',
+          secondary: 'var(--color-view-secondary)',
+          neutral: 'var(--color-view-neutral)',
+          border: 'var(--color-view-border)',
+          warning: 'var(--color-view-warning)',
+          error: 'var(--color-view-error)'
+        }
       },
       dropShadow: {
         card: '0 12px 24px rgba(15,23,42,0.12)',

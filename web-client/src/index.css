@@ -10,6 +10,12 @@
   --color-border: #d0d7e2;
   --color-success: #2f9e44;
   --color-error: #d64545;
+  --color-view-primary: #2e7d32;
+  --color-view-secondary: #1565c0;
+  --color-view-neutral: #f5f7f8;
+  --color-view-border: #e0e3e7;
+  --color-view-warning: #f9a825;
+  --color-view-error: #c62828;
 }
 
 * {

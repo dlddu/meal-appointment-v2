@@ -114,5 +114,38 @@
       "web-client/vitest.setup.ts"
     ],
     "summary": "Add the full create-appointment Vitest/MSW suite with reducers, hooks, integration tests, clipboard utilities, and keep the Playwright specs aligned with the frontend test plan."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "files": [
+      "api-server/scripts/seed-database.ts",
+      "web-client/src/features/view-appointment/api/getAppointment.ts",
+      "web-client/src/features/view-appointment/components/AppointmentOverviewCard.tsx",
+      "web-client/src/features/view-appointment/components/ParticipantTabs.tsx",
+      "web-client/src/features/view-appointment/components/SlotSummaryGrid.tsx",
+      "web-client/src/features/view-appointment/components/StatusMessage.tsx",
+      "web-client/src/features/view-appointment/components/ViewAppointmentAppBar.tsx",
+      "web-client/src/features/view-appointment/hooks/useAppointmentQuery.ts",
+      "web-client/src/features/view-appointment/strings.ts",
+      "web-client/src/features/view-appointment/utils/buildParticipantMatrix.ts",
+      "web-client/src/features/view-appointment/utils/formatSlot.ts",
+      "web-client/src/features/view-appointment/utils/groupSlotSummaries.ts",
+      "web-client/src/index.css",
+      "web-client/src/pages/App.tsx",
+      "web-client/src/pages/ViewAppointmentPage.tsx",
+      "web-client/tailwind.config.ts"
+    ],
+    "summary": "Implement the appointment view page with query hook, slot grouping utilities, responsive layout components, and design tokens aligned to the view-appointment specification while ensuring the backend seed includes the default template."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",
+    "files": [
+      "api-server/scripts/seed-database.ts",
+      "web-client/playwright.e2e.config.ts",
+      "web-client/tests/e2e/create-appointment.spec.ts",
+      "web-client/tests/e2e/view-appointment.spec.ts",
+      "web-client/tsconfig.json"
+    ],
+    "summary": "Add Playwright coverage for the appointment view flow, move E2E specs to the tests directory, align config/TS inclusion, and seed the default template so the view endpoint can serve slot summaries."
   }
 ]
