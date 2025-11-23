@@ -258,5 +258,15 @@
     "source_spec": "agent/specs/meal-appointment-participation-user-spec.md",
     "target_spec": "agent/specs/meal-appointment-create-appointment-user-spec.md",
     "relationship": "consumes-creation-output"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-uiux-spec.md",
+    "target_spec": "agent/specs/meal-appointment-participation-user-spec.md",
+    "relationship": "visualizes-user-spec"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-uiux-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "aligns-with-architecture"
   }
 ]
