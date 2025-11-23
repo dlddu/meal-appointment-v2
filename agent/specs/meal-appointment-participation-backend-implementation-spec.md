@@ -90,8 +90,8 @@
 ### 4.2 `PUT /responses`
 1. 약속/참가자 식별자와 닉네임 일치 여부를 확인한다. 참가자 ID가 존재하지만 닉네임이 다르면 `403 PARTICIPANT_MISMATCH`.
 2. 참가자가 PIN을 설정했다면 입력 PIN을 검증하고 불일치 시 `403 INVALID_PIN`.
-3. `TimeSlotTemplateService`로 약속의 템플릿을 로드하고 유효한 슬롯 키 집합을 계산한다.
-4. 입력 슬롯 배열을 필터링(중복 제거)하고 유효 키와 교집합만 남긴다. 교집합 결과가 원본과 다르면 `400 INVALID_SLOT`.
+3. `TimeSlotTemplateService`로 약속의 템플릿을 로드하고 슬롯 검증 헬퍼를 준비한다(날짜 범위·식사 구분 등 템플릿 규칙 기반).
+4. 입력 슬롯 배열을 중복 제거한 뒤 각 슬롯이 템플릿 검증에 통과하는지 개별 확인하고, 하나라도 실패하면 `400 INVALID_SLOT`.
 5. 단일 트랜잭션에서 기존 응답을 전부 삭제 후 새 응답을 일괄 삽입한다.
 6. 업데이트된 응답을 기준으로 `AvailabilityAggregationService`를 호출해 요약을 계산하고 응답 payload로 반환한다.
 7. 성공 시 `participant.responses.submitted` 로그를 `info`로 기록하고, 응답 집계 결과를 `debug` 레벨로 덧붙인다.
@@ -112,10 +112,7 @@
   | `id` | `UUID` (PK) | NOT NULL |
   | `participant_id` | `UUID` | FK | 참가자 참조. `ON DELETE CASCADE` |
   | `slot_key` | `VARCHAR(32)` | INDEX | 템플릿 기반 키 (`YYYY-MM-DD#MEAL`) |
-  | `is_available` | `BOOLEAN` | NOT NULL | 항상 `TRUE`만 저장; 불가능 슬롯은 저장하지 않는다 |
-  | `submitted_at` | `TIMESTAMP` | NOT NULL | 중복 INSERT 방지를 위한 최신 타임스탬프 |
 
-- `submitted_at`은 `PUT /responses` 시점으로 업데이트한다.
 - 슬롯 인스턴스를 별도 테이블로 만들지 않으며, `slot_key` 문자열만 저장한다.
 
 ## 6. 오류 및 상태 코드 매핑
