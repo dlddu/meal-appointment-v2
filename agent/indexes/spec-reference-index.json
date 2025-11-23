@@ -283,5 +283,30 @@
     "source_spec": "agent/specs/meal-appointment-participation-backend-implementation-spec.md",
     "target_spec": "agent/specs/meal-appointment-participation-user-spec.md",
     "relationship": "supports-user-spec"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-backend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-participation-backend-implementation-spec.md",
+    "relationship": "tests-implementation"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-backend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-domain-spec.md",
+    "relationship": "verifies-domain"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-backend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "verifies-architecture"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-backend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-participation-user-spec.md",
+    "relationship": "verifies-user-flow"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-backend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-local-testing-spec.md",
+    "relationship": "leverages-testing-guidelines"
   }
 ]
