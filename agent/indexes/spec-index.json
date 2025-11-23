@@ -222,5 +222,19 @@
       "v1",
       "frontend"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-participation-user-spec.md",
+    "summary": "공유 링크를 통한 닉네임 기반 약속 참여와 가용 슬롯 제출·수정에 대한 사용자 요구를 정의한다.",
+    "keywords": [
+      "participation",
+      "nickname",
+      "availability"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "user-spec"
+    ]
   }
 ]
