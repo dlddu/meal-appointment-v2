@@ -250,5 +250,19 @@
       "v1",
       "uiux"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-participation-backend-implementation-spec.md",
+    "summary": "닉네임 기반 약속 참여와 슬롯 가용성 제출/수정 백엔드 엔드포인트의 검증, 저장, 집계 구현 규칙을 정의한다.",
+    "keywords": [
+      "participation",
+      "backend implementation",
+      "availability"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "backend-spec"
+    ]
   }
 ]
