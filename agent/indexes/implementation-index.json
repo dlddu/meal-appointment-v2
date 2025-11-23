@@ -144,8 +144,15 @@
       "web-client/playwright.e2e.config.ts",
       "web-client/tests/e2e/create-appointment.spec.ts",
       "web-client/tests/e2e/view-appointment.spec.ts",
-      "web-client/tsconfig.json"
+      "web-client/tsconfig.json",
+      "web-client/src/features/view-appointment/__mocks__/viewAppointmentHandlers.ts",
+      "web-client/src/features/view-appointment/__tests__/SlotSummaryGrid.test.tsx",
+      "web-client/src/features/view-appointment/__tests__/ParticipantTabs.test.tsx",
+      "web-client/src/features/view-appointment/__tests__/StatusMessage.test.tsx",
+      "web-client/src/features/view-appointment/__tests__/formatters.test.ts",
+      "web-client/src/features/view-appointment/hooks/__tests__/useAppointmentQuery.test.tsx",
+      "web-client/src/tests/view-appointment/ViewAppointmentPage.test.tsx"
     ],
-    "summary": "Add Playwright coverage for the appointment view flow, move E2E specs to the tests directory, align config/TS inclusion, and seed the default template so the view endpoint can serve slot summaries."
+    "summary": "Add Playwright coverage for the appointment view flow, move E2E specs to the tests directory, align config/TS inclusion, seed the default template for slot summaries, and implement Vitest coverage for the view appointment utilities, components, hook, and page."
   }
 ]
