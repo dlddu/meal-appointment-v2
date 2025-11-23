@@ -36,7 +36,7 @@ export function useAppointmentQuery(params: { appointmentId: string; apiBaseUrl:
   const query = useQuery<AppointmentViewResponse, AppointmentApiError>({
     queryKey: ['appointment', appointmentId],
     queryFn: () => getAppointment(appointmentId, apiBaseUrl),
-    retry: 1,
+    retry: false,
     staleTime: 30_000
   });
 
