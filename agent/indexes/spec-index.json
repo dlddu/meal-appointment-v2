@@ -236,5 +236,19 @@
       "v1",
       "user-spec"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-participation-uiux-spec.md",
+    "summary": "닉네임 기반 참여 흐름의 레이아웃, 디자인 토큰, 주간 템플릿 슬롯 탐색/선택 패턴을 정의한 UI/UX 명세를 제공한다.",
+    "keywords": [
+      "participation",
+      "ui",
+      "availability selection"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "uiux"
+    ]
   }
 ]
