@@ -218,5 +218,25 @@
     "source_spec": "agent/specs/meal-appointment-view-appointment-backend-test-spec.md",
     "target_spec": "agent/specs/meal-appointment-local-testing-spec.md",
     "relationship": "leverages-testing-guidelines"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "relationship": "tests-implementation"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-user-spec.md",
+    "relationship": "verifies-user-flow"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
+    "relationship": "verifies-uiux"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "verifies-architecture"
   }
 ]

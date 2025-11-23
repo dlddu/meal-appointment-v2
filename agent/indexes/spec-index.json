@@ -208,5 +208,19 @@
       "v1",
       "backend"
     ]
+  },
+  {
+    "spec_path": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",
+    "summary": "약속 조회 프런트엔드의 Vitest/msw/Playwright 기반 테스트 전략과 시나리오를 정의한다.",
+    "keywords": [
+      "frontend testing",
+      "appointment view",
+      "react testing library"
+    ],
+    "tags": [
+      "testing",
+      "v1",
+      "frontend"
+    ]
   }
 ]
