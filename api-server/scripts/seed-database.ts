@@ -18,19 +18,16 @@ function loadEnv(envFile: string) {
 async function seed(databaseUrl: string) {
   const pool = new Pool({ connectionString: databaseUrl });
   try {
+    const defaultWeeklyRules = [
+      { dayPattern: 'WEEKDAY', mealTypes: ['DINNER'] },
+      { dayPattern: 'WEEKEND', mealTypes: ['LUNCH', 'DINNER'] }
+    ];
+
     await pool.query(
       `INSERT INTO time_slot_templates (id, name, description, ruleset_json)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (id) DO NOTHING;`,
-      [
-        'demo-default',
-        'Demo Template',
-        'Seeded demo template',
-        JSON.stringify([
-          { slotInstanceId: '2024-05-01_dinner', label: 'May 1st – Dinner' },
-          { slotInstanceId: '2024-05-02_lunch', label: 'May 2nd – Lunch' }
-        ])
-      ]
+      ['default_weekly', '주간 기본 템플릿', '평일 저녁과 주말 점심/저녁을 포함한 기본 템플릿', JSON.stringify(defaultWeeklyRules)]
     );
 
     const seededAppointmentId = '00000000-0000-4000-8000-000000000001';
@@ -38,7 +35,7 @@ async function seed(databaseUrl: string) {
       `INSERT INTO appointments (id, title, summary, time_slot_template_id)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (id) DO NOTHING;`,
-      [seededAppointmentId, 'Seeded Meal Planning', 'Coordinate dinner schedules', 'demo-default']
+      [seededAppointmentId, 'Seeded Meal Planning', 'Coordinate dinner schedules', 'default_weekly']
     );
   } finally {
     await pool.end();

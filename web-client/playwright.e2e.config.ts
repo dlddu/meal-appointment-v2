@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  testDir: './src/tests/e2e',
+  testDir: './tests/e2e',
   use: {
     baseURL: 'http://127.0.0.1:5173',
     trace: 'off'
