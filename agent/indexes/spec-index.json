@@ -252,6 +252,20 @@
     ]
   },
   {
+    "spec_path": "agent/specs/meal-appointment-participation-frontend-implementation-spec.md",
+    "summary": "닉네임 기반 약속 참여 페이지의 React 컴포넌트 구조, 상태 관리, API 오류 매핑, UI/UX 토큰 적용 방법을 정의한다.",
+    "keywords": [
+      "participation",
+      "frontend",
+      "availability selection"
+    ],
+    "tags": [
+      "feature",
+      "v1",
+      "frontend-spec"
+    ]
+  },
+  {
     "spec_path": "agent/specs/meal-appointment-participation-backend-implementation-spec.md",
     "summary": "닉네임 기반 약속 참여와 슬롯 가용성 제출/수정 백엔드 엔드포인트의 검증, 저장, 집계 구현 규칙을 정의한다.",
     "keywords": [
