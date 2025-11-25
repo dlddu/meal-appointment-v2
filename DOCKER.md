@@ -63,9 +63,9 @@ The workflow (`.github/workflows/build-images.yml`) automatically builds and pus
 Images are tagged based on the event type:
 
 - Branch pushes: `branch-name` (e.g., `main`, `develop`)
-- Pull requests: `pr-<number>` (e.g., `pr-42`)
+- Pull requests: `pr-<number>` (e.g., `pr-59`)
 - Git tags: Semantic version tags (e.g., `v1.0.0`, `1.0`, `1`)
-- Commit SHA: `<branch>-<sha>` (e.g., `main-abc123`)
+- Commit SHA: `sha-<short-hash>` (e.g., `sha-abc1234`)
 
 ### Permissions
 
