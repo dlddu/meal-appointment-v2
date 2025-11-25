@@ -8,6 +8,8 @@ export interface AppointmentMetrics {
   recordHttpRequest(route: string, statusCode: number): void;
   observeAppointmentViewDuration(durationMs: number, cacheHit: boolean): void;
   updateTemplateCacheHitRatio(hitRatio: number): void;
+  observeParticipantJoin(durationMs: number): void;
+  observeResponseSubmission(durationMs: number, slotCount: number): void;
   getRegistry(): Registry;
   reset(): void;
 }
@@ -18,6 +20,9 @@ export class PrometheusAppointmentMetrics implements AppointmentMetrics {
   private readonly httpRequestsTotal: Counter<'route' | 'status_code'>;
   private readonly viewDurationHistogram: Histogram<'cache_hit'>;
   private readonly templateCacheHitRatioGauge: Gauge;
+  private readonly participantJoinDuration: Histogram;
+  private readonly responseSubmissionDuration: Histogram;
+  private readonly responseSlotCount: Histogram;
 
   constructor() {
     this.registry = new Registry();
@@ -48,6 +53,27 @@ export class PrometheusAppointmentMetrics implements AppointmentMetrics {
       help: 'Ratio of template cache hits over total lookups',
       registers: [this.registry]
     });
+
+    this.participantJoinDuration = new Histogram({
+      name: 'participant_join_duration_ms',
+      help: 'Duration of participant join requests in milliseconds',
+      buckets: [10, 50, 100, 250, 500, 1000, 2000],
+      registers: [this.registry]
+    });
+
+    this.responseSubmissionDuration = new Histogram({
+      name: 'participant_response_submission_ms',
+      help: 'Duration of response submission requests in milliseconds',
+      buckets: [10, 50, 100, 250, 500, 1000, 2000],
+      registers: [this.registry]
+    });
+
+    this.responseSlotCount = new Histogram({
+      name: 'participant_response_slot_count',
+      help: 'Number of slots submitted per participant response',
+      buckets: [0, 1, 2, 3, 5, 8, 13, 21],
+      registers: [this.registry]
+    });
   }
 
   incrementAppointmentsCreated(templateId: string): void {
@@ -64,6 +90,15 @@ export class PrometheusAppointmentMetrics implements AppointmentMetrics {
 
   updateTemplateCacheHitRatio(hitRatio: number): void {
     this.templateCacheHitRatioGauge.set(hitRatio);
+  }
+
+  observeParticipantJoin(durationMs: number): void {
+    this.participantJoinDuration.observe(durationMs);
+  }
+
+  observeResponseSubmission(durationMs: number, slotCount: number): void {
+    this.responseSubmissionDuration.observe(durationMs);
+    this.responseSlotCount.observe(slotCount);
   }
 
   getRegistry(): Registry {

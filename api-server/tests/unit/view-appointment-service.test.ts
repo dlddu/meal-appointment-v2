@@ -51,6 +51,8 @@ describe('ViewAppointmentService', () => {
       recordHttpRequest: jest.fn(),
       observeAppointmentViewDuration: jest.fn(),
       updateTemplateCacheHitRatio: jest.fn(),
+      observeParticipantJoin: jest.fn(),
+      observeResponseSubmission: jest.fn(),
       getRegistry: jest.fn(),
       reset: jest.fn()
     } as unknown as jest.Mocked<AppointmentMetrics>;
@@ -77,8 +79,20 @@ describe('ViewAppointmentService', () => {
     deps.templateCache.get = jest.fn().mockReturnValue(null);
     deps.templateRepository.findById.mockResolvedValue(baseTemplate);
     deps.participantRepository.listByAppointment.mockResolvedValue([
-      { id: 'p1', nickname: 'Mina', submittedAt: new Date('2024-03-03T12:00:00Z') },
-      { id: 'p2', nickname: 'Hoon', submittedAt: new Date('2024-03-02T12:00:00Z') }
+      {
+        id: 'p1',
+        appointmentId: baseAppointment.id,
+        nickname: 'Mina',
+        submittedAt: new Date('2024-03-03T12:00:00Z'),
+        pinHash: null
+      },
+      {
+        id: 'p2',
+        appointmentId: baseAppointment.id,
+        nickname: 'Hoon',
+        submittedAt: new Date('2024-03-02T12:00:00Z'),
+        pinHash: null
+      }
     ]);
     deps.availabilityRepository.listAvailability.mockResolvedValue([
       { participantId: 'p2', slotKey: '2024-03-06#LUNCH' },

@@ -154,5 +154,29 @@
       "web-client/src/tests/view-appointment/ViewAppointmentPage.test.tsx"
     ],
     "summary": "Add Playwright coverage for the appointment view flow, move E2E specs to the tests directory, align config/TS inclusion, seed the default template for slot summaries, and implement Vitest coverage for the view appointment utilities, components, hook, and page."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-participation-backend-implementation-spec.md",
+    "files": [
+      "api-server/package-lock.json",
+      "api-server/package.json",
+      "api-server/prisma/migrations/20240515000000_participation_support/migration.sql",
+      "api-server/prisma/schema.prisma",
+      "api-server/src/app.ts",
+      "api-server/src/application/errors.ts",
+      "api-server/src/application/participants/joinParticipant.service.ts",
+      "api-server/src/application/participants/submitResponses.service.ts",
+      "api-server/src/application/participants/timeSlotTemplate.service.ts",
+      "api-server/src/domain/slotKey.ts",
+      "api-server/src/infrastructure/availability/availabilityRepository.ts",
+      "api-server/src/infrastructure/metrics/appointmentMetrics.ts",
+      "api-server/src/infrastructure/participants/participantRepository.ts",
+      "api-server/src/presentation/participation.router.ts",
+      "api-server/src/types/express.d.ts",
+      "api-server/tests/integration/participation-endpoint.test.ts",
+      "api-server/tests/unit/participant-services.test.ts",
+      "api-server/tests/unit/participation-validation.test.ts"
+    ],
+    "summary": "Implement participant join and availability submission endpoints with PIN hashing, slot validation against templates, transactional persistence, metrics/logging, and comprehensive unit/integration coverage."
   }
 ]

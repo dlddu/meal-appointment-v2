@@ -8,6 +8,7 @@ import type { ParticipantRepository } from '../../infrastructure/participants/pa
 import type { AvailabilityRepository } from '../../infrastructure/availability/availabilityRepository';
 import type { AppointmentMetrics } from '../../infrastructure/metrics/appointmentMetrics';
 import { AvailabilityAggregator } from '../../domain/availabilityAggregator';
+import { compareSlotKeys, splitSlotKey } from '../../domain/slotKey';
 
 export class AppointmentNotFoundError extends Error {
   constructor(public readonly appointmentId: string) {
@@ -41,34 +42,6 @@ export interface TemplateCache {
   get(id: string): TemplateRecord | null;
   set(id: string, record: TemplateRecord): void;
   clear(): void;
-}
-
-const mealOrder: Record<string, number> = {
-  BREAKFAST: 0,
-  LUNCH: 1,
-  DINNER: 2
-};
-
-function compareSlotKeys(a: string, b: string) {
-  const [dateA, mealA] = splitSlotKey(a);
-  const [dateB, mealB] = splitSlotKey(b);
-
-  if (dateA !== dateB) {
-    return dateA.localeCompare(dateB);
-  }
-
-  const rankA = mealOrder[mealA] ?? Number.MAX_SAFE_INTEGER;
-  const rankB = mealOrder[mealB] ?? Number.MAX_SAFE_INTEGER;
-  if (rankA !== rankB) {
-    return rankA - rankB;
-  }
-
-  return mealA.localeCompare(mealB);
-}
-
-function splitSlotKey(slotKey: string): [string, string] {
-  const [date, mealType] = slotKey.split('#');
-  return [date ?? '', mealType ?? ''];
 }
 
 export interface ViewAppointmentResult {

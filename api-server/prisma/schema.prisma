@@ -8,11 +8,15 @@ datasource db {
 }
 
 model Appointment {
-  id                  String   @id @default(uuid()) @db.Uuid
-  title               String   @db.VarChar(60)
-  summary             String   @default("") @db.VarChar(200)
-  timeSlotTemplateId  String   @map("time_slot_template_id") @db.VarChar(64)
-  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id                 String              @id @default(uuid()) @db.Uuid
+  title              String              @db.VarChar(60)
+  summary            String              @default("") @db.VarChar(200)
+  timeSlotTemplateId String              @map("time_slot_template_id") @db.VarChar(64)
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime            @default(now()) @map("updated_at") @db.Timestamptz
+
+  participants       Participant[]
+  availabilities     SlotAvailability[]
 
   @@map("appointments")
 }
@@ -21,30 +25,34 @@ model TimeSlotTemplate {
   id          String   @id @default(uuid())
   name        String
   description String?
-  rulesetJson Json
+  rulesetJson Json     @map("ruleset_json")
+
+  @@map("time_slot_templates")
 }
 
 model Participant {
-  id             String            @id @default(uuid())
-  appointmentId  String
-  nickname       String
-  optionalPinHash String?
-  createdAt      DateTime          @default(now())
-  appointment    Appointment       @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
-  availability   SlotAvailability[]
+  id            String              @id @default(uuid()) @db.Uuid
+  appointmentId String              @map("appointment_id") @db.Uuid
+  nickname      String              @db.VarChar(30)
+  pinHash       String?             @map("pin_hash") @db.VarChar(255)
+  submittedAt   DateTime?           @map("submitted_at") @db.Timestamptz
+  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  appointment   Appointment         @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  availability  SlotAvailability[]
 
   @@unique([appointmentId, nickname])
+  @@map("participants")
 }
 
 model SlotAvailability {
-  id             String      @id @default(uuid())
-  appointmentId  String
-  slotInstanceId String
-  participantId  String
-  isAvailable    Boolean
-  submittedAt    DateTime    @default(now())
-  appointment    Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
-  participant    Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  id            String      @id @default(uuid()) @db.Uuid
+  appointmentId String      @map("appointment_id") @db.Uuid
+  slotKey       String      @map("slot_key") @db.VarChar(64)
+  participantId String      @map("participant_id") @db.Uuid
+  submittedAt   DateTime    @default(now()) @map("submitted_at") @db.Timestamptz
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
 
-  @@unique([appointmentId, slotInstanceId, participantId])
+  @@unique([appointmentId, slotKey, participantId])
+  @@map("slot_availability")
 }
