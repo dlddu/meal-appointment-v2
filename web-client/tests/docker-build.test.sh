@@ -70,4 +70,3 @@ echo "=== All Dockerfile configuration tests PASSED ==="
 echo ""
 echo "Note: To build with a custom API URL, use:"
 echo "  docker build --build-arg VITE_API_BASE_URL=http://your-api-server/api -f web-client/Dockerfile ."
-
