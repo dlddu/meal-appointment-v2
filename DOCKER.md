@@ -65,7 +65,7 @@ Images are tagged based on the event type:
 - Branch pushes: `branch-name` (e.g., `main`, `develop`)
 - Pull requests: `pr-<number>` (e.g., `pr-59`)
 - Git tags: Semantic version tags (e.g., `v1.0.0`, `1.0`, `1`)
-- Commit SHA: `sha-<short-hash>` (e.g., `sha-abc1234`)
+- Commit SHA: `<full-hash>` (e.g., `44fa6a785efe379f6510c6d51229e10c47de98c7`)
 
 ### Permissions
 
