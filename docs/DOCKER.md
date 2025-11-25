@@ -43,6 +43,18 @@ The web application will be available at http://localhost:8080
 
 **Important:** The API URL is baked into the JavaScript bundle at build time. You must rebuild the image with the correct `VITE_API_BASE_URL` for each deployment environment.
 
+### GitHub Actions CI/CD
+
+The `.github/workflows/build-images.yml` workflow automatically builds the web-client image and pushes it to GitHub Container Registry (ghcr.io) when changes are merged to main/develop branches or when tagged.
+
+The workflow uses the `VITE_API_BASE_URL` GitHub Actions secret if configured, otherwise defaults to `/api` (relative path) for production builds. To configure:
+
+1. Go to repository Settings > Secrets and variables > Actions
+2. Add a new repository secret named `VITE_API_BASE_URL`
+3. Set the value to your production API URL (e.g., `https://api.example.com/api`)
+
+If no secret is set, the workflow defaults to `/api`, which works for deployments where the API and web client are served from the same domain.
+
 ## Examples
 
 ### Development
