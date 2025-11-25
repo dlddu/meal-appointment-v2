@@ -178,5 +178,36 @@
       "api-server/tests/unit/participation-validation.test.ts"
     ],
     "summary": "Implement participant join and availability submission endpoints with PIN hashing, slot validation against templates, transactional persistence, metrics/logging, and comprehensive unit/integration coverage."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-participation-frontend-implementation-spec.md",
+    "files": [
+      "web-client/src/index.css",
+      "web-client/tailwind.config.ts",
+      "web-client/src/pages/App.tsx",
+      "web-client/src/pages/ParticipateAppointmentPage.tsx",
+      "web-client/src/features/participation/strings.ts",
+      "web-client/src/features/participation/utils/slotKey.ts",
+      "web-client/src/features/participation/utils/storage.ts",
+      "web-client/src/features/participation/api/getAppointmentTemplate.ts",
+      "web-client/src/features/participation/api/createParticipant.ts",
+      "web-client/src/features/participation/api/submitAvailability.ts",
+      "web-client/src/features/participation/hooks/useParticipationFlow.ts",
+      "web-client/src/features/participation/components/ParticipationAppBar.tsx",
+      "web-client/src/features/participation/components/ParticipantInfoCard.tsx",
+      "web-client/src/features/participation/components/WeekNavigator.tsx",
+      "web-client/src/features/participation/components/SlotGrid.tsx",
+      "web-client/src/features/participation/components/SummaryPanel.tsx",
+      "web-client/src/features/participation/components/ToastStack.tsx",
+      "web-client/src/features/participation/components/InlineStatus.tsx"
+    ],
+    "summary": "Implement the participation route with React Query flow, helper utilities, UI components, and design tokens aligned to the participation specification."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-participation-frontend-test-spec.md",
+    "files": [
+      "web-client/tests/e2e/participation.spec.ts"
+    ],
+    "summary": "Add Playwright end-to-end coverage for joining an appointment and submitting availability on the participation page."
   }
 ]
