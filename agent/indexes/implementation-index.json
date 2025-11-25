@@ -230,5 +230,13 @@
       "web-client/nginx.conf"
     ],
     "summary": "Create GitHub Actions workflow for building container images of api-server and web-client. Includes multi-stage Dockerfiles optimized for workspace monorepo structure, with build and production stages. Images are pushed to GitHub Container Registry (ghcr.io) on main/develop branches and tagged releases."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "files": [
+      "web-client/src/pages/App.tsx",
+      "web-client/vite.config.ts"
+    ],
+    "summary": "Align the web client API base URL with deployment hosts by defaulting to the current origin in production while preserving the localhost target for development and tests."
   }
 ]
