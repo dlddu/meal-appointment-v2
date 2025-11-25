@@ -80,13 +80,14 @@ The `scripts/run-tests.sh` helper implements the end-to-end workflow from the lo
 
 ```bash
 ./scripts/run-tests.sh all            # Run every suite sequentially
-./scripts/run-tests.sh web-unit       # Web client Vitest suite
+./scripts/run-tests.sh web-unit       # Web client TypeScript build + Vitest suite
 ./scripts/run-tests.sh api-unit       # API server Jest unit tests
 ./scripts/run-tests.sh api-integration# API server integration tests (real DB)
 ./scripts/run-tests.sh e2e            # Playwright end-to-end checks
 ```
 
 Behind the scenes the script applies SQL migrations with the provided PostgreSQL user, reseeds the database when needed, and launches Playwright. The E2E step exercises the health endpoint and the rendered shell via Playwright's API testing mode, ensuring the running servers respond correctly without depending on extra browser downloads.
+The `web-unit` command first compiles the web client with `npm run build` so TypeScript regressions are surfaced alongside the Vitest suite.
 
 ## Architecture highlights
 

@@ -214,7 +214,11 @@ function ensure_db_connection() {
 }
 
 function run_web_unit() {
-  (cd "$ROOT_DIR/web-client" && npm run test:unit)
+  (
+    cd "$ROOT_DIR/web-client"
+    npm run build
+    npm run test:unit
+  )
 }
 
 function run_api_unit() {

@@ -41,10 +41,10 @@ describe('CreateSuccessPanel', () => {
     const user = userEvent.setup();
     const onCopyError = vi.fn();
     const writeText = vi.fn().mockRejectedValue(new Error('denied'));
-    vi.spyOn(clipboardUtils, 'getClipboard').mockReturnValue({ writeText } as Clipboard);
-    const originalExecCommand = (document as Document & { execCommand?: (command: string) => boolean }).execCommand;
-    const execCommandSpy = vi.fn().mockReturnValue(false);
-    (document as Document & { execCommand?: (command: string) => boolean }).execCommand = execCommandSpy;
+    vi.spyOn(clipboardUtils, 'getClipboard').mockReturnValue({ writeText } as unknown as Clipboard);
+    const documentWithExecCommand = document as Document & { execCommand?: (command: string) => boolean };
+    documentWithExecCommand.execCommand = vi.fn().mockReturnValue(false);
+    const execCommandSpy = vi.spyOn(documentWithExecCommand, 'execCommand');
 
     render(<CreateSuccessPanel result={baseResult} onCopyError={onCopyError} />);
 
@@ -56,11 +56,6 @@ describe('CreateSuccessPanel', () => {
     expect(writeText).toHaveBeenCalledWith(expectedUrl);
     expect(execCommandSpy).toHaveBeenCalledWith('copy');
 
-    if (originalExecCommand) {
-      (document as Document & { execCommand?: (command: string) => boolean }).execCommand = originalExecCommand;
-    } else {
-      delete (document as Document & { execCommand?: (command: string) => boolean }).execCommand;
-    }
     await waitFor(() => {
       expect(onCopyError).toHaveBeenCalledWith('링크 복사에 실패했습니다. 잠시 후 다시 시도해주세요.');
     });

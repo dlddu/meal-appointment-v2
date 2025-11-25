@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ViewAppointmentPage } from '../../pages/ViewAppointmentPage.js';
 import { API_BASE_URL, buildViewAppointmentResponse } from '../../features/view-appointment/__mocks__/viewAppointmentHandlers.js';
 import { renderWithQueryClient } from '../testUtils.js';
-import { getAppointment } from '../../features/view-appointment/api/getAppointment.js';
+import { getAppointment, type AppointmentApiError } from '../../features/view-appointment/api/getAppointment.js';
 
 vi.mock('../../features/view-appointment/api/getAppointment.js', () => ({
   getAppointment: vi.fn()
@@ -64,7 +64,7 @@ describe('ViewAppointmentPage', () => {
     const error = Object.assign(new Error('not found'), {
       status: 404,
       code: 'APPOINTMENT_NOT_FOUND'
-    } satisfies Partial<appointmentApi.AppointmentApiError>);
+    } satisfies Partial<AppointmentApiError>);
     getAppointmentMock.mockRejectedValue(error);
     renderPage('not-found');
 
@@ -75,7 +75,7 @@ describe('ViewAppointmentPage', () => {
 
   it('retries when temporary failures occur', async () => {
     getAppointmentMock
-      .mockRejectedValueOnce(Object.assign(new Error('temporary'), { status: 503 } as appointmentApi.AppointmentApiError))
+      .mockRejectedValueOnce(Object.assign(new Error('temporary'), { status: 503 } as AppointmentApiError))
       .mockResolvedValueOnce(buildViewAppointmentResponse());
 
     renderPage('retry-case');

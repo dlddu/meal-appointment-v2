@@ -12,7 +12,7 @@
       "package-lock.json",
       "web-client/package.json"
     ],
-    "summary": "Ensure the test runner auto-starts and bootstraps PostgreSQL, provision default API env templates, document the service startup command, and keep the database seeding script aligned with the current schema."
+    "summary": "Ensure the test runner auto-starts and bootstraps PostgreSQL, provision default API env templates, document the service startup command, verify the web-client build before running tests, and keep the database seeding script aligned with the current schema."
   },
   {
     "spec": "agent/specs/meal-appointment-create-appointment-backend-spec.md",

@@ -11,8 +11,20 @@ const slots = [
 ];
 
 const summaryMap = {
-  '2024-05-06#LUNCH': { slotKey: '2024-05-06#LUNCH', availableCount: 4, availabilityRatio: 0.8 },
-  '2024-05-07#DINNER': { slotKey: '2024-05-07#DINNER', availableCount: 1, availabilityRatio: 0.4 }
+  '2024-05-06#LUNCH': {
+    slotKey: '2024-05-06#LUNCH',
+    availableCount: 4,
+    availabilityRatio: 0.8,
+    date: '2024-05-06',
+    mealType: 'LUNCH'
+  },
+  '2024-05-07#DINNER': {
+    slotKey: '2024-05-07#DINNER',
+    availableCount: 1,
+    availabilityRatio: 0.4,
+    date: '2024-05-07',
+    mealType: 'DINNER'
+  }
 };
 
 describe('SlotGrid', () => {

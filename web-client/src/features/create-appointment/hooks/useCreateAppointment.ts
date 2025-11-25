@@ -126,6 +126,6 @@ export function useCreateAppointment(apiBaseUrl: string) {
     fieldErrors,
     bannerError,
     result,
-    isPending: mutation.isPending
+    isPending: mutation.isLoading
   };
 }

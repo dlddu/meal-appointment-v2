@@ -150,7 +150,7 @@ describe('CreateAppointmentPage', () => {
 
   it('invokes the clipboard API on success when the user copies the link', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
-    vi.spyOn(clipboardUtils, 'getClipboard').mockReturnValue({ writeText } as Clipboard);
+    vi.spyOn(clipboardUtils, 'getClipboard').mockReturnValue({ writeText } as unknown as Clipboard);
 
     renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
     const user = await fillValidForm(userEvent.setup());
@@ -172,13 +172,12 @@ describe('CreateAppointmentPage', () => {
 
   it('shows an error banner when clipboard permissions are denied', async () => {
     const writeText = vi.fn().mockRejectedValue(new Error('denied'));
-    vi.spyOn(clipboardUtils, 'getClipboard').mockReturnValue({ writeText } as Clipboard);
-    const originalExecCommand = (document as Document & { execCommand?: (command: string) => boolean }).execCommand;
-    (document as Document & { execCommand?: (command: string) => boolean }).execCommand = vi
-      .fn()
-      .mockImplementation(() => {
-        throw new Error('copy failed');
-      });
+    vi.spyOn(clipboardUtils, 'getClipboard').mockReturnValue({ writeText } as unknown as Clipboard);
+    const documentWithExecCommand = document as Document & { execCommand?: (command: string) => boolean };
+    documentWithExecCommand.execCommand = () => {
+      throw new Error('copy failed');
+    };
+    vi.spyOn(documentWithExecCommand, 'execCommand');
 
     renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
     const user = await fillValidForm(userEvent.setup());
@@ -194,11 +193,6 @@ describe('CreateAppointmentPage', () => {
 
     expect(await screen.findByText('링크 복사에 실패했습니다. 잠시 후 다시 시도해주세요.')).toBeInTheDocument();
 
-    if (originalExecCommand) {
-      (document as Document & { execCommand?: (command: string) => boolean }).execCommand = originalExecCommand;
-    } else {
-      delete (document as Document & { execCommand?: (command: string) => boolean }).execCommand;
-    }
   });
 
   it('keeps the template radio buttons accessible via keyboard', async () => {

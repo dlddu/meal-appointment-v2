@@ -89,10 +89,10 @@ describe('useParticipationFlow', () => {
   });
 
   it('maps server errors from the template fetch to user friendly codes', async () => {
-    const error = Object.assign(new Error('not found'), {
+    const error: ParticipationApiError = Object.assign(new Error('not found'), {
       code: 'APPOINTMENT_NOT_FOUND',
       status: 404
-    } satisfies ParticipationApiError);
+    });
     getTemplateMock.mockRejectedValue(error);
 
     const { result } = renderHook(
@@ -113,6 +113,7 @@ describe('useParticipationFlow', () => {
       nickname: '테스터'
     });
     submitAvailabilityMock.mockResolvedValue({
+      participantId: 'participant-1',
       selected: ['2024-05-06#LUNCH'],
       submittedAt: '2024-05-07T10:00:00.000Z',
       summary: templateResponse.aggregates

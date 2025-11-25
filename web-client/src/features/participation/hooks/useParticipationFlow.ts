@@ -225,7 +225,7 @@ export function useParticipationFlow({ appointmentId, apiBaseUrl, initialNicknam
     refetch,
     toasts,
     dismissToast,
-    isCreating: createMutation.isPending,
-    isSubmitting: submitMutation.isPending
+    isCreating: createMutation.isLoading,
+    isSubmitting: submitMutation.isLoading
   };
 }
