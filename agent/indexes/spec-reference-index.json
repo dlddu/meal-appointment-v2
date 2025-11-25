@@ -290,6 +290,26 @@
     "relationship": "consumes-backend-contract"
   },
   {
+    "source_spec": "agent/specs/meal-appointment-participation-frontend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-participation-frontend-implementation-spec.md",
+    "relationship": "tests-implementation"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-frontend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-participation-user-spec.md",
+    "relationship": "verifies-user-flow"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-frontend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-participation-uiux-spec.md",
+    "relationship": "verifies-uiux"
+  },
+  {
+    "source_spec": "agent/specs/meal-appointment-participation-frontend-test-spec.md",
+    "target_spec": "agent/specs/meal-appointment-architecture-spec.md",
+    "relationship": "verifies-architecture"
+  },
+  {
     "source_spec": "agent/specs/meal-appointment-participation-backend-implementation-spec.md",
     "target_spec": "agent/specs/meal-appointment-domain-spec.md",
     "relationship": "implements-domain-flow"
