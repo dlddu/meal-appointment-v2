@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+.env.test
+.env.e2e
+.env.example
+dist
+tests
+coverage
+playwright-report
+test-results
+*.md
+.git
+.gitignore
+mockups
