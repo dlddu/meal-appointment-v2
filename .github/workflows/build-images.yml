@@ -50,7 +50,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha,prefix={{branch}}-
+            type=sha
 
       - name: Build and push API Server image
         uses: docker/build-push-action@v5
@@ -94,7 +94,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha,prefix={{branch}}-
+            type=sha
 
       - name: Build and push Web Client image
         uses: docker/build-push-action@v5
