@@ -218,5 +218,17 @@
       "web-client/tests/e2e/participation.spec.ts"
     ],
     "summary": "Add Vitest coverage for participation utilities, components, hook, integration page shell, and extend the Playwright participation journey specification."
+  },
+  {
+    "spec": null,
+    "files": [
+      ".github/workflows/build-images.yml",
+      "api-server/Dockerfile",
+      "api-server/.dockerignore",
+      "web-client/Dockerfile",
+      "web-client/.dockerignore",
+      "web-client/nginx.conf"
+    ],
+    "summary": "Create GitHub Actions workflow for building container images of api-server and web-client. Includes multi-stage Dockerfiles optimized for workspace monorepo structure, with build and production stages. Images are pushed to GitHub Container Registry (ghcr.io) on main/develop branches and tagged releases."
   }
 ]
