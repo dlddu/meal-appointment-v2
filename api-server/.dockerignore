@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+.env.local
+.env.test
+.env.e2e
+.env.test.example
+.env.e2e.example
+dist
+tests
+coverage
+*.md
+.git
+.gitignore
