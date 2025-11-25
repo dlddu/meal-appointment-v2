@@ -32,8 +32,9 @@ COPY package*.json ./
 COPY api-server/package*.json ./api-server/
 COPY api-server/prisma ./api-server/prisma/
 
-# Install production dependencies
-RUN npm install --omit=dev --workspace=api-server
+# Install production dependencies (workspace requires web-client package.json)
+COPY web-client/package*.json ./web-client/
+RUN npm install --omit=dev
 
 # Copy built files and scripts from builder
 COPY --from=builder /app/api-server/dist ./api-server/dist
