@@ -220,15 +220,17 @@
     "summary": "Add Vitest coverage for participation utilities, components, hook, integration page shell, and extend the Playwright participation journey specification."
   },
   {
-    "spec": null,
+    "spec": "agent/specs/meal-appointment-architecture-spec.md",
     "files": [
       ".github/workflows/build-images.yml",
-      "api-server/Dockerfile",
       "api-server/.dockerignore",
-      "web-client/Dockerfile",
+      "api-server/Dockerfile",
+      "docs/DOCKER.md",
       "web-client/.dockerignore",
-      "web-client/nginx.conf"
+      "web-client/Dockerfile",
+      "web-client/nginx.conf",
+      "web-client/tests/docker-build.test.sh"
     ],
-    "summary": "Create GitHub Actions workflow for building container images of api-server and web-client. Includes multi-stage Dockerfiles optimized for workspace monorepo structure, with build and production stages. Images are pushed to GitHub Container Registry (ghcr.io) on main/develop branches and tagged releases."
+    "summary": "Create GitHub Actions workflow for building container images of api-server and web-client. Includes multi-stage Dockerfiles optimized for workspace monorepo structure, with build and production stages. Images are pushed to GitHub Container Registry (ghcr.io) on main/develop branches and tagged releases. The web-client Dockerfile accepts VITE_API_BASE_URL as a build argument to configure the API endpoint at build time, with a default value of http://localhost:4000/api for local development. Includes test script to verify Dockerfile configuration and comprehensive Docker build documentation."
   }
 ]
