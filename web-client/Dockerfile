@@ -19,6 +19,10 @@ COPY web-client/vite.config.ts ./web-client/
 COPY web-client/postcss.config.cjs ./web-client/
 COPY web-client/tailwind.config.ts ./web-client/
 
+# Set API base URL for production build
+ARG VITE_API_BASE_URL=/api
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
 # Build the web-client
 RUN npm run build --workspace=web-client
 

@@ -13,7 +13,7 @@ const defaultApiBaseUrl =
     ? `${window.location.origin}/api`
     : 'http://localhost:4000/api';
 
-export const API_BASE_URL: string = (globalThis as any).__API_BASE_URL__ ?? defaultApiBaseUrl;
+export const API_BASE_URL: string = __API_BASE_URL__ ?? defaultApiBaseUrl;
 
 export default function App() {
   return (
