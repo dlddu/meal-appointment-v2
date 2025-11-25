@@ -18,6 +18,10 @@ import { PrismaAvailabilityRepository } from './infrastructure/availability/avai
 import { InMemoryTemplateCache } from './infrastructure/templates/inMemoryTemplateCache';
 import { ViewAppointmentController } from './presentation/viewAppointment.controller';
 import { createAppointmentPublicRouter } from './presentation/appointmentPublic.router';
+import { TimeSlotTemplateService } from './application/participants/timeSlotTemplate.service';
+import { JoinParticipantService } from './application/participants/joinParticipant.service';
+import { SubmitResponsesService } from './application/participants/submitResponses.service';
+import { createParticipationRouter } from './presentation/participation.router';
 
 const app = express();
 
@@ -31,6 +35,7 @@ const templateRepository = new PrismaTemplateRepository();
 const participantRepository = new PrismaParticipantRepository();
 const availabilityRepository = new PrismaAvailabilityRepository();
 const templateCache = new InMemoryTemplateCache(5 * 60 * 1000, metrics);
+const timeSlotTemplateService = new TimeSlotTemplateService(templateRepository, templateCache, logger);
 const createAppointmentService = new CreateAppointmentService(
   appointmentRepository,
   shareUrlBuilder,
@@ -48,6 +53,23 @@ const viewAppointmentService = new ViewAppointmentService(
   metrics,
   logger
 );
+const joinParticipantService = new JoinParticipantService(
+  appointmentRepository,
+  participantRepository,
+  availabilityRepository,
+  metrics,
+  logger,
+  prisma
+);
+const submitResponsesService = new SubmitResponsesService(
+  appointmentRepository,
+  participantRepository,
+  availabilityRepository,
+  timeSlotTemplateService,
+  metrics,
+  logger,
+  prisma
+);
 const viewAppointmentController = new ViewAppointmentController(viewAppointmentService, metrics);
 
 app.locals.metrics = metrics;
@@ -56,6 +78,9 @@ app.locals.createAppointmentService = createAppointmentService;
 app.locals.viewAppointmentService = viewAppointmentService;
 app.locals.viewAppointmentController = viewAppointmentController;
 app.locals.templateCache = templateCache;
+app.locals.timeSlotTemplateService = timeSlotTemplateService;
+app.locals.joinParticipantService = joinParticipantService;
+app.locals.submitResponsesService = submitResponsesService;
 
 app.use(express.json());
 
@@ -71,6 +96,10 @@ app.use((req, res, next) => {
 app.use('/api', healthRouter);
 app.use('/api/appointments', createAppointmentsRouter({ createAppointmentService, activeTemplateService }));
 app.use('/api/appointments', createAppointmentPublicRouter({ viewAppointmentController }));
+app.use(
+  '/api/appointments',
+  createParticipationRouter({ joinParticipantService, submitResponsesService })
+);
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   if (err instanceof ApplicationError) {

@@ -22,6 +22,8 @@ function createService() {
     recordHttpRequest: jest.fn(),
     observeAppointmentViewDuration: jest.fn(),
     updateTemplateCacheHitRatio: jest.fn(),
+    observeParticipantJoin: jest.fn(),
+    observeResponseSubmission: jest.fn(),
     getRegistry: jest.fn(),
     reset: jest.fn()
   };

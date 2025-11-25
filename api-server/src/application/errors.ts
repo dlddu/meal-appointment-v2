@@ -28,6 +28,36 @@ export class ServiceUnavailableApplicationError extends ApplicationError {
   }
 }
 
+export class AppointmentNotFoundApplicationError extends ApplicationError {
+  constructor() {
+    super(404, 'APPOINTMENT_NOT_FOUND', 'Appointment not found');
+  }
+}
+
+export class NicknameTakenApplicationError extends ApplicationError {
+  constructor() {
+    super(409, 'NICKNAME_TAKEN', 'Nickname is already taken for this appointment');
+  }
+}
+
+export class InvalidPinApplicationError extends ApplicationError {
+  constructor() {
+    super(403, 'INVALID_PIN', 'Provided PIN is invalid');
+  }
+}
+
+export class ParticipantMismatchApplicationError extends ApplicationError {
+  constructor() {
+    super(403, 'PARTICIPANT_MISMATCH', 'Participant information does not match');
+  }
+}
+
+export class InvalidSlotApplicationError extends ApplicationError {
+  constructor(invalidSlots: string[]) {
+    super(400, 'INVALID_SLOT', 'One or more slots are invalid', { errors: invalidSlots.map((slot) => ({ field: 'availableSlots', message: slot })) });
+  }
+}
+
 export class InternalServerApplicationError extends ApplicationError {
   constructor() {
     super(500, 'INTERNAL_SERVER_ERROR', 'Internal server error');
