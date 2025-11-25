@@ -266,6 +266,20 @@
     ]
   },
   {
+    "spec_path": "agent/specs/meal-appointment-participation-frontend-test-spec.md",
+    "summary": "닉네임 기반 약속 참여 프런트엔드의 Vitest/msw/Playwright 테스트 전략과 시나리오를 정의한다.",
+    "keywords": [
+      "participation testing",
+      "frontend",
+      "vitest"
+    ],
+    "tags": [
+      "testing",
+      "v1",
+      "frontend"
+    ]
+  },
+  {
     "spec_path": "agent/specs/meal-appointment-participation-backend-implementation-spec.md",
     "summary": "닉네임 기반 약속 참여와 슬롯 가용성 제출/수정 백엔드 엔드포인트의 검증, 저장, 집계 구현 규칙을 정의한다.",
     "keywords": [
