@@ -1,5 +1,4 @@
 // Implemented for spec: agent/specs/meal-appointment-create-appointment-frontend-spec.md
-// Implemented for spec: agent/specs/meal-appointment-architecture-spec.md
 
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
@@ -8,12 +7,7 @@ import { ViewAppointmentPage } from './ViewAppointmentPage.js';
 
 const ParticipateAppointmentPage = lazy(() => import('./ParticipateAppointmentPage.js'));
 
-const defaultApiBaseUrl =
-  typeof window !== 'undefined' && import.meta.env.PROD
-    ? `${window.location.origin}/api`
-    : 'http://localhost:4000/api';
-
-export const API_BASE_URL: string = (globalThis as any).__API_BASE_URL__ ?? defaultApiBaseUrl;
+export const API_BASE_URL: string = (globalThis as any).__API_BASE_URL__ ?? 'http://localhost:4000/api';
 
 export default function App() {
   return (
