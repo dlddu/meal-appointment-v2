@@ -206,8 +206,17 @@
   {
     "spec": "agent/specs/meal-appointment-participation-frontend-test-spec.md",
     "files": [
+      "web-client/src/features/participation/__mocks__/participationHandlers.ts",
+      "web-client/src/features/participation/__tests__/ParticipantInfoCard.test.tsx",
+      "web-client/src/features/participation/__tests__/SlotGrid.test.tsx",
+      "web-client/src/features/participation/__tests__/WeekNavigator.test.tsx",
+      "web-client/src/features/participation/__tests__/slotKey.test.ts",
+      "web-client/src/features/participation/__tests__/storage.test.ts",
+      "web-client/src/features/participation/__tests__/strings.test.ts",
+      "web-client/src/features/participation/hooks/__tests__/useParticipationFlow.test.tsx",
+      "web-client/src/tests/participation/ParticipateAppointmentPage.test.tsx",
       "web-client/tests/e2e/participation.spec.ts"
     ],
-    "summary": "Add Playwright end-to-end coverage for joining an appointment and submitting availability on the participation page."
+    "summary": "Add Vitest coverage for participation utilities, components, hook, integration page shell, and extend the Playwright participation journey specification."
   }
 ]
