@@ -32,7 +32,8 @@ COPY package*.json ./
 COPY api-server/package*.json ./api-server/
 COPY api-server/prisma ./api-server/prisma/
 
-# Install production dependencies (workspace requires web-client package.json)
+# Install production dependencies
+# Note: npm workspaces require all workspace package.json files to be present for dependency resolution
 COPY web-client/package*.json ./web-client/
 RUN npm install --omit=dev
 
