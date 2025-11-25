@@ -188,7 +188,7 @@ export function useParticipationFlow({ appointmentId, apiBaseUrl, initialNicknam
       return;
     }
     submitMutation.mutate({ nickname: trimmed, pin: pin || undefined, availableSlots: selectedSlots });
-  }, [nickname, pin, selectedSlots, submitMutation]);
+  }, [nickname, pin, selectedSlots, submitMutation, participantId]);
 
   const dismissToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
