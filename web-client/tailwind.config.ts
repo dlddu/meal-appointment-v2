@@ -19,6 +19,18 @@ const config: Config = {
           border: 'var(--color-view-border)',
           warning: 'var(--color-view-warning)',
           error: 'var(--color-view-error)'
+        },
+        participation: {
+          primary: 'var(--participation-primary)',
+          secondary: 'var(--participation-secondary)',
+          neutral: {
+            50: 'var(--participation-neutral-50)',
+            100: 'var(--participation-neutral-100)'
+          },
+          border: 'var(--participation-border)',
+          success: 'var(--participation-success)',
+          warning: 'var(--participation-warning)',
+          error: 'var(--participation-error)'
         }
       },
       dropShadow: {

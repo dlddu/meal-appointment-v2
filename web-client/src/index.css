@@ -16,6 +16,14 @@
   --color-view-border: #e0e3e7;
   --color-view-warning: #f9a825;
   --color-view-error: #c62828;
+  --participation-primary: #2e7d32;
+  --participation-secondary: #1565c0;
+  --participation-neutral-100: #f5f7f8;
+  --participation-neutral-50: #eef1f4;
+  --participation-border: #e0e3e7;
+  --participation-success: #1b5e20;
+  --participation-warning: #f9a825;
+  --participation-error: #c62828;
 }
 
 * {
