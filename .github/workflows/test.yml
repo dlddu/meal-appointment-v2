@@ -2,55 +2,55 @@ name: Test
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   web-unit-tests:
     name: Web Client Unit Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run web client unit tests
         run: npm run test:web:unit
 
   api-unit-tests:
     name: API Server Unit Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run API server unit tests
         run: npm run test:api:unit
 
   api-integration-tests:
     name: API Server Integration Tests
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -65,36 +65,37 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Create .env.test file
         working-directory: api-server
         run: |
           if [ ! -f .env.test ]; then
             cp .env.test.example .env.test
           fi
-      
+
       - name: Run API server integration tests
         run: npm run test:api:integration
         env:
-          DATABASE_URL: postgresql://meal_user:meal_pass@localhost:5432/meal_appointment_test
+          DATABASE_URL: >-
+            postgresql://meal_user:meal_pass@localhost:5432/meal_appointment_test
 
   e2e-tests:
     name: End-to-End Tests
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -109,23 +110,23 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
-      
+
       - name: Create .env.e2e files
         run: |
           if [ ! -f api-server/.env.e2e ]; then
@@ -134,12 +135,13 @@ jobs:
           if [ ! -f web-client/.env.e2e ]; then
             cp web-client/.env.e2e web-client/.env.e2e
           fi
-      
+
       - name: Run end-to-end tests
         run: npm run test:web:e2e
         env:
-          DATABASE_URL: postgresql://meal_user:meal_pass@localhost:5432/meal_appointment_e2e
-      
+          DATABASE_URL: >-
+            postgresql://meal_user:meal_pass@localhost:5432/meal_appointment_e2e
+
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: always()
