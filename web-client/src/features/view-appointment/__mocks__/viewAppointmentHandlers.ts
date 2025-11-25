@@ -96,5 +96,5 @@ export function viewAppointmentTemporaryFailureHandler() {
 }
 
 export function viewAppointmentNetworkErrorHandler() {
-  return rest.get('*/appointments/:id', async (_req, res, ctx) => ctx.networkError('offline'));
+  return rest.get('*/appointments/:id', async (_req, res) => res.networkError('offline'));
 }

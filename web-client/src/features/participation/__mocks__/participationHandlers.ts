@@ -18,6 +18,12 @@ const defaultSlotSummaries: ParticipationSlotSummary[] = [
 ];
 
 export const templateResponse: ParticipationTemplateResponse = {
+  appointment: {
+    id: 'appointment-1',
+    summary: '점심 약속',
+    title: '점심 식사',
+    timeSlotTemplateId: 'template-1'
+  },
   template: {
     id: 'template-1',
     name: '기본 템플릿',
@@ -46,6 +52,7 @@ export function buildSubmitAvailabilityResponse(
   overrides: Partial<SubmitAvailabilityResponse> = {}
 ): SubmitAvailabilityResponse {
   return {
+    participantId: overrides.participantId ?? 'participant-1',
     selected: overrides.selected ?? ['2024-05-06#LUNCH', '2024-05-07#DINNER'],
     submittedAt: overrides.submittedAt ?? '2024-05-06T10:00:00.000Z',
     summary: {

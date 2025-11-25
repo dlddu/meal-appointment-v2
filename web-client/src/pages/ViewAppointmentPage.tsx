@@ -53,25 +53,23 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
       );
     }
 
-    if (query.errorState?.code === 'notFound') {
-      return (
-        <div className="bg-white rounded-2xl border border-[var(--color-view-border)] p-8 text-center space-y-4">
-          <h2 className="text-xl font-semibold text-slate-900">{viewAppointmentStrings.notFound}</h2>
-          <button
-            type="button"
-            onClick={handleRetry}
-            className="rounded-xl bg-[var(--color-view-primary)] px-4 py-2 text-sm font-semibold text-white"
-          >
-            {viewAppointmentStrings.retry}
-          </button>
-        </div>
-      );
-    }
+    if (query.errorState) {
+      if (query.errorState.code === 'notFound') {
+        return (
+          <div className="bg-white rounded-2xl border border-[var(--color-view-border)] p-8 text-center space-y-4">
+            <h2 className="text-xl font-semibold text-slate-900">{viewAppointmentStrings.notFound}</h2>
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="rounded-xl bg-[var(--color-view-primary)] px-4 py-2 text-sm font-semibold text-white"
+            >
+              {viewAppointmentStrings.retry}
+            </button>
+          </div>
+        );
+      }
 
-    if (query.errorState && query.errorState.code !== 'notFound') {
-      return (
-        <StatusMessage variant="error" label={query.errorState.message} onRetry={handleRetry} />
-      );
+      return <StatusMessage variant="error" label={query.errorState.message} onRetry={handleRetry} />;
     }
 
     if (!query.data) return null;

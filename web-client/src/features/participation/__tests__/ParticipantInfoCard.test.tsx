@@ -3,9 +3,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { ParticipantInfoCard } from '../components/ParticipantInfoCard.js';
+import { ParticipantInfoCard, type ParticipantCardProps } from '../components/ParticipantInfoCard.js';
 
-function setup(props = {}) {
+function setup(props: Partial<ParticipantCardProps> = {}) {
   const onChangeNickname = vi.fn();
   const onChangePin = vi.fn();
   const onTogglePersist = vi.fn();
