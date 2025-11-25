@@ -1,0 +1,14 @@
+node_modules
+dist
+.env*
+!.env.example
+npm-debug.log*
+coverage
+.DS_Store
+tests
+*.test.ts
+*.test.tsx
+vitest.config.ts
+vitest.setup.ts
+playwright.e2e.config.ts
+mockups
