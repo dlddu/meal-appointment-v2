@@ -1,5 +1,7 @@
 // Implemented for spec: agent/specs/meal-appointment-view-appointment-frontend-spec.md
 
+import { buildApiUrl } from '../../../utils/apiUrl.js';
+
 export type SlotSummary = {
   slotKey: string;
   date: string;
@@ -44,8 +46,7 @@ export async function getAppointment(
   appointmentId: string,
   apiBaseUrl: string
 ): Promise<AppointmentViewResponse> {
-  const normalizedBase = apiBaseUrl.endsWith('/') ? apiBaseUrl : `${apiBaseUrl}/`;
-  const url = new URL(`appointments/${appointmentId}`, normalizedBase);
+  const url = buildApiUrl(apiBaseUrl, `appointments/${appointmentId}`);
   let response: Response;
   try {
     response = await fetch(url);
