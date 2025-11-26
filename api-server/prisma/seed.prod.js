@@ -2,7 +2,18 @@
 // This wrapper allows the seed to work in production where we have compiled JS
 
 const { PrismaClient } = require('@prisma/client');
-const { demoTemplate } = require('../dist/domain/templateEngine');
+
+// Try to load the compiled templateEngine
+let demoTemplate;
+try {
+  const templateEngineModule = require('../dist/domain/templateEngine');
+  demoTemplate = templateEngineModule.demoTemplate;
+} catch (error) {
+  console.error('Failed to load templateEngine from dist/domain/templateEngine');
+  console.error('Make sure the application was built before running the seed');
+  console.error('Error:', error.message);
+  process.exit(1);
+}
 
 const prisma = new PrismaClient();
 
