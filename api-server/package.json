@@ -7,6 +7,7 @@
     "start": "node dist/server.js",
     "build": "tsc -p tsconfig.build.json",
     "start:e2e": "dotenv -e .env.e2e -- tsx src/server.ts",
+    "db:generate:e2e": "dotenv -e .env.e2e -- prisma generate --schema prisma/schema.prisma",
     "db:migrate:test": "dotenv -e .env.test -- prisma migrate deploy --schema prisma/schema.prisma",
     "db:migrate:e2e": "dotenv -e .env.e2e -- prisma migrate deploy --schema prisma/schema.prisma",
     "db:seed:e2e": "dotenv -e .env.e2e -- prisma db seed --schema prisma/schema.prisma",
