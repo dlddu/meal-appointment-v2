@@ -3,7 +3,8 @@
     "target": "ES2021",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "rootDir": "./src",
+    "baseUrl": ".",
+    "rootDir": ".",
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -12,5 +13,5 @@
     "types": ["node", "jest"],
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "prisma/seed.ts"]
 }
