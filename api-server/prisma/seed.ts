@@ -1,6 +1,6 @@
 // Implemented for spec: agent/specs/meal-appointment-local-testing-spec.md
 
-import { PrismaClient, type Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { demoTemplate } from '../src/domain/templateEngine';
 
 const prisma = new PrismaClient();
@@ -12,7 +12,7 @@ const defaultWeeklyTemplate = {
   rulesetJson: [
     { dayPattern: 'WEEKDAY', mealTypes: ['DINNER'] },
     { dayPattern: 'WEEKEND', mealTypes: ['LUNCH', 'DINNER'] }
-  ] satisfies Prisma.JsonValue
+  ]
 };
 
 async function main() {
@@ -31,13 +31,13 @@ async function main() {
     update: {
       name: demoTemplate.name,
       description: 'Seeded demo template',
-      rulesetJson: demoTemplate.rules as Prisma.JsonValue
+      rulesetJson: demoTemplate.rules as any
     },
     create: {
       id: demoTemplate.id,
       name: demoTemplate.name,
       description: 'Seeded demo template',
-      rulesetJson: demoTemplate.rules as Prisma.JsonValue
+      rulesetJson: demoTemplate.rules as any
     }
   });
 }
