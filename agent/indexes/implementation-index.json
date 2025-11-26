@@ -129,6 +129,7 @@
       "web-client/src/features/view-appointment/utils/buildParticipantMatrix.ts",
       "web-client/src/features/view-appointment/utils/formatSlot.ts",
       "web-client/src/features/view-appointment/utils/groupSlotSummaries.ts",
+      "web-client/src/utils/apiUrl.ts",
       "web-client/src/index.css",
       "web-client/src/pages/App.tsx",
       "web-client/src/pages/ViewAppointmentPage.tsx",
@@ -150,7 +151,8 @@
       "web-client/src/features/view-appointment/__tests__/StatusMessage.test.tsx",
       "web-client/src/features/view-appointment/__tests__/formatters.test.ts",
       "web-client/src/features/view-appointment/hooks/__tests__/useAppointmentQuery.test.tsx",
-      "web-client/src/tests/view-appointment/ViewAppointmentPage.test.tsx"
+      "web-client/src/tests/view-appointment/ViewAppointmentPage.test.tsx",
+      "web-client/src/utils/apiUrl.test.ts"
     ],
     "summary": "Add Playwright coverage for the appointment view flow, move E2E specs to the tests directory, align config/TS inclusion, seed the default template for slot summaries, and implement Vitest coverage for the view appointment utilities, components, hook, and page."
   },
@@ -188,6 +190,7 @@
       "web-client/src/features/participation/strings.ts",
       "web-client/src/features/participation/utils/slotKey.ts",
       "web-client/src/features/participation/utils/storage.ts",
+      "web-client/src/utils/apiUrl.ts",
       "web-client/src/features/participation/api/getAppointmentTemplate.ts",
       "web-client/src/features/participation/api/createParticipant.ts",
       "web-client/src/features/participation/api/submitAvailability.ts",
@@ -214,7 +217,8 @@
       "web-client/src/features/participation/__tests__/strings.test.ts",
       "web-client/src/features/participation/hooks/__tests__/useParticipationFlow.test.tsx",
       "web-client/src/tests/participation/ParticipateAppointmentPage.test.tsx",
-      "web-client/tests/e2e/participation.spec.ts"
+      "web-client/tests/e2e/participation.spec.ts",
+      "web-client/src/utils/apiUrl.test.ts"
     ],
     "summary": "Add Vitest coverage for participation utilities, components, hook, integration page shell, and extend the Playwright participation journey specification."
   },

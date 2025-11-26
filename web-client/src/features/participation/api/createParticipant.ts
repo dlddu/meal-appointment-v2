@@ -1,5 +1,6 @@
 // Implemented for spec: agent/specs/meal-appointment-participation-frontend-implementation-spec.md
 
+import { buildApiUrl } from '../../../utils/apiUrl.js';
 import type { ParticipationApiError } from './getAppointmentTemplate.js';
 
 export type CreateParticipantRequest = {
@@ -20,8 +21,7 @@ export async function createParticipant(
   payload: CreateParticipantRequest,
   apiBaseUrl: string
 ): Promise<CreateParticipantResponse> {
-  const normalizedBase = apiBaseUrl.endsWith('/') ? apiBaseUrl : `${apiBaseUrl}/`;
-  const url = new URL(`appointments/${appointmentId}/participants`, normalizedBase);
+  const url = buildApiUrl(apiBaseUrl, `appointments/${appointmentId}/participants`);
   let response: Response;
   try {
     response = await fetch(url, {
