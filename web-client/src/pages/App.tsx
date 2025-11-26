@@ -7,7 +7,7 @@ import { ViewAppointmentPage } from './ViewAppointmentPage.js';
 
 const ParticipateAppointmentPage = lazy(() => import('./ParticipateAppointmentPage.js'));
 
-export const API_BASE_URL: string = (globalThis as any).__API_BASE_URL__ ?? 'http://localhost:4000/api';
+export const API_BASE_URL: string = __API_BASE_URL__ ?? 'http://localhost:4000/api';
 
 export default function App() {
   return (

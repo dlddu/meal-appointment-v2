@@ -216,7 +216,7 @@ function ensure_db_connection() {
 function run_web_unit() {
   (
     cd "$ROOT_DIR/web-client"
-    npm run build
+    VITE_API_BASE_URL=/api npm run build
     npm run test:unit
   )
 }
