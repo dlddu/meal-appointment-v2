@@ -16,8 +16,6 @@ Previously, the web-client build was hardcoding `localhost:4000` as the API URL,
 3. It verifies that the API URL is not using localhost/127.0.0.1 (for production builds)
 4. It confirms the API URL matches the expected value (e.g., `/api` for relative path)
 
-**Note:** This test is automatically skipped if the `dist` directory doesn't exist. This allows unit tests to run in CI without requiring a build first.
-
 ### Running the Test
 ```bash
 # Build with the correct API URL first
@@ -25,16 +23,12 @@ VITE_API_BASE_URL=/api npm run build
 
 # Then run the test
 npm run test:unit -- tests/build/api-url.test.ts
-
-# Or run all unit tests (the build test will be skipped if dist doesn't exist)
-npm run test:unit
 ```
 
 ### Expected Behavior
-- **When dist doesn't exist**: Test suite is skipped (no failure)
-- **When built without VITE_API_BASE_URL**: Test fails (detects localhost usage)
-- **When built with `VITE_API_BASE_URL=/api`**: Test passes (uses relative path `/api`)
-- **When built with custom URL**: Test passes (uses the provided URL)
+- When built without VITE_API_BASE_URL: Uses default `http://localhost:4000/api`
+- When built with `VITE_API_BASE_URL=/api`: Uses relative path `/api`
+- When built with custom URL: Uses the provided URL
 
 ### Docker Build
 The Dockerfile has been updated to accept a build argument:

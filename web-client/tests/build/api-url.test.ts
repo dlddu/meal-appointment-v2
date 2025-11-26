@@ -1,17 +1,13 @@
 /**
  * Test to verify that the API URL is correctly configured in the build output
  * This test checks the bundled JavaScript files to ensure the API URL is not hardcoded to localhost
- * 
- * Note: This test suite is skipped if the dist directory doesn't exist.
- * To run this test, first build the application with:
- *   VITE_API_BASE_URL=/api npm run build
  */
 
 import { describe, it, expect, beforeAll } from 'vitest';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 
-describe.skipIf(!existsSync(join(__dirname, '../../dist')))('Build Output API URL Configuration', () => {
+describe('Build Output API URL Configuration', () => {
   const distDir = join(__dirname, '../../dist');
   const assetsDir = join(distDir, 'assets');
   
@@ -19,7 +15,7 @@ describe.skipIf(!existsSync(join(__dirname, '../../dist')))('Build Output API UR
   let foundApiUrl: string | null = null;
 
   beforeAll(() => {
-    // Check if dist directory exists (should be true since we skip if not)
+    // Check if dist directory exists
     if (!existsSync(distDir)) {
       throw new Error('dist directory does not exist. Please run build first.');
     }
