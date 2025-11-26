@@ -42,8 +42,9 @@ COPY api-server/prisma ./api-server/prisma/
 COPY web-client/package*.json ./web-client/
 RUN npm install --omit=dev
 
-# Install prisma CLI for migrations (needed at runtime)
-RUN npm install --workspace=api-server prisma@5.14.0
+# Prisma CLI is needed at runtime for migrations
+# Install it from the workspace dependencies to match package.json version
+RUN npm install --workspace=api-server prisma
 
 # Copy built files from builder
 COPY --from=builder /app/api-server/dist ./api-server/dist
