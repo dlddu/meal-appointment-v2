@@ -76,6 +76,14 @@ docker run -p 4000:4000 \
   ghcr.io/dlddu/meal-appointment-v2/api-server:main
 ```
 
+**참고**: API 서버 컨테이너는 시작 시 자동으로 다음 작업을 수행합니다:
+1. PostgreSQL 연결 대기 (최대 30초)
+2. Prisma 마이그레이션 실행 (`prisma migrate deploy`)
+3. 데이터베이스 시딩 (초기 템플릿 데이터 생성)
+4. API 서버 시작
+
+데이터베이스가 아직 준비되지 않았거나 마이그레이션이 필요한 경우, 컨테이너가 자동으로 처리합니다.
+
 ### Web Client
 
 ```bash
@@ -93,6 +101,8 @@ docker run -p 8080:80 \
 - `PORT`: 서버 포트 (기본값: 4000)
 - `NODE_ENV`: 실행 환경 (production/development)
 - `LOG_LEVEL`: 로그 레벨 (info/debug/error)
+- `OPENSSL_LIB_DIR`: OpenSSL 라이브러리 경로 (기본값: /usr/lib, Prisma 호환성을 위해 설정됨)
+- `OPENSSL_INCLUDE_DIR`: OpenSSL 헤더 경로 (기본값: /usr/include, Prisma 호환성을 위해 설정됨)
 
 ### Web Client
 
@@ -106,7 +116,13 @@ docker run -p 8080:80 \
 
 api-server/
   Dockerfile               # API 서버 Dockerfile
+  docker-entrypoint.sh     # 컨테이너 시작 스크립트 (마이그레이션 및 시딩 포함)
   .dockerignore           # Docker 빌드 제외 파일
+  prisma/
+    schema.prisma          # Prisma 스키마
+    seed.ts               # 개발용 시드 스크립트 (TypeScript)
+    seed.prod.js          # 프로덕션용 시드 스크립트 (JavaScript)
+    migrations/           # 데이터베이스 마이그레이션
 
 web-client/
   Dockerfile               # 웹 클라이언트 Dockerfile
@@ -121,12 +137,40 @@ web-client/
 - **Alpine Linux**: 경량 베이스 이미지 사용
 - **Workspace 지원**: npm workspace 모노레포 구조를 지원하는 빌드 구성
 - **멀티 플랫폼**: AMD64 및 ARM64 아키텍처 지원으로 다양한 환경에서 실행 가능
+- **자동 DB 초기화**: 컨테이너 시작 시 자동으로 데이터베이스 마이그레이션 및 시딩 수행
+- **OpenSSL 호환성**: Alpine Linux의 OpenSSL 3.x와 Prisma 간의 호환성 설정
 
 ## 주의사항
 
 - Pull Request에서는 이미지가 빌드되지만 레지스트리에 푸시되지 않습니다 (보안상의 이유)
 - `main`과 `develop` 브랜치의 푸시만 실제로 이미지를 레지스트리에 푸시합니다
 - 이미지를 pull하려면 GitHub 인증이 필요할 수 있습니다
+
+## 문제 해결
+
+### Prisma OpenSSL 경고
+
+컨테이너 로그에서 다음과 같은 경고가 나타날 수 있습니다:
+```
+prisma:warn Prisma failed to detect the libssl/openssl version to use
+```
+
+이는 무시해도 되는 경고입니다. Dockerfile에서 `OPENSSL_LIB_DIR` 및 `OPENSSL_INCLUDE_DIR` 환경 변수를 설정하여 Prisma가 Alpine Linux의 OpenSSL 3.x를 올바르게 사용하도록 구성되어 있습니다.
+
+### 데이터베이스 연결 실패
+
+컨테이너가 시작 시 PostgreSQL에 연결할 수 없는 경우, 최대 30초 동안 재시도합니다. 다음을 확인하세요:
+- `DATABASE_URL` 환경 변수가 올바르게 설정되었는지
+- PostgreSQL 서버가 실행 중인지
+- 네트워크 연결이 가능한지
+- 방화벽 규칙이 올바른지
+
+### 마이그레이션 실패
+
+마이그레이션이 실패하는 경우:
+1. 데이터베이스 사용자가 스키마 변경 권한을 가지고 있는지 확인
+2. 데이터베이스가 비어있거나 이전 마이그레이션 상태와 호환되는지 확인
+3. 필요한 경우 수동으로 `prisma migrate reset`을 실행하여 데이터베이스를 초기화
 
 ## 이미지 Pull
 
