@@ -7,13 +7,17 @@
     "start": "node dist/server.js",
     "build": "tsc -p tsconfig.build.json",
     "start:e2e": "dotenv -e .env.e2e -- tsx src/server.ts",
-    "db:migrate:test": "tsx scripts/apply-migrations.ts --env .env.test",
-    "db:migrate:e2e": "tsx scripts/apply-migrations.ts --env .env.e2e",
-    "db:seed:e2e": "tsx scripts/seed-database.ts --env .env.e2e",
+    "db:migrate:test": "dotenv -e .env.test -- prisma migrate deploy --schema prisma/schema.prisma",
+    "db:migrate:e2e": "dotenv -e .env.e2e -- prisma migrate deploy --schema prisma/schema.prisma",
+    "db:seed:e2e": "dotenv -e .env.e2e -- prisma db seed --schema prisma/schema.prisma",
     "test:unit": "jest --runInBand --testPathPattern tests/unit",
     "test:integration": "jest --runInBand --testPathPattern tests/integration"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
+    "@prisma/client": "5.14.0",
     "bcryptjs": "2.4.3",
     "cors": "2.8.5",
     "dotenv": "16.3.1",
@@ -24,8 +28,9 @@
     "zod": "3.22.4"
   },
   "devDependencies": {
-    "@types/cors": "2.8.17",
+    "prisma": "5.14.0",
     "@types/bcryptjs": "2.4.2",
+    "@types/cors": "2.8.17",
     "@types/express": "4.17.21",
     "@types/jest": "29.5.11",
     "@types/node": "20.11.19",
