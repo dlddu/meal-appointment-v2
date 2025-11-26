@@ -34,25 +34,35 @@ describe('Build Output API URL Configuration', () => {
       .join('\n');
 
     // Extract the API URL from the bundle
-    // We search for the actual URL patterns rather than relying on minified variable names
-    // Pattern 1: Old pattern with globalThis - __API_BASE_URL__??"http://..."
-    // Pattern 2: Direct string literals that look like API URLs
-    const patterns = [
-      /__API_BASE_URL__\?\?"([^"]+)"/,
-      /globalThis\.__API_BASE_URL__\?\?"([^"]+)"/,
-      /API_BASE_URL__:"([^"]+)"/,
-      // Match any variable assignment to a string that looks like an API path
-      // This is more robust than matching specific variable names like 'ki'
-      /=["'](\/(api|v\d+)[^"']*|https?:\/\/[^"']+\/api[^"']*)["']/,
+    // We look for strings that match API URL patterns
+    // This is more robust than looking for specific JavaScript patterns
+    const urlPatterns = [
+      // Match full URLs: http(s)://...
+      /["']https?:\/\/[^"']+["']/g,
+      // Match relative paths starting with /api or /v1, etc.
+      /["']\/(?:api|v\d+)[^"']*["']/g,
     ];
 
-    for (const pattern of patterns) {
-      const match = bundleContent.match(pattern);
-      if (match) {
-        foundApiUrl = match[1];
-        break;
+    const foundUrls: string[] = [];
+    for (const pattern of urlPatterns) {
+      const matches = bundleContent.matchAll(pattern);
+      for (const match of matches) {
+        // Remove quotes
+        const url = match[0].slice(1, -1);
+        // Filter out URLs that are clearly not API endpoints
+        if (!url.includes('localhost') && !url.includes('127.0.0.1')) {
+          foundUrls.push(url);
+        } else if (url.includes('localhost') || url.includes('127.0.0.1')) {
+          // Also track localhost URLs to detect the bug
+          foundUrls.push(url);
+        }
       }
     }
+
+    // Use the first URL that looks like an API endpoint
+    foundApiUrl = foundUrls.find(url => 
+      url.includes('/api') || url.includes('/v1') || url.match(/\/v\d+/)
+    ) || null;
   });
 
   it('should have built the application', () => {
