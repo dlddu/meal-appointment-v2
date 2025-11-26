@@ -8,7 +8,7 @@
       "api-server/.env.example",
       "api-server/.env.test.example",
       "api-server/.env.e2e.example",
-      "api-server/scripts/seed-database.ts",
+      "api-server/prisma/seed.ts",
       "package-lock.json",
       "web-client/package.json"
     ],
@@ -21,7 +21,6 @@
       "api-server/package.json",
       "api-server/prisma/schema.prisma",
       "api-server/prisma/migrations/20240301000000_update_appointments_table/migration.sql",
-      "api-server/scripts/apply-migrations.ts",
       "api-server/src/app.ts",
       "api-server/src/application/appointments/activeTemplateService.ts",
       "api-server/src/application/appointments/createAppointment.service.ts",
@@ -118,7 +117,7 @@
   {
     "spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
     "files": [
-      "api-server/scripts/seed-database.ts",
+      "api-server/prisma/seed.ts",
       "web-client/src/features/view-appointment/api/getAppointment.ts",
       "web-client/src/features/view-appointment/components/AppointmentOverviewCard.tsx",
       "web-client/src/features/view-appointment/components/ParticipantTabs.tsx",
@@ -140,7 +139,7 @@
   {
     "spec": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",
     "files": [
-      "api-server/scripts/seed-database.ts",
+      "api-server/prisma/seed.ts",
       "web-client/playwright.e2e.config.ts",
       "web-client/tests/e2e/create-appointment.spec.ts",
       "web-client/tests/e2e/view-appointment.spec.ts",

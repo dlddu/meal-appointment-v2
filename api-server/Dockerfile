@@ -15,7 +15,6 @@ RUN npm install
 # Copy api-server source code
 COPY api-server/src ./api-server/src
 COPY api-server/tsconfig*.json ./api-server/
-COPY api-server/scripts ./api-server/scripts
 
 # Build the api-server
 RUN npm run build --workspace=api-server
@@ -37,9 +36,8 @@ COPY api-server/prisma ./api-server/prisma/
 COPY web-client/package*.json ./web-client/
 RUN npm install --omit=dev
 
-# Copy built files and scripts from builder
+# Copy built files from builder
 COPY --from=builder /app/api-server/dist ./api-server/dist
-COPY --from=builder /app/api-server/scripts ./api-server/scripts
 
 # Expose port
 EXPOSE 4000

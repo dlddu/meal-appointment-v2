@@ -238,6 +238,7 @@ function run_e2e() {
   ensure_db_connection "$ROOT_DIR/api-server/.env.e2e"
   (
     cd "$ROOT_DIR/api-server"
+    npm run db:generate:e2e
     npm run db:migrate:e2e
     npm run db:seed:e2e
   )
