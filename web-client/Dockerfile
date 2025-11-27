@@ -12,7 +12,7 @@ COPY api-server/package*.json ./api-server/
 COPY web-client/package*.json ./web-client/
 
 # Install all workspace dependencies from root
-RUN npm install
+RUN npm ci
 
 # Copy web-client source code
 COPY web-client/src ./web-client/src

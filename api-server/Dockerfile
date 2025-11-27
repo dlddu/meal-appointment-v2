@@ -13,7 +13,7 @@ COPY web-client/package*.json ./web-client/
 COPY api-server/prisma ./api-server/prisma/
 
 # Install all workspace dependencies from root
-RUN npm install
+RUN npm ci
 
 # Copy api-server source code
 COPY api-server/src ./api-server/src
@@ -40,7 +40,7 @@ COPY api-server/prisma ./api-server/prisma/
 # Install production dependencies
 # Note: npm workspaces require all workspace package.json files to be present for dependency resolution
 COPY web-client/package*.json ./web-client/
-RUN npm install --omit=dev
+RUN npm ci --omit=dev
 
 # Copy built files from builder
 COPY --from=builder /app/api-server/dist ./api-server/dist
