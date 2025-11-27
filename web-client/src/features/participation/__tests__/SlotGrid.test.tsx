@@ -41,6 +41,9 @@ describe('SlotGrid', () => {
       />
     );
 
+    expect(screen.getByText('점심')).toBeInTheDocument();
+    expect(screen.getByLabelText('2024-05-07 저녁')).toBeInTheDocument();
+
     await userEvent.click(screen.getByTestId('slot-2024-05-06#LUNCH'));
     expect(onToggleSlot).toHaveBeenCalledWith('2024-05-06#LUNCH');
     expect(screen.getByLabelText('4/5')).toHaveClass('text-[var(--participation-success)]');
