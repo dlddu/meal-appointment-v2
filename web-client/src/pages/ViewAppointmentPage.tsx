@@ -39,7 +39,7 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
 
   const handleNavigateRespond = useCallback(() => {
     if (!appointmentId) return;
-    navigate(`/appointments/${appointmentId}/respond`);
+    navigate(`/appointments/${appointmentId}/participate`);
   }, [appointmentId, navigate]);
 
   const renderContent = () => {
