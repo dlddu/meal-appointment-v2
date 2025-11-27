@@ -109,7 +109,8 @@ describe('ViewAppointmentPage', () => {
       expect(screen.getByRole('heading', { level: 1, name: '점심 약속' })).toBeInTheDocument()
     );
 
-    await userEvent.click(screen.getByRole('button', { name: '공유 링크 복사' }));
+    const shareButtons = screen.getAllByRole('button', { name: '공유 링크 복사' });
+    await userEvent.click(shareButtons[0]);
 
     expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/appointments/${appointmentId}`);
     expect(screen.getByRole('status')).toHaveTextContent('링크를 복사했어요');

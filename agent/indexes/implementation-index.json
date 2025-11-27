@@ -234,6 +234,16 @@
     "summary": "Add an end-to-end Playwright journey that creates an appointment, views its details, and participates in it, including correcting the respond navigation to target the participation route so the flow completes."
   },
   {
+    "spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "files": [
+      "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+      "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
+      "agent/indexes/spec-index.json",
+      "web-client/src/features/view-appointment/components/ViewAppointmentAppBar.tsx"
+    ],
+    "summary": "Expose the share and respond actions directly on mobile in the view appointment app bar and align the UI/UX and frontend specifications accordingly."
+  },
+  {
     "spec": null,
     "files": [
       ".github/workflows/build-images.yml",
