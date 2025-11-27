@@ -82,7 +82,7 @@
   - `useAppointmentQuery`의 `error` 객체를 `ErrorBoundaryState`로 맵핑해 코드별 메시지 분기.
 - **데이터 없음**:
   - `participants.length === 0` → 응답자 탭 상단에 "아직 응답이 없습니다" 정보 배너.
-  - `slotSummaries` 길이 0 → 슬롯 영역에 템플릿 재시도 안내 메시지를 표시하고 `onRetry` 버튼을 노출.
+  - `slotSummaries` 길이 0 → 슬롯 영역에 "아직 슬롯 응답이 없습니다" 메시지를 표시하고 `onRetry` 버튼을 노출.
 
 ## 7. 상호작용과 접근성
 - `재시도` 버튼: `aria-label="데이터 다시 불러오기"`, 클릭 시 `refetch` 실행.

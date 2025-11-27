@@ -65,7 +65,7 @@ describe('SlotSummaryGrid', () => {
     const onRetry = vi.fn();
     render(<SlotSummaryGrid slotGroups={[]} participantCount={0} onRetry={onRetry} />);
 
-    expect(screen.getByText('템플릿을 다시 불러와 주세요')).toBeInTheDocument();
+    expect(screen.getByText('아직 슬롯 응답이 없습니다')).toBeInTheDocument();
     const retryButton = screen.getByRole('button', { name: '재시도' });
     retryButton.click();
     expect(onRetry).toHaveBeenCalled();
