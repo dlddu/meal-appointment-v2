@@ -56,7 +56,7 @@ describe('ViewAppointmentPage', () => {
     );
 
     renderPage('empty-case');
-    await waitFor(() => expect(screen.getByText('템플릿을 다시 불러와 주세요')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('아직 슬롯 응답이 없습니다')).toBeInTheDocument());
     expect(screen.getByText('아직 응답이 없습니다')).toBeInTheDocument();
   });
 
