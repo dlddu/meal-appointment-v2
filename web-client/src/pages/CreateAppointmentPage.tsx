@@ -38,6 +38,7 @@ export function CreateAppointmentPage({
   const titleRef = useRef<HTMLInputElement>(null);
   const summaryRef = useRef<HTMLTextAreaElement>(null);
   const templateGroupRef = useRef<HTMLDivElement>(null);
+  const successSectionRef = useRef<HTMLElement>(null);
   const lastServerErrorRef = useRef<string | null>(null);
 
   const clientErrors = useMemo(() => validateForm(state), [state]);
@@ -105,6 +106,13 @@ export function CreateAppointmentPage({
     const timer = window.setTimeout(() => setTemplateToast(null), 2500);
     return () => window.clearTimeout(timer);
   }, [templateToast]);
+
+  useEffect(() => {
+    if (!result) {
+      return;
+    }
+    successSectionRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  }, [result]);
 
   const handleTemplateUnavailable = () => {
     setTemplateToast(createAppointmentStrings.form.templateUnavailable);
@@ -205,7 +213,11 @@ export function CreateAppointmentPage({
           )}
         </section>
 
-        <section className="w-full max-w-[960px]" aria-labelledby="create-success-section">
+        <section
+          ref={successSectionRef}
+          className="w-full max-w-[960px]"
+          aria-labelledby="create-success-section"
+        >
           <h2 id="create-success-section" className="sr-only">
             {createAppointmentStrings.success.sectionTitle}
           </h2>

@@ -135,6 +135,27 @@ describe('CreateAppointmentPage', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
+  it('scrolls to the success section after an appointment is created', async () => {
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView as unknown as typeof originalScrollIntoView;
+
+    try {
+      renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
+      const user = await fillValidForm(userEvent.setup());
+
+      await act(async () => {
+        await user.click(screen.getByRole('button', { name: '약속 만들기' }));
+      });
+
+      await screen.findByText('링크가 준비되었어요!');
+
+      expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+    } finally {
+      Element.prototype.scrollIntoView = originalScrollIntoView;
+    }
+  });
+
   it('shows a retry banner for server outages and retries on demand', async () => {
     let attempt = 0;
     server.use(

@@ -251,6 +251,14 @@
     "summary": "Expose the share and respond actions directly on mobile in the view appointment app bar and align the UI/UX and frontend specifications accordingly."
   },
   {
+    "spec": "agent/specs/meal-appointment-create-appointment-frontend-spec.md",
+    "files": [
+      "web-client/src/pages/CreateAppointmentPage.tsx",
+      "web-client/src/tests/create-appointment/CreateAppointmentPage.test.tsx"
+    ],
+    "summary": "Scroll to the success section after a create-appointment submission succeeds so the confirmation panel is visible and validated by unit tests."
+  },
+  {
     "spec": null,
     "files": [
       ".github/workflows/build-images.yml",
