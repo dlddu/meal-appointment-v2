@@ -4,7 +4,7 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
-import { beforeAll, afterAll, afterEach, describe, expect, it, vi } from 'vitest';
+import { beforeAll, afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act } from 'react-dom/test-utils';
 import { CreateAppointmentPage } from '../../pages/CreateAppointmentPage.js';
 import {
@@ -17,7 +17,29 @@ import * as clipboardUtils from '../../features/create-appointment/utils/clipboa
 
 const server = setupServer(createAppointmentSuccessHandler());
 
+const templateOptionsFixture = [
+  {
+    id: 'default_weekly',
+    title: '주간 기본 템플릿',
+    description: '월~금, 11:30 - 13:30',
+    badge: '기본 제공'
+  },
+  {
+    id: 'weekend_brunch',
+    title: '주말 브런치 템플릿',
+    description: '토~일, 10:00 - 12:00',
+    badge: '준비 중',
+    disabled: true
+  }
+];
+
+const templateFetcher = vi.fn().mockResolvedValue(templateOptionsFixture);
+
 beforeAll(() => server.listen());
+beforeEach(() => {
+  templateFetcher.mockClear();
+  templateFetcher.mockResolvedValue(templateOptionsFixture);
+});
 afterEach(() => {
   server.resetHandlers();
   vi.restoreAllMocks();
@@ -28,14 +50,15 @@ async function fillValidForm(user = userEvent.setup()) {
   await act(async () => {
     await user.type(screen.getByLabelText('약속 제목'), '테스트 약속');
     await user.type(screen.getByLabelText('약속 소개'), '테스트 소개 문구입니다.');
-    await user.click(screen.getByRole('radio', { name: /주간 기본 템플릿/ }));
+    const templateRadio = await screen.findByRole('radio', { name: /주간 기본 템플릿/ });
+    await user.click(templateRadio);
   });
   return user;
 }
 
 describe('CreateAppointmentPage', () => {
   it('renders the hero copy and form controls on initial load', () => {
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
 
     expect(screen.getByRole('heading', { name: '함께 식사할 약속을 만들어보세요' })).toBeInTheDocument();
     expect(screen.getByLabelText('약속 제목')).toBeInTheDocument();
@@ -46,7 +69,7 @@ describe('CreateAppointmentPage', () => {
 
   it('validates required fields and focuses the first error', async () => {
     const user = userEvent.setup();
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
 
     await act(async () => {
       await user.click(screen.getByRole('button', { name: '약속 만들기' }));
@@ -59,7 +82,7 @@ describe('CreateAppointmentPage', () => {
 
   it('updates the summary counter when the limit is exceeded', async () => {
     const user = userEvent.setup();
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
 
     await act(async () => {
       await user.type(screen.getByLabelText('약속 소개'), 'a'.repeat(205));
@@ -69,7 +92,7 @@ describe('CreateAppointmentPage', () => {
   });
 
   it('submits successfully and keeps the existing input values', async () => {
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
     const user = await fillValidForm(userEvent.setup());
 
     await act(async () => {
@@ -83,7 +106,7 @@ describe('CreateAppointmentPage', () => {
   });
 
   it('hides the success panel when the user edits the form after success', async () => {
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
     const user = await fillValidForm(userEvent.setup());
     await act(async () => {
       await user.click(screen.getByRole('button', { name: '약속 만들기' }));
@@ -100,7 +123,7 @@ describe('CreateAppointmentPage', () => {
 
   it('displays field level errors returned by the server', async () => {
     server.use(createAppointmentValidationErrorHandler());
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
     const user = await fillValidForm(userEvent.setup());
 
     await act(async () => {
@@ -131,7 +154,7 @@ describe('CreateAppointmentPage', () => {
       })
     );
 
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
     const user = await fillValidForm(userEvent.setup());
 
     await act(async () => {
@@ -152,7 +175,7 @@ describe('CreateAppointmentPage', () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     vi.spyOn(clipboardUtils, 'getClipboard').mockReturnValue({ writeText } as unknown as Clipboard);
 
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
     const user = await fillValidForm(userEvent.setup());
 
     await act(async () => {
@@ -179,7 +202,7 @@ describe('CreateAppointmentPage', () => {
     };
     vi.spyOn(documentWithExecCommand, 'execCommand');
 
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
     const user = await fillValidForm(userEvent.setup());
     await act(async () => {
       await user.click(screen.getByRole('button', { name: '약속 만들기' }));
@@ -197,10 +220,10 @@ describe('CreateAppointmentPage', () => {
 
   it('keeps the template radio buttons accessible via keyboard', async () => {
     const user = userEvent.setup();
-    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} />);
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
 
     const templateGroup = screen.getByRole('radiogroup', { name: '시간 슬롯 템플릿 라디오 그룹' });
-    const firstTemplate = within(templateGroup).getByRole('radio', { name: /주간 기본 템플릿/ });
+    const firstTemplate = await within(templateGroup).findByRole('radio', { name: /주간 기본 템플릿/ });
 
     firstTemplate.focus();
     await act(async () => {

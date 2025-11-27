@@ -22,6 +22,8 @@ import { TimeSlotTemplateService } from './application/participants/timeSlotTemp
 import { JoinParticipantService } from './application/participants/joinParticipant.service';
 import { SubmitResponsesService } from './application/participants/submitResponses.service';
 import { createParticipationRouter } from './presentation/participation.router';
+import { ListTemplatesService } from './application/templates/listTemplates.service';
+import { createTemplatesRouter } from './presentation/templates.router';
 
 const app = express();
 
@@ -44,6 +46,7 @@ const createAppointmentService = new CreateAppointmentService(
   logger,
   prisma
 );
+const listTemplatesService = new ListTemplatesService(templateRepository, activeTemplateService);
 const viewAppointmentService = new ViewAppointmentService(
   appointmentRepository,
   templateRepository,
@@ -81,6 +84,7 @@ app.locals.templateCache = templateCache;
 app.locals.timeSlotTemplateService = timeSlotTemplateService;
 app.locals.joinParticipantService = joinParticipantService;
 app.locals.submitResponsesService = submitResponsesService;
+app.locals.listTemplatesService = listTemplatesService;
 
 app.use(express.json());
 
@@ -100,6 +104,7 @@ app.use(
   '/api/appointments',
   createParticipationRouter({ joinParticipantService, submitResponsesService })
 );
+app.use('/api/templates', createTemplatesRouter({ listTemplatesService }));
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   if (err instanceof ApplicationError) {

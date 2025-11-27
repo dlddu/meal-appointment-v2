@@ -60,17 +60,10 @@
 - 제출 시 클라이언트 검증 → 실패 항목에 `focus()` 호출. 성공 시 `useMutation.mutate` 실행.
 
 ## 6. 템플릿 선택 구현
-- 초기 활성 템플릿 리스트는 상수 배열로 선언한다.
-  ```ts
-  const TEMPLATE_OPTIONS = [{
-    id: 'default_weekly',
-    title: '주간 기본 템플릿',
-    description: '월~금, 11:30 - 13:30',
-    badge: '기본 제공',
-    disabled: false
-  }];
-  ```
-- 잠금 상태 템플릿은 UI/UX 목업처럼 표시하되 클릭 시 선택되지 않고 "준비 중" 토스트를 띄운다.
+- 활성 시간 슬롯 템플릿은 백엔드에서 제공하는 목록을 사용한다.
+  - `GET ${API_BASE_URL}/templates` 호출 후 응답 형식 `{ templates: Array<{ id: string; name: string; description?: string; status?: 'active' | 'inactive'; badge?: string }> }`를 파싱한다.
+  - `status === 'inactive'` 또는 `badge === '준비 중'` 항목은 선택 불가 상태로 렌더링하고 토스트 "아직 준비 중인 템플릿입니다."를 유지한다.
+  - React Query `useQuery`로 목록을 불러오고 실패 시 텍스트 에러 메시지("템플릿 목록을 불러오지 못했어요.")를 템플릿 섹션 내에 표시한다.
 - `TemplateOptionCard`는 키보드 조작을 지원하며 `role="radio"`/`aria-checked` 속성을 사용한다. 선택 시 `space` 또는 `enter`로 토글한다.
 
 ## 7. 제출, 로딩, 성공 처리 흐름

@@ -1,25 +1,39 @@
 // Implemented for spec: agent/specs/meal-appointment-create-appointment-frontend-spec.md
 
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { AppointmentForm } from '../features/create-appointment/components/AppointmentForm.js';
 import { CreateSuccessPanel } from '../features/create-appointment/components/CreateSuccessPanel.js';
-import { createAppointmentStrings, createAppointmentTemplateOptions } from '../features/create-appointment/strings.js';
+import { createAppointmentStrings } from '../features/create-appointment/strings.js';
 import { useCreateAppointment } from '../features/create-appointment/hooks/useCreateAppointment.js';
-import type { CreateAppointmentFormState } from '../features/create-appointment/types.js';
+import type { CreateAppointmentFormState, TemplateOption } from '../features/create-appointment/types.js';
 import { FieldErrors, formReducer, initialFormState, validateForm } from '../features/create-appointment/formReducer.js';
-
-const TEMPLATE_OPTIONS = createAppointmentTemplateOptions;
+import { fetchTemplateOptions } from '../features/create-appointment/api/getTemplates.js';
 
 type CreateAppointmentPageProps = {
   apiBaseUrl: string;
+  templateFetcher?: (apiBaseUrl: string) => Promise<TemplateOption[]>;
 };
 
-export function CreateAppointmentPage({ apiBaseUrl }: CreateAppointmentPageProps) {
+export function CreateAppointmentPage({
+  apiBaseUrl,
+  templateFetcher = fetchTemplateOptions
+}: CreateAppointmentPageProps) {
   const [state, dispatch] = useReducer(formReducer, initialFormState);
   const { submit, retry, clearError, resetResult, fieldErrors, bannerError, result, isPending } =
     useCreateAppointment(apiBaseUrl);
   const [templateToast, setTemplateToast] = useState<string | null>(null);
   const [bannerMessage, setBannerMessage] = useState<string | null>(null);
+
+  const {
+    data: templateOptions = [],
+    isLoading: isTemplateLoading,
+    isError: isTemplateError
+  } = useQuery({
+    queryKey: ['template-options', apiBaseUrl],
+    queryFn: () => templateFetcher(apiBaseUrl),
+    staleTime: 5 * 60 * 1000
+  });
 
   const titleRef = useRef<HTMLInputElement>(null);
   const summaryRef = useRef<HTMLTextAreaElement>(null);
@@ -175,7 +189,9 @@ export function CreateAppointmentPage({ apiBaseUrl }: CreateAppointmentPageProps
             onFieldChange={handleFieldChange}
             onBlur={handleBlur}
             onSubmit={handleSubmit}
-            templateOptions={TEMPLATE_OPTIONS}
+            templateOptions={templateOptions}
+            isTemplateLoading={isTemplateLoading}
+            isTemplateError={isTemplateError}
             isSubmitting={isPending}
             onTemplateUnavailable={handleTemplateUnavailable}
             titleRef={titleRef}

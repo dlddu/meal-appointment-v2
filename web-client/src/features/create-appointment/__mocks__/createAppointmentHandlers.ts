@@ -5,6 +5,23 @@ import type { CreateAppointmentSuccess } from '../types.js';
 
 export const API_BASE_URL = 'http://localhost:4000/api';
 
+const defaultTemplates = [
+  {
+    id: 'default_weekly',
+    name: '주간 기본 템플릿',
+    description: '월~금, 11:30 - 13:30',
+    status: 'active' as const,
+    badge: '기본 제공'
+  },
+  {
+    id: 'weekend_brunch',
+    name: '주말 브런치 템플릿',
+    description: '토~일, 10:00 - 12:00',
+    status: 'inactive' as const,
+    badge: '준비 중'
+  }
+];
+
 const defaultSuccess: CreateAppointmentSuccess = {
   appointmentId: 'mock-appointment',
   shareUrl: '/appointments/mock-appointment',
@@ -17,6 +34,12 @@ const defaultSuccess: CreateAppointmentSuccess = {
 export function createAppointmentSuccessHandler(overrides: Partial<CreateAppointmentSuccess> = {}) {
   return rest.post(`${API_BASE_URL}/appointments`, async (_req, res, ctx) => {
     return res(ctx.status(201), ctx.json({ ...defaultSuccess, ...overrides }));
+  });
+}
+
+export function createTemplateListHandler(templates = defaultTemplates) {
+  return rest.get(`${API_BASE_URL}/templates`, async (_req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({ templates }));
   });
 }
 
