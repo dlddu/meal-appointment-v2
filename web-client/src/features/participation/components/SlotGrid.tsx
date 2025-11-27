@@ -1,7 +1,7 @@
 // Implemented for spec: agent/specs/meal-appointment-participation-frontend-implementation-spec.md
 
 import { participationStrings } from '../strings.js';
-import type { SlotOption } from '../utils/slotKey.js';
+import { formatMealLabel, type SlotOption } from '../utils/slotKey.js';
 import type { ParticipationSlotSummary } from '../api/getAppointmentTemplate.js';
 
 type Props = {
@@ -34,13 +34,14 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
         const isSelected = selectedSlots.includes(slot.slotKey);
         const summary = summaryMap[slot.slotKey];
         const ratio = summary?.availabilityRatio ?? 0;
+        const mealLabel = formatMealLabel(slot.mealType);
         return (
           <button
             key={slot.slotKey}
             type="button"
             data-testid={`slot-${slot.slotKey}`}
             aria-pressed={isSelected}
-            aria-label={`${slot.dateLabel} ${slot.mealType}`}
+            aria-label={`${slot.dateLabel} ${mealLabel}`}
             disabled={!allowSelection}
             onClick={() => onToggleSlot(slot.slotKey)}
             className={`text-left rounded-2xl border px-4 py-3 shadow-[0_12px_24px_rgba(15,23,42,0.08)] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[rgba(46,125,50,0.4)] ${
@@ -52,7 +53,7 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-slate-500">{slot.dayLabel}</p>
-                <p className="text-lg font-semibold text-slate-900">{slot.mealType}</p>
+                <p className="text-lg font-semibold text-slate-900">{mealLabel}</p>
                 <p className="text-sm text-slate-700">{slot.dateLabel}</p>
               </div>
               <div

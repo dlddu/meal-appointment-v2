@@ -29,6 +29,7 @@ export interface TemplateRecord {
 
 export interface TemplateRepository {
   findById(id: string): Promise<TemplateRecord | null>;
+  findAll(): Promise<TemplateRecord[]>;
 }
 
 export class PrismaTemplateRepository implements TemplateRepository {
@@ -63,5 +64,30 @@ export class PrismaTemplateRepository implements TemplateRepository {
       description: row.description,
       rules: parsed.data
     };
+  }
+
+  async findAll(): Promise<TemplateRecord[]> {
+    const result = await prisma.query<{
+      id: string;
+      name: string;
+      description: string | null;
+      ruleset_json: unknown;
+    }>(
+      `
+        SELECT id, name, description, ruleset_json
+        FROM time_slot_templates
+      `
+    );
+
+    return result.rows.map((row) => {
+      const parsed = templateRulesSchema.safeParse(row.ruleset_json);
+
+      return {
+        id: row.id,
+        name: row.name,
+        description: row.description,
+        rules: parsed.success ? parsed.data : []
+      };
+    });
   }
 }

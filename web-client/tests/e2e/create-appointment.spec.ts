@@ -33,4 +33,19 @@ test.describe('약속 생성 플로우', () => {
     await copyButton.click();
     await expect(page.getByRole('status')).toContainText('복사되었습니다');
   });
+
+  test('템플릿을 백엔드에서 불러오고 비활성 템플릿을 안내한다', async ({ page }) => {
+    await page.goto('/create');
+
+    const activeTemplate = page.getByRole('radio', { name: '주간 기본 템플릿' });
+    await expect(activeTemplate).toBeVisible();
+    await expect(activeTemplate).toHaveAttribute('aria-disabled', 'false');
+
+    const inactiveTemplate = page.getByRole('radio', { name: 'Demo Template' });
+    await expect(inactiveTemplate).toBeVisible();
+    await expect(inactiveTemplate).toHaveAttribute('aria-disabled', 'true');
+
+    await inactiveTemplate.click({ force: true });
+    await expect(page.getByRole('status')).toContainText('아직 준비 중인 템플릿입니다.');
+  });
 });

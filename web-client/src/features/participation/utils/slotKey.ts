@@ -12,6 +12,16 @@ export type SlotOption = {
   mealType: string;
 };
 
+const mealLabels: Record<string, string> = {
+  BREAKFAST: '아침',
+  LUNCH: '점심',
+  DINNER: '저녁'
+};
+
+export function formatMealLabel(mealType: string): string {
+  return mealLabels[mealType] ?? mealType;
+}
+
 export function formatDateKey(date: Date): string {
   const utc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
   return utc.toISOString().slice(0, 10);

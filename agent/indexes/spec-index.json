@@ -141,11 +141,12 @@
   },
   {
     "spec_path": "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
-    "summary": "공개 약속 조회 화면의 레이아웃, 디자인 토큰, 컴포넌트 상태 패턴을 정의한 UI/UX 명세를 제공한다.",
+    "summary": "공개 약속 조회 화면의 레이아웃, 디자인 토큰, 상단 앱 바 액션 노출 방식까지 포함한 컴포넌트 상태 패턴을 정의한 UI/UX 명세를 제공한다.",
     "keywords": [
       "appointment view",
       "ui",
-      "ux"
+      "ux",
+      "app bar"
     ],
     "tags": [
       "feature",
@@ -155,11 +156,12 @@
   },
   {
     "spec_path": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
-    "summary": "약속 조회 페이지의 React 라우팅, 상태 훅, 컴포넌트 구조, 디자인 토큰 적용 및 테스트 지침을 정의한다.",
+    "summary": "약속 조회 페이지의 React 라우팅, 상태 훅, 컴포넌트 구조(모바일에서도 바로 노출되는 앱 바 액션 포함), 디자인 토큰 적용 및 테스트 지침을 정의한다.",
     "keywords": [
       "appointment view",
       "frontend",
-      "react query"
+      "react query",
+      "app bar"
     ],
     "tags": [
       "feature",

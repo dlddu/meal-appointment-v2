@@ -86,10 +86,13 @@
       "web-client/src/index.css",
       "web-client/src/pages/App.tsx",
       "web-client/src/pages/CreateAppointmentPage.tsx",
+      "api-server/src/application/templates/listTemplates.service.ts",
+      "api-server/src/presentation/templates.router.ts",
       "web-client/src/tests/availability-matrix.test.tsx",
-      "web-client/tailwind.config.ts"
+      "web-client/tailwind.config.ts",
+      "web-client/src/features/create-appointment/api/getTemplates.ts"
     ],
-    "summary": "Replace the demo matrix shell with the spec-compliant create-appointment experience, add Tailwind tokens and build tooling, wire up the React Query mutation hook, success panel, template cards, and enable API CORS so the SPA can talk to the backend."
+    "summary": "Replace the demo matrix shell with the spec-compliant create-appointment experience, add Tailwind tokens and build tooling, wire up the React Query mutation hook, success panel, template cards, and enable API CORS so the SPA can talk to the backend. Includes fetching template options from the API for selection."
   },
   {
     "spec": "agent/specs/meal-appointment-create-appointment-frontend-test-spec.md",
@@ -236,6 +239,16 @@
       "web-client/src/features/participation/components/ParticipantInfoCard.tsx"
     ],
     "summary": "Reposition the participation error message beneath the PIN field to match the inline validation guidance."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+    "files": [
+      "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
+      "agent/specs/meal-appointment-view-appointment-uiux-spec.md",
+      "agent/indexes/spec-index.json",
+      "web-client/src/features/view-appointment/components/ViewAppointmentAppBar.tsx"
+    ],
+    "summary": "Expose the share and respond actions directly on mobile in the view appointment app bar and align the UI/UX and frontend specifications accordingly."
   },
   {
     "spec": null,

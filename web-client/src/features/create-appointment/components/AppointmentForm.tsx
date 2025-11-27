@@ -13,6 +13,8 @@ type AppointmentFormProps = {
   onBlur: (field: 'title' | 'summary' | 'timeSlotTemplateId') => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   templateOptions: TemplateOption[];
+  isTemplateLoading: boolean;
+  isTemplateError: boolean;
   isSubmitting: boolean;
   onTemplateUnavailable: () => void;
   titleRef: React.RefObject<HTMLInputElement>;
@@ -27,6 +29,8 @@ export function AppointmentForm({
   onBlur,
   onSubmit,
   templateOptions,
+  isTemplateLoading,
+  isTemplateError,
   isSubmitting,
   onTemplateUnavailable,
   titleRef,
@@ -112,6 +116,21 @@ export function AppointmentForm({
           tabIndex={-1}
           ref={templateGroupRef}
         >
+          {isTemplateLoading && (
+            <p className="text-sm text-slate-500" role="status">
+              {createAppointmentStrings.form.templateLoading}
+            </p>
+          )}
+          {isTemplateError && !isTemplateLoading && (
+            <p className="text-sm text-error" role="alert">
+              {createAppointmentStrings.form.templateLoadError}
+            </p>
+          )}
+          {!isTemplateLoading && !isTemplateError && templateOptions.length === 0 && (
+            <p className="text-sm text-slate-500" role="status">
+              {createAppointmentStrings.form.templateEmpty}
+            </p>
+          )}
           {templateOptions.map((option) => (
             <TemplateOptionCard
               key={option.id}

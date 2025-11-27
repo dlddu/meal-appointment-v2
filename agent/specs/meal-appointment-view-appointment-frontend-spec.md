@@ -55,7 +55,7 @@
    - `handleRetry = () => refetch({ cancelRefetch: false })`를 `AppBar`와 오류 배너에 전달.
 2. **`ViewAppointmentAppBar`**
    - Props: `title`, `onRetry`, `onShare`, `onNavigateToRespond?`.
-   - 데스크톱에서는 `재시도`, `공유 링크 복사`, `응답 작성하기` 버튼을 나열. 모바일(`max-width: 640px`)에서는 `재시도`만 직접 노출하고 나머지는 `Menu` 토글.
+   - 데스크톱에서는 `재시도`, `공유 링크 복사`, `응답 작성하기` 버튼을 나열. 모바일(`max-width: 640px`)에서도 동일 버튼을 바로 노출하되, 줄바꿈/여백으로 겹치지 않도록 배치한다.
    - `onShare`는 현재 URL을 복사(`navigator.clipboard.writeText(window.location.href)`), 실패 시 토스트 오류.
 3. **`AppointmentOverviewCard`**
    - 제목, 설명, 생성/업데이트 메타, 템플릿 배지("템플릿 기반 슬롯만 표시").
