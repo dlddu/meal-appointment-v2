@@ -59,17 +59,24 @@ export function ParticipantInfoCard({
             maxLength={40}
           />
         </label>
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-800">
-          {participationStrings.pinLabel}
-          <input
-            value={pin}
-            onChange={(e) => onChangePin(e.target.value)}
-            type="password"
-            aria-label={participationStrings.pinLabel}
-            className="rounded-xl border border-[var(--participation-border)] px-3 py-2 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[rgba(21,101,192,0.45)]"
-            maxLength={12}
-          />
-        </label>
+        <div className="flex flex-col gap-2 text-sm font-semibold text-slate-800">
+          <label className="flex flex-col gap-2">
+            {participationStrings.pinLabel}
+            <input
+              value={pin}
+              onChange={(e) => onChangePin(e.target.value)}
+              type="password"
+              aria-label={participationStrings.pinLabel}
+              className="rounded-xl border border-[var(--participation-border)] px-3 py-2 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[rgba(21,101,192,0.45)]"
+              maxLength={12}
+            />
+          </label>
+          {errorMessage && (
+            <p className="text-sm font-normal text-[var(--participation-error)]" role="alert">
+              {errorMessage}
+            </p>
+          )}
+        </div>
       </div>
       <label className="flex items-center gap-3 text-sm text-slate-700">
         <input
@@ -84,11 +91,6 @@ export function ParticipantInfoCard({
           <p className="text-xs text-slate-500">{participationStrings.saveWarning}</p>
         </div>
       </label>
-      {errorMessage && (
-        <p className="text-sm text-[var(--participation-error)]" role="alert">
-          {errorMessage}
-        </p>
-      )}
       <div className="flex justify-end">
         <button
           type="button"

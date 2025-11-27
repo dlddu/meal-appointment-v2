@@ -234,6 +234,13 @@
     "summary": "Add an end-to-end Playwright journey that creates an appointment, views its details, and participates in it, including correcting the respond navigation to target the participation route so the flow completes."
   },
   {
+    "spec": "agent/specs/meal-appointment-participation-frontend-implementation-spec.md",
+    "files": [
+      "web-client/src/features/participation/components/ParticipantInfoCard.tsx"
+    ],
+    "summary": "Reposition the participation error message beneath the PIN field to match the inline validation guidance."
+  },
+  {
     "spec": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
     "files": [
       "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
