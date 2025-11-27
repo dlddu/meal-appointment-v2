@@ -138,7 +138,7 @@
       "web-client/src/pages/ViewAppointmentPage.tsx",
       "web-client/tailwind.config.ts"
     ],
-    "summary": "Implement the appointment view page with query hook, slot grouping utilities, responsive layout components, and design tokens aligned to the view-appointment specification while ensuring the backend seed includes the default template."
+    "summary": "Implement the appointment view page with query hook, slot grouping utilities, responsive layout components, and design tokens aligned to the view-appointment specification while ensuring the backend seed includes the default template. Updated slot empty-state copy to reflect missing responses."
   },
   {
     "spec": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",

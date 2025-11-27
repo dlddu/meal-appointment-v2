@@ -156,7 +156,7 @@
   },
   {
     "spec_path": "agent/specs/meal-appointment-view-appointment-frontend-spec.md",
-    "summary": "약속 조회 페이지의 React 라우팅, 상태 훅, 컴포넌트 구조(모바일에서도 바로 노출되는 앱 바 액션 포함), 디자인 토큰 적용 및 테스트 지침을 정의한다.",
+    "summary": "약속 조회 페이지의 React 라우팅, 상태 훅, 컴포넌트 구조(모바일에서도 바로 노출되는 앱 바 액션 포함), 디자인 토큰 적용 및 빈 상태 카피/테스트 지침을 정의한다.",
     "keywords": [
       "appointment view",
       "frontend",
