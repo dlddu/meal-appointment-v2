@@ -1,23 +1,5 @@
 // Implemented for spec: agent/specs/meal-appointment-create-appointment-frontend-spec.md
 
-import type { TemplateOption } from './types.js';
-
-export const createAppointmentTemplateOptions: TemplateOption[] = [
-  {
-    id: 'default_weekly',
-    title: '주간 기본 템플릿',
-    description: '월~금, 11:30 - 13:30',
-    badge: '기본 제공'
-  },
-  {
-    id: 'weekend_brunch',
-    title: '주말 브런치 템플릿',
-    description: '토~일, 10:00 - 12:00',
-    badge: '준비 중',
-    disabled: true
-  }
-];
-
 export const createAppointmentStrings = {
   hero: {
     title: '함께 식사할 약속을 만들어보세요',
@@ -36,6 +18,9 @@ export const createAppointmentStrings = {
     submit: '약속 만들기',
     submitting: '생성 중...',
     templateUnavailable: '아직 준비 중인 템플릿입니다.',
+    templateLoading: '템플릿 목록을 불러오는 중이에요.',
+    templateLoadError: '템플릿 목록을 불러오지 못했어요.',
+    templateEmpty: '선택할 수 있는 템플릿이 없습니다.',
     summaryRemaining: (count: number) => `남은 글자 수 ${count}자`,
     summaryExceeded: (count: number) => `${count}자를 초과했어요.`,
     titleRequired: '제목을 입력해주세요.',

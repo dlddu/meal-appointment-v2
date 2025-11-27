@@ -7,6 +7,7 @@ import type { InMemoryTemplateCache } from '../infrastructure/templates/inMemory
 import type { TimeSlotTemplateService } from '../application/participants/timeSlotTemplate.service';
 import type { JoinParticipantService } from '../application/participants/joinParticipant.service';
 import type { SubmitResponsesService } from '../application/participants/submitResponses.service';
+import type { ListTemplatesService } from '../application/templates/listTemplates.service';
 
 declare global {
   namespace Express {
@@ -25,6 +26,7 @@ declare global {
         timeSlotTemplateService: TimeSlotTemplateService;
         joinParticipantService: JoinParticipantService;
         submitResponsesService: SubmitResponsesService;
+        listTemplatesService: ListTemplatesService;
       };
     }
   }
