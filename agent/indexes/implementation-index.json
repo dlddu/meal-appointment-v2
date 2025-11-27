@@ -223,6 +223,14 @@
     "summary": "Add Vitest coverage for participation utilities, components, hook, integration page shell, and extend the Playwright participation journey specification."
   },
   {
+    "spec": "agent/specs/meal-appointment-local-testing-spec.md",
+    "files": [
+      "web-client/src/pages/ViewAppointmentPage.tsx",
+      "web-client/tests/e2e/full-flow.spec.ts"
+    ],
+    "summary": "Add an end-to-end Playwright journey that creates an appointment, views its details, and participates in it, including correcting the respond navigation to target the participation route so the flow completes."
+  },
+  {
     "spec": null,
     "files": [
       ".github/workflows/build-images.yml",
