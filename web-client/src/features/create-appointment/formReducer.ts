@@ -22,9 +22,6 @@ export const initialFormState: CreateAppointmentFormState = {
 };
 
 function sanitizeValue(field: 'title' | 'summary' | 'timeSlotTemplateId', value: string) {
-  if (field === 'title' || field === 'summary') {
-    return value.trim();
-  }
   return value;
 }
 

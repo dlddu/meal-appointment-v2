@@ -102,7 +102,7 @@ describe('CreateAppointmentPage', () => {
     expect(await screen.findByText('링크가 준비되었어요!')).toBeInTheDocument();
     const expectedUrl = new URL('/appointments/mock-appointment', window.location.origin).toString();
     expect(screen.getByTestId('share-url-text')).toHaveTextContent(expectedUrl);
-    expect(screen.getByLabelText('약속 제목')).toHaveValue('테스트약속');
+    expect(screen.getByLabelText('약속 제목')).toHaveValue('테스트 약속');
   });
 
   it('hides the success panel when the user edits the form after success', async () => {
