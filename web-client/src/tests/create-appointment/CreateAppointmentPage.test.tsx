@@ -102,7 +102,7 @@ describe('CreateAppointmentPage', () => {
     expect(await screen.findByText('링크가 준비되었어요!')).toBeInTheDocument();
     const expectedUrl = new URL('/appointments/mock-appointment', window.location.origin).toString();
     expect(screen.getByTestId('share-url-text')).toHaveTextContent(expectedUrl);
-    expect(screen.getByLabelText('약속 제목')).toHaveValue('테스트약속');
+    expect(screen.getByLabelText('약속 제목')).toHaveValue('테스트 약속');
   });
 
   it('hides the success panel when the user edits the form after success', async () => {
@@ -237,6 +237,45 @@ describe('CreateAppointmentPage', () => {
 
     expect(await screen.findByText('링크 복사에 실패했습니다. 잠시 후 다시 시도해주세요.')).toBeInTheDocument();
 
+  });
+
+  it('trims whitespace from title and summary when submitting the form', async () => {
+    let capturedPayload: unknown = null;
+    server.use(
+      rest.post(`${API_BASE_URL}/appointments`, async (req, res, ctx) => {
+        capturedPayload = await req.json();
+        return res(ctx.status(201), ctx.json({
+          appointmentId: 'trim-test',
+          shareUrl: '/appointments/trim-test',
+          title: '약속 제목',
+          summary: '설명',
+          timeSlotTemplateId: 'default_weekly',
+          createdAt: new Date().toISOString()
+        }));
+      })
+    );
+
+    const user = userEvent.setup();
+    renderWithQueryClient(<CreateAppointmentPage apiBaseUrl={API_BASE_URL} templateFetcher={templateFetcher} />);
+
+    await act(async () => {
+      await user.type(screen.getByLabelText('약속 제목'), '  앞뒤 공백  ');
+      await user.type(screen.getByLabelText('약속 소개'), '  설명도 공백  ');
+      const templateRadio = await screen.findByRole('radio', { name: /주간 기본 템플릿/ });
+      await user.click(templateRadio);
+    });
+
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: '약속 만들기' }));
+    });
+
+    await screen.findByText('링크가 준비되었어요!');
+
+    expect(capturedPayload).toEqual({
+      title: '앞뒤 공백',
+      summary: '설명도 공백',
+      timeSlotTemplateId: 'default_weekly'
+    });
   });
 
   it('keeps the template radio buttons accessible via keyboard', async () => {
