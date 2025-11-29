@@ -127,6 +127,7 @@
       "web-client/src/features/view-appointment/components/SlotSummaryGrid.tsx",
       "web-client/src/features/view-appointment/components/StatusMessage.tsx",
       "web-client/src/features/view-appointment/components/ViewAppointmentAppBar.tsx",
+      "web-client/src/features/view-appointment/components/ParticipationGuideCard.tsx",
       "web-client/src/features/view-appointment/hooks/useAppointmentQuery.ts",
       "web-client/src/features/view-appointment/strings.ts",
       "web-client/src/features/view-appointment/utils/buildParticipantMatrix.ts",
@@ -138,7 +139,7 @@
       "web-client/src/pages/ViewAppointmentPage.tsx",
       "web-client/tailwind.config.ts"
     ],
-    "summary": "Implement the appointment view page with query hook, slot grouping utilities, responsive layout components, and design tokens aligned to the view-appointment specification while ensuring the backend seed includes the default template. Updated slot empty-state copy to reflect missing responses."
+    "summary": "Implement the appointment view page with query hook, slot grouping utilities, responsive layout components, and design tokens aligned to the view-appointment specification while ensuring the backend seed includes the default template. Updated slot empty-state copy to reflect missing responses and added a dedicated participation callout so invitees see how to submit their availability."
   },
   {
     "spec": "agent/specs/meal-appointment-view-appointment-frontend-test-spec.md",

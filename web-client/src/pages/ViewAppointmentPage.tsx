@@ -7,6 +7,7 @@ import { AppointmentOverviewCard } from '../features/view-appointment/components
 import { SlotSummaryGrid } from '../features/view-appointment/components/SlotSummaryGrid.js';
 import { ParticipantTabs } from '../features/view-appointment/components/ParticipantTabs.js';
 import { StatusMessage } from '../features/view-appointment/components/StatusMessage.js';
+import { ParticipationGuideCard } from '../features/view-appointment/components/ParticipationGuideCard.js';
 import { useAppointmentQuery } from '../features/view-appointment/hooks/useAppointmentQuery.js';
 import { viewAppointmentStrings } from '../features/view-appointment/strings.js';
 import type { AppointmentViewResponse } from '../features/view-appointment/api/getAppointment.js';
@@ -75,12 +76,19 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
     if (!query.data) return null;
 
     return (
-      <AppointmentContent
-        data={query.data}
-        slotGroups={query.slotGroups}
-        participantMatrix={query.participantMatrix}
-        onRetry={handleRetry}
-      />
+      <>
+        <ParticipationGuideCard
+          appointmentTitle={query.data.appointment.title}
+          onNavigateToRespond={handleNavigateRespond}
+          onShare={handleShare}
+        />
+        <AppointmentContent
+          data={query.data}
+          slotGroups={query.slotGroups}
+          participantMatrix={query.participantMatrix}
+          onRetry={handleRetry}
+        />
+      </>
     );
   };
 
