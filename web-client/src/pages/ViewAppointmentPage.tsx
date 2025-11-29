@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ViewAppointmentAppBar } from '../features/view-appointment/components/ViewAppointmentAppBar.js';
 import { AppointmentOverviewCard } from '../features/view-appointment/components/AppointmentOverviewCard.js';
 import { SlotSummaryGrid } from '../features/view-appointment/components/SlotSummaryGrid.js';
 import { ParticipantTabs } from '../features/view-appointment/components/ParticipantTabs.js';
@@ -94,13 +93,6 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
 
   return (
     <div className={containerClass}>
-      <ViewAppointmentAppBar
-        title={query.data?.appointment.title ?? '약속 조회'}
-        isLoading={query.isLoading}
-        onRetry={handleRetry}
-        onShare={handleShare}
-        onNavigateToRespond={handleNavigateRespond}
-      />
       {toast && (
         <div className="rounded-xl bg-[var(--color-view-secondary)] px-4 py-3 text-sm font-semibold text-white" role="status" aria-live="polite">
           {toast}

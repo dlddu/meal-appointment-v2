@@ -33,7 +33,7 @@ describe('ViewAppointmentPage', () => {
   it('shows loading indicators on initial render', () => {
     getAppointmentMock.mockResolvedValue(buildViewAppointmentResponse());
     renderPage('loading-case');
-    expect(screen.getByText('불러오는 중...')).toBeInTheDocument();
+    expect(screen.getByText('약속 정보를 불러오는 중입니다.')).toBeInTheDocument();
   });
 
   it('renders slot cards and participant tabs after successful fetch', async () => {
