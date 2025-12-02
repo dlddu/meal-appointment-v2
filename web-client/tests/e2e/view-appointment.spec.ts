@@ -35,7 +35,7 @@ test.describe('약속 조회 플로우', () => {
     await page.goto(`/appointments/${appointmentId}`);
 
     await expect(page.getByRole('heading', { name: '약속 개요' })).toBeVisible();
-    await expect(page.getByText('슬롯 현황')).toBeVisible();
+    await expect(page.getByText('슬롯 현황', { exact: true })).toBeVisible();
 
     await page.getByRole('button', { name: '공유 링크 복사' }).click();
     await expect(page.getByRole('status')).toContainText('링크를 복사했어요');

@@ -34,7 +34,7 @@ test.describe('약속 생성-조회-참여 풀 플로우', () => {
 
     await page.goto(shareUrl!);
     await expect(page.getByRole('heading', { name: '약속 개요' })).toBeVisible();
-    await expect(page.getByText('슬롯 현황')).toBeVisible();
+    await expect(page.getByText('슬롯 현황', { exact: true })).toBeVisible();
 
     await page.getByRole('button', { name: '응답 작성하기' }).click();
 
