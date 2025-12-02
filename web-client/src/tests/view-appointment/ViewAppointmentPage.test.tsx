@@ -8,6 +8,7 @@ import { ViewAppointmentPage } from '../../pages/ViewAppointmentPage.js';
 import { API_BASE_URL, buildViewAppointmentResponse } from '../../features/view-appointment/__mocks__/viewAppointmentHandlers.js';
 import { renderWithQueryClient } from '../testUtils.js';
 import { getAppointment, type AppointmentApiError } from '../../features/view-appointment/api/getAppointment.js';
+import { viewAppointmentStrings } from '../../features/view-appointment/strings.js';
 
 vi.mock('../../features/view-appointment/api/getAppointment.js', () => ({
   getAppointment: vi.fn()
@@ -33,7 +34,7 @@ describe('ViewAppointmentPage', () => {
   it('shows loading indicators on initial render', () => {
     getAppointmentMock.mockResolvedValue(buildViewAppointmentResponse());
     renderPage('loading-case');
-    expect(screen.getByText('불러오는 중...')).toBeInTheDocument();
+    expect(screen.getByText(viewAppointmentStrings.loading)).toBeInTheDocument();
   });
 
   it('renders slot cards and participant tabs after successful fetch', async () => {
@@ -109,8 +110,8 @@ describe('ViewAppointmentPage', () => {
       expect(screen.getByRole('heading', { level: 1, name: '점심 약속' })).toBeInTheDocument()
     );
 
-    const shareButtons = screen.getAllByRole('button', { name: '공유 링크 복사' });
-    await userEvent.click(shareButtons[0]);
+    const shareButton = screen.getByRole('button', { name: '공유 링크 복사' });
+    await userEvent.click(shareButton);
 
     expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/appointments/${appointmentId}`);
     expect(screen.getByRole('status')).toHaveTextContent('링크를 복사했어요');
