@@ -2,11 +2,11 @@
 
 import { useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ViewAppointmentAppBar } from '../features/view-appointment/components/ViewAppointmentAppBar.js';
 import { AppointmentOverviewCard } from '../features/view-appointment/components/AppointmentOverviewCard.js';
 import { SlotSummaryGrid } from '../features/view-appointment/components/SlotSummaryGrid.js';
 import { ParticipantTabs } from '../features/view-appointment/components/ParticipantTabs.js';
 import { StatusMessage } from '../features/view-appointment/components/StatusMessage.js';
+import { ParticipationGuideCard } from '../features/view-appointment/components/ParticipationGuideCard.js';
 import { useAppointmentQuery } from '../features/view-appointment/hooks/useAppointmentQuery.js';
 import { viewAppointmentStrings } from '../features/view-appointment/strings.js';
 import type { AppointmentViewResponse } from '../features/view-appointment/api/getAppointment.js';
@@ -75,24 +75,24 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
     if (!query.data) return null;
 
     return (
-      <AppointmentContent
-        data={query.data}
-        slotGroups={query.slotGroups}
-        participantMatrix={query.participantMatrix}
-        onRetry={handleRetry}
-      />
+      <>
+        <ParticipationGuideCard
+          appointmentTitle={query.data.appointment.title}
+          onNavigateToRespond={handleNavigateRespond}
+          onShare={handleShare}
+        />
+        <AppointmentContent
+          data={query.data}
+          slotGroups={query.slotGroups}
+          participantMatrix={query.participantMatrix}
+          onRetry={handleRetry}
+        />
+      </>
     );
   };
 
   return (
     <div className={containerClass}>
-      <ViewAppointmentAppBar
-        title={query.data?.appointment.title ?? '약속 조회'}
-        isLoading={query.isLoading}
-        onRetry={handleRetry}
-        onShare={handleShare}
-        onNavigateToRespond={handleNavigateRespond}
-      />
       {toast && (
         <div className="rounded-xl bg-[var(--color-view-secondary)] px-4 py-3 text-sm font-semibold text-white" role="status" aria-live="polite">
           {toast}
