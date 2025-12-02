@@ -75,12 +75,19 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
     if (!query.data) return null;
 
     return (
-      <AppointmentContent
-        data={query.data}
-        slotGroups={query.slotGroups}
-        participantMatrix={query.participantMatrix}
-        onRetry={handleRetry}
-      />
+      <>
+        <ParticipationGuideCard
+          appointmentTitle={query.data.appointment.title}
+          onNavigateToRespond={handleNavigateRespond}
+          onShare={handleShare}
+        />
+        <AppointmentContent
+          data={query.data}
+          slotGroups={query.slotGroups}
+          participantMatrix={query.participantMatrix}
+          onRetry={handleRetry}
+        />
+      </>
     );
   };
 
@@ -91,11 +98,6 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
           {toast}
         </div>
       )}
-      <ParticipationGuideCard
-        appointmentTitle={query.data?.appointment.title}
-        onNavigateToRespond={handleNavigateRespond}
-        onShare={handleShare}
-      />
       {renderContent()}
     </div>
   );
