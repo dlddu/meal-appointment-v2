@@ -78,7 +78,7 @@ describe('SlotGrid', () => {
       />
     );
 
-    // Check day-of-week headers (월~일)
+    // Check day-of-week headers (일~토)
     expect(screen.getByText('월')).toBeInTheDocument();
     expect(screen.getByText('화')).toBeInTheDocument();
     expect(screen.getByText('수')).toBeInTheDocument();
