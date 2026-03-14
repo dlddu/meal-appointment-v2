@@ -1,5 +1,3 @@
-// Tests for spec: agent/specs/meal-appointment-view-appointment-frontend-test-spec.md
-
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { SlotSummaryGrid } from '../components/SlotSummaryGrid.js';
@@ -34,31 +32,33 @@ const slotGroups: SlotGroup[] = [
         ratioTone: 'warning',
         displayDate: '5월 3일',
         weekdayLabel: '금'
-      },
-      {
-        slotKey: '2024-05-03#BREAKFAST',
-        date: '2024-05-03',
-        mealType: 'BREAKFAST',
-        mealLabel: '아침',
-        availableCount: 0,
-        availabilityRatio: 0.35,
-        ratioLabel: '35% 응답',
-        ratioTone: 'error',
-        displayDate: '5월 3일',
-        weekdayLabel: '금'
       }
     ]
   }
 ];
 
 describe('SlotSummaryGrid', () => {
-  it('renders tone badges for each availability ratio threshold', () => {
+  it('renders weekly calendar with tone badges for each availability ratio threshold', () => {
     render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={3} />);
 
     const badges = screen.getAllByText(/% 응답/, { selector: 'span' });
     expect(badges[0].className).toContain('color-view-primary');
     expect(badges[1].className).toContain('color-view-warning');
-    expect(badges[2].className).toContain('8A1C1C');
+  });
+
+  it('renders meal row labels (점심, 저녁)', () => {
+    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={3} />);
+
+    expect(screen.getByText('점심')).toBeInTheDocument();
+    expect(screen.getByText('저녁')).toBeInTheDocument();
+  });
+
+  it('renders weekday column headers', () => {
+    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={3} />);
+
+    expect(screen.getByText('월')).toBeInTheDocument();
+    expect(screen.getByText('금')).toBeInTheDocument();
+    expect(screen.getByText('일')).toBeInTheDocument();
   });
 
   it('shows an empty message and retry button when there are no slot groups', () => {
