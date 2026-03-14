@@ -32,5 +32,6 @@ export const participationStrings = {
   slotAvailableCount: (available: number, total: number) => `${available}/${total}`,
   emptySlots: '선택할 수 있는 슬롯이 없습니다',
   mobileOverflowLabel: '메뉴',
-  backToStatus: '참여 현황'
+  backToStatus: '참여 현황',
+  startFirst: '먼저 참여 시작 버튼을 눌러주세요'
 };

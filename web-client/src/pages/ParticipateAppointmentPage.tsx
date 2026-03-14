@@ -1,6 +1,6 @@
 // Implemented for spec: agent/specs/meal-appointment-participation-frontend-implementation-spec.md
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ParticipationAppBar } from '../features/participation/components/ParticipationAppBar.js';
 import { ParticipantInfoCard } from '../features/participation/components/ParticipantInfoCard.js';
@@ -34,6 +34,12 @@ export function ParticipateAppointmentPage({ apiBaseUrl }: Props) {
 
   const slots = useMemo(() => buildSlotsForMonth(flow.templateRules, monthOffset), [flow.templateRules, monthOffset]);
   const isReady = Boolean(flow.participantId);
+
+  const handleDisabledSlotClick = useCallback(() => {
+    if (!isReady) {
+      flow.addToast(participationStrings.startFirst, 'warning');
+    }
+  }, [isReady, flow.addToast]);
 
   const renderBody = () => {
     if (flow.isLoading) {
@@ -94,6 +100,7 @@ export function ParticipateAppointmentPage({ apiBaseUrl }: Props) {
             selectedSlots={flow.selectedSlots}
             onToggleSlot={flow.toggleSlot}
             allowSelection={isReady}
+            onDisabledSlotClick={handleDisabledSlotClick}
             summaryMap={flow.summaryMap}
             participantCount={flow.participantCount}
           />
