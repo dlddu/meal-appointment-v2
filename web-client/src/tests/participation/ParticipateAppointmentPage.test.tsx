@@ -99,7 +99,7 @@ describe('ParticipateAppointmentPage', () => {
     expect(screen.getByRole('alert')).toBeInTheDocument();
   });
 
-  it('allows toggling help card and submitting availability when ready', async () => {
+  it('always shows help card and allows submitting availability when ready', async () => {
     const refetch = vi.fn();
     const handleSubmitAvailability = vi.fn();
     const dismissToast = vi.fn();
@@ -134,7 +134,6 @@ describe('ParticipateAppointmentPage', () => {
     });
 
     renderPage();
-    await userEvent.click(screen.getByRole('button', { name: participationStrings.helpCta }));
     expect(await screen.findByText(participationStrings.helpTitle)).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: participationStrings.submitAvailability }));

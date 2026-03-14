@@ -1,6 +1,6 @@
 // Implemented for spec: agent/specs/meal-appointment-participation-frontend-implementation-spec.md
 
-import { Suspense, lazy, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ParticipationAppBar } from '../features/participation/components/ParticipationAppBar.js';
 import { ParticipantInfoCard } from '../features/participation/components/ParticipantInfoCard.js';
@@ -13,16 +13,14 @@ import { participationStrings } from '../features/participation/strings.js';
 import { buildSlotsForWeek } from '../features/participation/utils/slotKey.js';
 import { useParticipationFlow } from '../features/participation/hooks/useParticipationFlow.js';
 
-const LazyHelp = lazy(async () => ({
-  default: function HelpCard() {
-    return (
-      <div className="rounded-2xl border border-[var(--participation-border)] bg-white p-4" role="status">
-        <h3 className="text-base font-semibold mb-2">{participationStrings.helpTitle}</h3>
-        <p className="text-sm text-slate-700">{participationStrings.helpDescription}</p>
-      </div>
-    );
-  }
-}));
+function HelpCard() {
+  return (
+    <div className="rounded-2xl border border-[var(--participation-border)] bg-white p-4" role="status">
+      <h3 className="text-base font-semibold mb-2">{participationStrings.helpTitle}</h3>
+      <p className="text-sm text-slate-700">{participationStrings.helpDescription}</p>
+    </div>
+  );
+}
 
 type Props = { apiBaseUrl: string };
 
@@ -32,7 +30,6 @@ const containerClass =
 export function ParticipateAppointmentPage({ apiBaseUrl }: Props) {
   const { appointmentId = '' } = useParams();
   const [weekOffset, setWeekOffset] = useState(0);
-  const [showHelp, setShowHelp] = useState(false);
   const flow = useParticipationFlow({ appointmentId, apiBaseUrl });
 
   const slots = useMemo(() => buildSlotsForWeek(flow.templateRules, weekOffset), [flow.templateRules, weekOffset]);
@@ -120,14 +117,8 @@ export function ParticipateAppointmentPage({ apiBaseUrl }: Props) {
       <ParticipationAppBar
         title={flow.summary?.participantCount ? `${participationStrings.pageTitle}` : participationStrings.pageTitle}
         isLoading={flow.isLoading}
-        onRetry={flow.refetch}
-        onHelp={() => setShowHelp((prev) => !prev)}
       />
-      {showHelp && (
-        <Suspense fallback={null}>
-          <LazyHelp />
-        </Suspense>
-      )}
+      <HelpCard />
       {renderBody()}
       <ToastStack toasts={flow.toasts} onDismiss={flow.dismissToast} />
     </div>
