@@ -7,10 +7,11 @@ import { StatusMessage } from './StatusMessage.js';
 
 type SlotSummaryGridProps = {
   slotGroups: SlotGroup[];
+  participantCount: number;
   onRetry?: () => void;
 };
 
-export function SlotSummaryGrid({ slotGroups, onRetry }: SlotSummaryGridProps) {
+export function SlotSummaryGrid({ slotGroups, participantCount, onRetry }: SlotSummaryGridProps) {
   const months = useMemo(() => buildMonthlyCalendar(slotGroups), [slotGroups]);
 
   if (slotGroups.length === 0) {
@@ -30,7 +31,7 @@ export function SlotSummaryGrid({ slotGroups, onRetry }: SlotSummaryGridProps) {
   return (
     <section>
       <div className="mb-3 text-sm font-semibold text-slate-700">슬롯 현황</div>
-      <MonthlyCalendar months={months} />
+      <MonthlyCalendar months={months} participantCount={participantCount} />
     </section>
   );
 }

@@ -4,12 +4,13 @@ import { MEAL_ROWS, getMealRowLabel } from '../utils/buildMonthlyCalendar.js';
 
 type MonthlyCalendarProps = {
   months: CalendarMonth[];
+  participantCount: number;
 };
 
 const toneStyles: Record<string, string> = {
-  primary: 'bg-[rgba(46,125,50,0.1)] text-[var(--color-view-primary)]',
-  warning: 'bg-[rgba(249,168,37,0.12)] text-[var(--color-view-warning)]',
-  error: 'bg-[rgba(198,40,40,0.08)] text-[#8A1C1C]'
+  primary: 'text-[var(--color-view-primary)]',
+  warning: 'text-[var(--color-view-warning)]',
+  error: 'text-[#8A1C1C]'
 };
 
 const DAY_HEADERS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -27,7 +28,7 @@ function dayNumberClass(dayIndex: number, isCurrentMonth: boolean): string {
   return 'text-[11px] font-semibold text-slate-700 mb-0.5 pl-0.5';
 }
 
-export function MonthlyCalendar({ months }: MonthlyCalendarProps) {
+export function MonthlyCalendar({ months, participantCount }: MonthlyCalendarProps) {
   const [monthIndex, setMonthIndex] = useState(0);
   const current = months[monthIndex];
   if (!current) return null;
@@ -120,13 +121,10 @@ export function MonthlyCalendar({ months }: MonthlyCalendarProps) {
                             <span className="font-medium text-slate-500">
                               {getMealRowLabel(meal)}
                             </span>
-                            <span className="text-sm font-semibold text-slate-900">
-                              {slot.availableCount}
-                            </span>
                             <span
-                              className={`inline-block rounded-full px-1.5 py-px text-[9px] font-semibold ${toneStyles[slot.ratioTone]}`}
+                              className={`font-semibold text-[10px] ${toneStyles[slot.ratioTone]}`}
                             >
-                              {slot.ratioLabel}
+                              {slot.availableCount}/{participantCount}
                             </span>
                           </div>
                         </div>
