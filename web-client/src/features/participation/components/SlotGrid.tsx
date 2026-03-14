@@ -69,6 +69,15 @@ function buildCalendarGrid(slots: SlotOption[]): CalendarCell[][] {
   return weeks;
 }
 
+const SHORT_MEAL_LABELS: Record<string, string> = {
+  LUNCH: '점',
+  DINNER: '저'
+};
+
+function getShortMealLabel(meal: string): string {
+  return SHORT_MEAL_LABELS[meal] ?? meal.charAt(0);
+}
+
 export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, summaryMap, participantCount }: Props) {
   const lookup = useMemo(() => buildSlotLookup(slots), [slots]);
   const weeks = useMemo(() => buildCalendarGrid(slots), [slots]);
@@ -83,11 +92,11 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
   }
 
   return (
-    <div className="rounded-2xl border border-[var(--participation-border)] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.08)]">
+    <div className="rounded-2xl border border-[var(--participation-border)] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.08)] overflow-hidden">
       {/* Day-of-week headers */}
       <div className="grid grid-cols-7 border-b border-[var(--participation-border)] bg-[var(--participation-neutral-50)]">
         {DAY_HEADERS.map((day) => (
-          <div key={day} className="px-1 py-2 text-center text-xs font-semibold text-slate-500">
+          <div key={day} className="py-2 text-center text-xs font-semibold text-slate-500">
             {day}
           </div>
         ))}
@@ -104,9 +113,9 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
               return (
                 <div
                   key={cell.date}
-                  className="min-h-[72px] border-r border-[var(--participation-border)] last:border-r-0 bg-slate-50 px-1 py-1"
+                  className="min-h-[68px] border-r border-[var(--participation-border)] last:border-r-0 bg-slate-50 p-1"
                 >
-                  <span className="text-xs text-slate-300">{cell.dayOfMonth}</span>
+                  <span className="text-[11px] text-slate-300">{cell.dayOfMonth}</span>
                 </div>
               );
             }
@@ -114,10 +123,10 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
             return (
               <div
                 key={cell.date}
-                className="min-h-[72px] border-r border-[var(--participation-border)] last:border-r-0 px-1 py-1"
+                className="min-h-[68px] border-r border-[var(--participation-border)] last:border-r-0 p-0.5 sm:p-1"
               >
-                <div className="text-xs font-semibold text-slate-700 mb-0.5">{cell.dayOfMonth}</div>
-                <div className="flex flex-col gap-0.5">
+                <div className="text-[11px] font-semibold text-slate-700 mb-0.5 pl-0.5">{cell.dayOfMonth}</div>
+                <div className="flex flex-col gap-px">
                   {MEAL_ROWS.map((meal) => {
                     const slotKey = `${cell.date}#${meal}`;
                     const slot = lookup.get(slotKey);
@@ -136,26 +145,28 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
                         aria-label={`${cell.date} ${formatMealLabel(meal)}`}
                         disabled={!allowSelection}
                         onClick={() => onToggleSlot(slotKey)}
-                        className={`w-full rounded-lg px-1 py-0.5 text-[10px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[rgba(46,125,50,0.4)] ${
+                        className={`w-full rounded py-0.5 text-[10px] leading-tight transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[rgba(46,125,50,0.4)] ${
                           isSelected
-                            ? 'bg-[rgba(46,125,50,0.12)] border border-[var(--participation-primary)]'
-                            : 'bg-transparent border border-transparent hover:bg-[var(--participation-neutral-50)]'
+                            ? 'bg-[rgba(46,125,50,0.12)] ring-1 ring-[var(--participation-primary)]'
+                            : 'bg-transparent hover:bg-[var(--participation-neutral-50)]'
                         } ${allowSelection ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'}`}
                       >
-                        <span className="flex items-center justify-center gap-0.5">
-                          {isSelected && (
-                            <span className="text-[var(--participation-primary)] text-xs leading-none">✓</span>
-                          )}
-                          <span className="font-medium text-slate-600">{getMealRowLabel(meal)}</span>
+                        <div className="flex flex-col items-center leading-none">
+                          <span className="flex items-center gap-px">
+                            {isSelected && (
+                              <span className="text-[var(--participation-primary)] text-[10px] leading-none">✓</span>
+                            )}
+                            <span className="font-medium text-slate-500">{getShortMealLabel(meal)}</span>
+                          </span>
                           <span
-                            className={`font-semibold ${badgeClass(ratio)}`}
+                            className={`font-semibold text-[10px] ${badgeClass(ratio)}`}
                             aria-label={participationStrings.slotAvailableCount(summary?.availableCount ?? 0, participantCount)}
                           >
                             <span role="status">
                               {participationStrings.slotAvailableCount(summary?.availableCount ?? 0, participantCount)}
                             </span>
                           </span>
-                        </span>
+                        </div>
                       </button>
                     );
                   })}

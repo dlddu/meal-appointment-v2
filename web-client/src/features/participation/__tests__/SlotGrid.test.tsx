@@ -87,9 +87,9 @@ describe('SlotGrid', () => {
     expect(screen.getByText('토')).toBeInTheDocument();
     expect(screen.getByText('일')).toBeInTheDocument();
 
-    // Check meal labels inside cells
-    expect(screen.getAllByText('점심').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('저녁').length).toBeGreaterThanOrEqual(1);
+    // Check short meal labels inside cells
+    expect(screen.getAllByText('점').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('저').length).toBeGreaterThanOrEqual(1);
   });
 
   it('shows check mark for selected slots', () => {
