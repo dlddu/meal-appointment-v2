@@ -52,4 +52,27 @@ describe('ParticipantTabs', () => {
     expect(screen.getByText('알파')).toBeInTheDocument();
     expect(screen.getByText('응답자가 없습니다')).toBeInTheDocument();
   });
+
+  it('collapses participant cards by default and expands on click', async () => {
+    const user = userEvent.setup();
+    render(<ParticipantTabs participants={participants} participantMatrix={participantMatrix} />);
+
+    // Default: collapsed — slot chips should not be visible
+    expect(screen.queryByText('5월 3일 점심')).not.toBeInTheDocument();
+
+    // Expand the card
+    const toggleButton = screen.getByRole('button', { name: /알파/ });
+    expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
+
+    await user.click(toggleButton);
+    expect(toggleButton).toHaveAttribute('aria-expanded', 'true');
+
+    // Slot chip should now be visible
+    expect(screen.getByText('5월 3일 점심')).toBeInTheDocument();
+
+    // Collapse again
+    await user.click(toggleButton);
+    expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByText('5월 3일 점심')).not.toBeInTheDocument();
+  });
 });
