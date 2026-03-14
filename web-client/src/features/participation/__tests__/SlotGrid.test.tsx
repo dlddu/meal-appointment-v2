@@ -7,6 +7,8 @@ import { SlotGrid } from '../components/SlotGrid.js';
 
 const slots = [
   { slotKey: '2024-05-06#LUNCH', dateLabel: '2024-05-06', dayLabel: '월요일', mealType: 'LUNCH' },
+  { slotKey: '2024-05-06#DINNER', dateLabel: '2024-05-06', dayLabel: '월요일', mealType: 'DINNER' },
+  { slotKey: '2024-05-07#LUNCH', dateLabel: '2024-05-07', dayLabel: '화요일', mealType: 'LUNCH' },
   { slotKey: '2024-05-07#DINNER', dateLabel: '2024-05-07', dayLabel: '화요일', mealType: 'DINNER' }
 ];
 
@@ -65,5 +67,46 @@ describe('SlotGrid', () => {
     await userEvent.click(screen.getByTestId('slot-2024-05-07#DINNER'));
     expect(onToggleSlot).not.toHaveBeenCalled();
     expect(screen.getByTestId('slot-2024-05-07#DINNER')).toHaveClass('cursor-not-allowed');
+  });
+
+  it('renders weekly calendar table with day columns and meal rows', () => {
+    render(
+      <SlotGrid
+        slots={slots}
+        selectedSlots={[]}
+        onToggleSlot={vi.fn()}
+        allowSelection
+        summaryMap={summaryMap}
+        participantCount={5}
+      />
+    );
+
+    // Check day headers
+    expect(screen.getByText('월요일')).toBeInTheDocument();
+    expect(screen.getByText('화요일')).toBeInTheDocument();
+
+    // Check meal row labels
+    expect(screen.getByText('점심')).toBeInTheDocument();
+    expect(screen.getByText('저녁')).toBeInTheDocument();
+
+    // Check table structure exists
+    expect(screen.getByRole('table')).toBeInTheDocument();
+  });
+
+  it('shows check mark for selected slots', () => {
+    render(
+      <SlotGrid
+        slots={slots}
+        selectedSlots={['2024-05-06#LUNCH']}
+        onToggleSlot={vi.fn()}
+        allowSelection
+        summaryMap={summaryMap}
+        participantCount={5}
+      />
+    );
+
+    const selectedButton = screen.getByTestId('slot-2024-05-06#LUNCH');
+    expect(selectedButton).toHaveAttribute('aria-pressed', 'true');
+    expect(selectedButton).toHaveTextContent('✓');
   });
 });
