@@ -52,7 +52,7 @@ jobs:
 
   api-integration-tests:
     name: API Server Integration Tests
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
 
     services:
       postgres:
@@ -97,7 +97,7 @@ jobs:
 
   e2e-tests:
     name: End-to-End Tests
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
 
     services:
       postgres:
