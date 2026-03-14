@@ -4,7 +4,6 @@ import { MEAL_ROWS, getMealRowLabel } from '../utils/buildWeeklyCalendar.js';
 
 type WeeklyCalendarProps = {
   weeks: CalendarWeek[];
-  participantCount: number;
 };
 
 const toneStyles: Record<string, string> = {
@@ -13,7 +12,7 @@ const toneStyles: Record<string, string> = {
   error: 'bg-[rgba(198,40,40,0.08)] text-[#8A1C1C]'
 };
 
-export function WeeklyCalendar({ weeks, participantCount }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ weeks }: WeeklyCalendarProps) {
   const [weekIndex, setWeekIndex] = useState(0);
   const week = weeks[weekIndex];
   if (!week) return null;
@@ -47,13 +46,6 @@ export function WeeklyCalendar({ weeks, participantCount }: WeeklyCalendarProps)
           </button>
         </div>
       )}
-
-      {/* Participant count badge */}
-      <div className="flex justify-end">
-        <span className="rounded-lg bg-[var(--color-view-neutral)] px-3 py-1 text-sm font-semibold text-slate-700">
-          응답 {participantCount}
-        </span>
-      </div>
 
       {/* Calendar table */}
       <div className="overflow-x-auto rounded-2xl border border-[var(--color-view-border)] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.08)]">
