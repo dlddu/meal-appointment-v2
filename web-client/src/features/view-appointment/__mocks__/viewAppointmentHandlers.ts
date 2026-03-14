@@ -25,35 +25,35 @@ const baseResponse: AppointmentViewResponse = {
       participantId: 'p1',
       nickname: '알파',
       submittedAt: '2024-05-02T10:00:00.000Z',
-      responses: ['2024-05-03#LUNCH', '2024-05-04#LUNCH']
+      responses: ['2099-05-03#LUNCH', '2099-05-04#LUNCH']
     },
     {
       participantId: 'p2',
       nickname: '베타',
       submittedAt: '2024-05-02T11:00:00.000Z',
-      responses: ['2024-05-03#LUNCH']
+      responses: ['2099-05-03#LUNCH']
     }
   ],
   aggregates: {
     participantCount: 2,
     slotSummaries: [
       {
-        slotKey: '2024-05-03#LUNCH',
-        date: '2024-05-03',
+        slotKey: '2099-05-03#LUNCH',
+        date: '2099-05-03',
         mealType: 'LUNCH',
         availableCount: 2,
         availabilityRatio: 1
       },
       {
-        slotKey: '2024-05-04#LUNCH',
-        date: '2024-05-04',
+        slotKey: '2099-05-04#LUNCH',
+        date: '2099-05-04',
         mealType: 'LUNCH',
         availableCount: 1,
         availabilityRatio: 0.5
       },
       {
-        slotKey: '2024-05-05#LUNCH',
-        date: '2024-05-05',
+        slotKey: '2099-05-05#LUNCH',
+        date: '2099-05-05',
         mealType: 'LUNCH',
         availableCount: 0,
         availabilityRatio: 0.2

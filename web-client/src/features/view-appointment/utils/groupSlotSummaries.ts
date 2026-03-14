@@ -11,9 +11,10 @@ export type SlotGroup = {
 };
 
 export function groupSlotSummaries(slotSummaries: SlotSummary[]): SlotGroup[] {
+  const today = new Date().toISOString().slice(0, 10);
   const grouped = new Map<string, SlotGroup>();
 
-  slotSummaries.forEach((summary) => {
+  slotSummaries.filter((s) => s.date >= today).forEach((summary) => {
     const formatted = formatSlotSummary(summary);
     const existing = grouped.get(summary.date);
     if (!existing) {
