@@ -12,9 +12,6 @@ export function ParticipationGuideCard({ appointmentTitle, onNavigateToRespond, 
   return (
     <section className="flex flex-col gap-4 rounded-2xl border border-[var(--color-view-border)] bg-white p-6 shadow-[0_12px_24px_rgba(15,23,42,0.08)] sm:flex-row sm:items-center sm:justify-between sm:gap-6">
       <div className="flex flex-1 items-start gap-3">
-        <div className="mt-1 grid h-10 w-10 place-items-center rounded-full bg-[var(--color-view-primary)] text-sm font-semibold uppercase tracking-wide text-white">
-          참여
-        </div>
         <div className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-view-secondary)]">
             {viewAppointmentStrings.participationLabel}
