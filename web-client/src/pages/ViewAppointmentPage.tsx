@@ -122,7 +122,6 @@ function AppointmentContent({ data, slotGroups, participantMatrix, onRetry }: Ap
       <ParticipantTabs participants={data.participants} participantMatrix={participantMatrix} />
       <SlotSummaryGrid
         slotGroups={slotGroups}
-        participantCount={data.aggregates.participantCount}
         onRetry={onRetry}
       />
     </div>

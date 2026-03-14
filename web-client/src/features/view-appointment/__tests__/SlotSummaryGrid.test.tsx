@@ -39,7 +39,7 @@ const slotGroups: SlotGroup[] = [
 
 describe('SlotSummaryGrid', () => {
   it('renders weekly calendar with tone badges for each availability ratio threshold', () => {
-    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={3} />);
+    render(<SlotSummaryGrid slotGroups={slotGroups} />);
 
     const badges = screen.getAllByText(/% 응답/, { selector: 'span' });
     expect(badges[0].className).toContain('color-view-primary');
@@ -47,14 +47,14 @@ describe('SlotSummaryGrid', () => {
   });
 
   it('renders meal row labels (점심, 저녁)', () => {
-    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={3} />);
+    render(<SlotSummaryGrid slotGroups={slotGroups} />);
 
     expect(screen.getByText('점심')).toBeInTheDocument();
     expect(screen.getByText('저녁')).toBeInTheDocument();
   });
 
   it('renders weekday column headers', () => {
-    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={3} />);
+    render(<SlotSummaryGrid slotGroups={slotGroups} />);
 
     expect(screen.getByText('월')).toBeInTheDocument();
     expect(screen.getByText('금')).toBeInTheDocument();
@@ -63,7 +63,7 @@ describe('SlotSummaryGrid', () => {
 
   it('shows an empty message and retry button when there are no slot groups', () => {
     const onRetry = vi.fn();
-    render(<SlotSummaryGrid slotGroups={[]} participantCount={0} onRetry={onRetry} />);
+    render(<SlotSummaryGrid slotGroups={[]} onRetry={onRetry} />);
 
     expect(screen.getByText('아직 슬롯 응답이 없습니다')).toBeInTheDocument();
     const retryButton = screen.getByRole('button', { name: '재시도' });
