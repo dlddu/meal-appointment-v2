@@ -39,7 +39,8 @@ export const createAppointmentStrings = {
     copiedToast: '클립보드에 복사되었습니다.',
     copyFailed: '링크 복사에 실패했습니다. 잠시 후 다시 시도해주세요.',
     viewDetails: '약속 세부 정보 열기',
-    shareLabel: '공유 링크'
+    shareLabel: '공유 링크',
+    createNew: '새 약속 생성하기'
   },
   banners: {
     serverError: '일시적인 문제로 약속을 생성할 수 없습니다. 잠시 후 다시 시도하세요.',

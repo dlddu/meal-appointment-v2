@@ -8,9 +8,10 @@ import { getClipboard } from '../utils/clipboard.js';
 type CreateSuccessPanelProps = {
   result: CreateAppointmentResult | null;
   onCopyError: (message: string) => void;
+  onCreateNew?: () => void;
 };
 
-export function CreateSuccessPanel({ result, onCopyError }: CreateSuccessPanelProps) {
+export function CreateSuccessPanel({ result, onCopyError, onCreateNew }: CreateSuccessPanelProps) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [copying, setCopying] = useState(false);
 
@@ -105,6 +106,13 @@ export function CreateSuccessPanel({ result, onCopyError }: CreateSuccessPanelPr
               disabled={copying}
             >
               {copying ? createAppointmentStrings.success.copying : createAppointmentStrings.success.copyButton}
+            </button>
+            <button
+              type="button"
+              className="h-[48px] px-5 bg-primary text-white rounded-[12px] font-semibold shadow-[0_8px_16px_rgba(42,111,151,0.32)] hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              onClick={onCreateNew}
+            >
+              {createAppointmentStrings.success.createNew}
             </button>
             <a
               href={result ? absoluteShareUrl : '#'}

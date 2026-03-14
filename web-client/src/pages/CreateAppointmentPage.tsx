@@ -221,7 +221,12 @@ export function CreateAppointmentPage({
           <h2 id="create-success-section" className="sr-only">
             {createAppointmentStrings.success.sectionTitle}
           </h2>
-          <CreateSuccessPanel result={result} onCopyError={handleCopyError} />
+          <CreateSuccessPanel result={result} onCopyError={handleCopyError} onCreateNew={() => {
+            resetResult();
+            dispatch({ type: 'RESET' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            titleRef.current?.focus();
+          }} />
         </section>
 
         <footer className="text-center text-slate-500 text-sm">

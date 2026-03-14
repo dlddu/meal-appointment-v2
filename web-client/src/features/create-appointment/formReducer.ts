@@ -6,7 +6,8 @@ import { createAppointmentStrings } from './strings.js';
 export type FormAction =
   | { type: 'UPDATE_FIELD'; field: 'title' | 'summary' | 'timeSlotTemplateId'; value: string }
   | { type: 'SET_TOUCHED'; field: 'title' | 'summary' | 'template'; value: boolean }
-  | { type: 'TOUCH_ALL' };
+  | { type: 'TOUCH_ALL' }
+  | { type: 'RESET' };
 
 export type FieldErrors = Partial<Record<'title' | 'summary' | 'timeSlotTemplateId', string>>;
 
@@ -53,6 +54,8 @@ export function formReducer(state: CreateAppointmentFormState, action: FormActio
           template: true
         }
       };
+    case 'RESET':
+      return initialFormState;
     default:
       return state;
   }
