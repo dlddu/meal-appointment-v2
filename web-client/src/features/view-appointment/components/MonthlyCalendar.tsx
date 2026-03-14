@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import type { CalendarMonth } from '../utils/buildMonthlyCalendar.js';
 import { MEAL_ROWS, getMealRowLabel } from '../utils/buildMonthlyCalendar.js';
+import type { ParticipantMatrixEntry } from '../utils/buildParticipantMatrix.js';
+import { SlotParticipantModal } from './SlotParticipantModal.js';
 
 type MonthlyCalendarProps = {
   months: CalendarMonth[];
   participantCount: number;
+  participantMatrix: ParticipantMatrixEntry[];
 };
 
 const toneStyles: Record<string, string> = {
@@ -28,10 +31,15 @@ function dayNumberClass(dayIndex: number, isCurrentMonth: boolean): string {
   return 'text-[11px] font-semibold text-slate-700 mb-0.5 pl-0.5';
 }
 
-export function MonthlyCalendar({ months, participantCount }: MonthlyCalendarProps) {
+export function MonthlyCalendar({ months, participantCount, participantMatrix }: MonthlyCalendarProps) {
   const [monthIndex, setMonthIndex] = useState(0);
+  const [selectedSlotKey, setSelectedSlotKey] = useState<string | null>(null);
   const current = months[monthIndex];
   if (!current) return null;
+
+  const selectedEntry = selectedSlotKey
+    ? participantMatrix.find((e) => e.slotKey === selectedSlotKey) ?? null
+    : null;
 
   const hasPrev = monthIndex > 0;
   const hasNext = monthIndex < months.length - 1;
@@ -113,9 +121,11 @@ export function MonthlyCalendar({ months, participantCount }: MonthlyCalendarPro
                       if (!slot) return null;
 
                       return (
-                        <div
+                        <button
+                          type="button"
                           key={meal}
-                          className="w-full rounded py-0.5 text-[10px] leading-tight"
+                          onClick={() => setSelectedSlotKey(slot.slotKey)}
+                          className="w-full rounded py-0.5 text-[10px] leading-tight hover:bg-[var(--color-view-secondary)]/10 cursor-pointer transition-colors"
                         >
                           <div className="flex flex-col items-center leading-none">
                             <span className="font-medium text-slate-500">
@@ -127,7 +137,7 @@ export function MonthlyCalendar({ months, participantCount }: MonthlyCalendarPro
                               {slot.availableCount}/{participantCount}
                             </span>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -137,6 +147,13 @@ export function MonthlyCalendar({ months, participantCount }: MonthlyCalendarPro
           </div>
         ))}
       </div>
+      {selectedEntry && (
+        <SlotParticipantModal
+          entry={selectedEntry}
+          participantCount={participantCount}
+          onClose={() => setSelectedSlotKey(null)}
+        />
+      )}
     </div>
   );
 }
