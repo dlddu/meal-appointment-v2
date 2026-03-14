@@ -39,7 +39,7 @@ const slotGroups: SlotGroup[] = [
 
 describe('SlotSummaryGrid', () => {
   it('renders monthly calendar with colored n/m counts for each availability ratio threshold', () => {
-    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={4} />);
+    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={4} participantMatrix={[]} />);
 
     const counts = screen.getAllByText(/\/4/, { selector: 'span' });
     expect(counts[0].className).toContain('color-view-primary');
@@ -47,14 +47,14 @@ describe('SlotSummaryGrid', () => {
   });
 
   it('renders meal row labels (점심, 저녁)', () => {
-    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={4} />);
+    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={4} participantMatrix={[]} />);
 
     expect(screen.getAllByText('점심').length).toBeGreaterThan(0);
     expect(screen.getAllByText('저녁').length).toBeGreaterThan(0);
   });
 
   it('renders day-of-week column headers', () => {
-    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={4} />);
+    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={4} participantMatrix={[]} />);
 
     expect(screen.getByText('월')).toBeInTheDocument();
     expect(screen.getByText('금')).toBeInTheDocument();
@@ -62,14 +62,14 @@ describe('SlotSummaryGrid', () => {
   });
 
   it('renders month label', () => {
-    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={4} />);
+    render(<SlotSummaryGrid slotGroups={slotGroups} participantCount={4} participantMatrix={[]} />);
 
     expect(screen.getByText('2024년 5월')).toBeInTheDocument();
   });
 
   it('shows an empty message and retry button when there are no slot groups', () => {
     const onRetry = vi.fn();
-    render(<SlotSummaryGrid slotGroups={[]} participantCount={0} onRetry={onRetry} />);
+    render(<SlotSummaryGrid slotGroups={[]} participantCount={0} participantMatrix={[]} onRetry={onRetry} />);
 
     expect(screen.getByText('아직 슬롯 응답이 없습니다')).toBeInTheDocument();
     const retryButton = screen.getByRole('button', { name: '재시도' });
