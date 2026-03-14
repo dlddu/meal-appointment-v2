@@ -20,6 +20,11 @@ export function ParticipantTabs({ participants, participantMatrix }: Participant
   const [activeIndex, setActiveIndex] = useState(0);
   const [minParticipants, setMinParticipants] = useState(0);
 
+  const filterOptions = useMemo(() => {
+    const max = Math.max(0, ...participantMatrix.map((entry) => entry.participants.length));
+    return Array.from({ length: max + 1 }, (_, i) => i);
+  }, [participantMatrix]);
+
   const filteredMatrix = useMemo(
     () =>
       minParticipants > 0
@@ -117,15 +122,18 @@ export function ParticipantTabs({ participants, participantMatrix }: Participant
                   <label htmlFor="min-participants-filter" className="font-medium whitespace-nowrap">
                     최소 인원 필터
                   </label>
-                  <input
+                  <select
                     id="min-participants-filter"
-                    type="number"
-                    min={0}
                     value={minParticipants}
-                    onChange={(e) => setMinParticipants(Math.max(0, Number(e.target.value)))}
-                    className="w-16 rounded-lg border border-[var(--color-view-border)] px-2 py-1 text-center text-sm"
-                  />
-                  <span className="text-xs text-slate-500">명 이상</span>
+                    onChange={(e) => setMinParticipants(Number(e.target.value))}
+                    className="rounded-lg border border-[var(--color-view-border)] px-2 py-1 text-sm"
+                  >
+                    {filterOptions.map((n) => (
+                      <option key={n} value={n}>
+                        {n === 0 ? '전체' : `${n}명 이상`}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 {filteredMatrix.length === 0 ? (
                   <StatusMessage variant="empty" label="조건에 맞는 슬롯이 없습니다" />
