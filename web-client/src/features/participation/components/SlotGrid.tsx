@@ -18,7 +18,20 @@ function badgeClass(ratio: number): string {
   return 'text-[var(--participation-error)]';
 }
 
-const DAY_HEADERS = ['월', '화', '수', '목', '금', '토', '일'];
+const DAY_HEADERS = ['일', '월', '화', '수', '목', '금', '토'];
+
+function dayHeaderClass(index: number): string {
+  if (index === 0) return 'py-2 text-center text-xs font-semibold text-red-500';
+  if (index === 6) return 'py-2 text-center text-xs font-semibold text-blue-500';
+  return 'py-2 text-center text-xs font-semibold text-slate-500';
+}
+
+function dayNumberClass(dayIndex: number, isCurrentMonth: boolean): string {
+  if (!isCurrentMonth) return 'text-[11px] text-slate-300';
+  if (dayIndex === 0) return 'text-[11px] font-semibold text-red-500 mb-0.5 pl-0.5';
+  if (dayIndex === 6) return 'text-[11px] font-semibold text-blue-500 mb-0.5 pl-0.5';
+  return 'text-[11px] font-semibold text-slate-700 mb-0.5 pl-0.5';
+}
 
 type CalendarCell = {
   date: string;
@@ -39,8 +52,8 @@ function buildCalendarGrid(slots: SlotOption[]): CalendarCell[][] {
   const monthStart = new Date(Date.UTC(year, month, 1));
   const monthEnd = new Date(Date.UTC(lastDate.getUTCFullYear(), lastDate.getUTCMonth() + 1, 0));
 
-  // Monday = 0, Sunday = 6
-  const startDow = (monthStart.getUTCDay() + 6) % 7;
+  // Sunday = 0, Saturday = 6
+  const startDow = monthStart.getUTCDay();
 
   const gridStart = new Date(monthStart);
   gridStart.setUTCDate(gridStart.getUTCDate() - startDow);
@@ -86,8 +99,8 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
     <div className="rounded-2xl border border-[var(--participation-border)] bg-white shadow-[0_12px_24px_rgba(15,23,42,0.08)] overflow-hidden">
       {/* Day-of-week headers */}
       <div className="grid grid-cols-7 border-b border-[var(--participation-border)] bg-[var(--participation-neutral-50)]">
-        {DAY_HEADERS.map((day) => (
-          <div key={day} className="py-2 text-center text-xs font-semibold text-slate-500">
+        {DAY_HEADERS.map((day, i) => (
+          <div key={day} className={dayHeaderClass(i)}>
             {day}
           </div>
         ))}
@@ -99,14 +112,14 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
           key={wi}
           className="grid grid-cols-7 border-b border-[var(--participation-border)] last:border-b-0"
         >
-          {week.map((cell) => {
+          {week.map((cell, di) => {
             if (!cell.isCurrentMonth) {
               return (
                 <div
                   key={cell.date}
                   className="min-h-[68px] border-r border-[var(--participation-border)] last:border-r-0 bg-slate-50 p-1"
                 >
-                  <span className="text-[11px] text-slate-300">{cell.dayOfMonth}</span>
+                  <span className={dayNumberClass(di, false)}>{cell.dayOfMonth}</span>
                 </div>
               );
             }
@@ -116,7 +129,7 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
                 key={cell.date}
                 className="min-h-[68px] border-r border-[var(--participation-border)] last:border-r-0 p-0.5 sm:p-1"
               >
-                <div className="text-[11px] font-semibold text-slate-700 mb-0.5 pl-0.5">{cell.dayOfMonth}</div>
+                <div className={dayNumberClass(di, true)}>{cell.dayOfMonth}</div>
                 <div className="flex flex-col gap-px">
                   {MEAL_ROWS.map((meal) => {
                     const slotKey = `${cell.date}#${meal}`;
