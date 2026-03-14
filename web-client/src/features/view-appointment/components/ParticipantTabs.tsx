@@ -32,9 +32,9 @@ export function ParticipantTabs({ participants, participantMatrix }: Participant
   const [minParticipants, setMinParticipants] = useState(0);
 
   const filterOptions = useMemo(() => {
-    const max = Math.max(0, ...participantMatrix.map((entry) => entry.participants.length));
+    const max = participants.length;
     return Array.from({ length: max + 1 }, (_, i) => i);
-  }, [participantMatrix]);
+  }, [participants.length]);
 
   const filteredMatrix = useMemo(
     () =>
