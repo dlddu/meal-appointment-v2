@@ -80,3 +80,23 @@ export function compareSlotKeys(a: string, b: string): number {
   if (dateA !== dateB) return dateA.localeCompare(dateB);
   return mealA.localeCompare(mealB);
 }
+
+export const MEAL_ROWS = ['LUNCH', 'DINNER'] as const;
+export type MealRow = (typeof MEAL_ROWS)[number];
+
+const mealRowLabels: Record<MealRow, string> = {
+  LUNCH: '점심',
+  DINNER: '저녁'
+};
+
+export function getMealRowLabel(meal: MealRow): string {
+  return mealRowLabels[meal];
+}
+
+export function buildSlotLookup(slots: SlotOption[]): Map<string, SlotOption> {
+  const map = new Map<string, SlotOption>();
+  for (const slot of slots) {
+    map.set(slot.slotKey, slot);
+  }
+  return map;
+}
