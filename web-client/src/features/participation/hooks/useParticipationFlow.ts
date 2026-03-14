@@ -1,6 +1,6 @@
 // Implemented for spec: agent/specs/meal-appointment-participation-frontend-implementation-spec.md
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   getAppointmentTemplate,
@@ -193,6 +193,29 @@ export function useParticipationFlow({ appointmentId, apiBaseUrl, initialNicknam
   const dismissToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
+
+  const toastTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+
+  useEffect(() => {
+    toasts.forEach((toast) => {
+      if (!toastTimers.current.has(toast.id)) {
+        const timer = setTimeout(() => {
+          dismissToast(toast.id);
+          toastTimers.current.delete(toast.id);
+        }, 3000);
+        toastTimers.current.set(toast.id, timer);
+      }
+    });
+
+    // Clean up timers for toasts that were manually dismissed
+    const currentIds = new Set(toasts.map((t) => t.id));
+    toastTimers.current.forEach((timer, id) => {
+      if (!currentIds.has(id)) {
+        clearTimeout(timer);
+        toastTimers.current.delete(id);
+      }
+    });
+  }, [toasts, dismissToast]);
 
   const refetch = useCallback(() => {
     query.refetch({ cancelRefetch: false });
