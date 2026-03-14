@@ -4,13 +4,13 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ParticipationAppBar } from '../features/participation/components/ParticipationAppBar.js';
 import { ParticipantInfoCard } from '../features/participation/components/ParticipantInfoCard.js';
-import { WeekNavigator } from '../features/participation/components/WeekNavigator.js';
+import { MonthNavigator } from '../features/participation/components/MonthNavigator.js';
 import { SlotGrid } from '../features/participation/components/SlotGrid.js';
 import { SummaryPanel } from '../features/participation/components/SummaryPanel.js';
 import { ToastStack } from '../features/participation/components/ToastStack.js';
 import { InlineStatus } from '../features/participation/components/InlineStatus.js';
 import { participationStrings } from '../features/participation/strings.js';
-import { buildSlotsForWeek } from '../features/participation/utils/slotKey.js';
+import { buildSlotsForMonth } from '../features/participation/utils/slotKey.js';
 import { useParticipationFlow } from '../features/participation/hooks/useParticipationFlow.js';
 
 function HelpCard() {
@@ -29,10 +29,10 @@ const containerClass =
 
 export function ParticipateAppointmentPage({ apiBaseUrl }: Props) {
   const { appointmentId = '' } = useParams();
-  const [weekOffset, setWeekOffset] = useState(0);
+  const [monthOffset, setMonthOffset] = useState(0);
   const flow = useParticipationFlow({ appointmentId, apiBaseUrl });
 
-  const slots = useMemo(() => buildSlotsForWeek(flow.templateRules, weekOffset), [flow.templateRules, weekOffset]);
+  const slots = useMemo(() => buildSlotsForMonth(flow.templateRules, monthOffset), [flow.templateRules, monthOffset]);
   const isReady = Boolean(flow.participantId);
 
   const renderBody = () => {
@@ -79,7 +79,7 @@ export function ParticipateAppointmentPage({ apiBaseUrl }: Props) {
           errorMessage={flow.errorState?.code === 'validation' ? flow.errorState.message : undefined}
         />
 
-        <WeekNavigator weekOffset={weekOffset} onChange={setWeekOffset} />
+        <MonthNavigator monthOffset={monthOffset} onChange={setMonthOffset} />
 
         <div className="rounded-2xl border border-[var(--participation-border)] bg-white p-4 space-y-3">
           <p className="text-sm text-slate-700">{participationStrings.toggleInstruction}</p>

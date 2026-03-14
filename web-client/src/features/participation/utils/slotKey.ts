@@ -74,6 +74,46 @@ export function buildSlotsForWeek(rules: TemplateRule[], weekOffset: number): Sl
   return slots;
 }
 
+export function getMonthStart(offset: number): Date {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset, 1));
+}
+
+export function getMonthEnd(offset: number): Date {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset + 1, 0));
+}
+
+export function buildSlotsForMonth(rules: TemplateRule[], monthOffset: number): SlotOption[] {
+  const monthStart = getMonthStart(monthOffset);
+  const daysInMonth = getMonthEnd(monthOffset).getUTCDate();
+  const slots: SlotOption[] = [];
+  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+  for (let i = 0; i < daysInMonth; i += 1) {
+    const current = new Date(monthStart);
+    current.setUTCDate(monthStart.getUTCDate() + i);
+    const dateKey = formatDateKey(current);
+    const mealTypes = new Set<string>();
+    rules.forEach((rule) => {
+      if (dayMatchesRule(current, rule)) {
+        rule.mealTypes.forEach((meal) => mealTypes.add(meal));
+      }
+    });
+
+    mealTypes.forEach((mealType) => {
+      slots.push({
+        slotKey: `${dateKey}#${mealType}`,
+        dateLabel: dateKey,
+        dayLabel: `${dayNames[current.getUTCDay()]}요일`,
+        mealType
+      });
+    });
+  }
+
+  return slots;
+}
+
 export function compareSlotKeys(a: string, b: string): number {
   const [dateA, mealA] = a.split('#');
   const [dateB, mealB] = b.split('#');

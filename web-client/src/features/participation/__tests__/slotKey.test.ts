@@ -1,7 +1,7 @@
 // Tests for spec: agent/specs/meal-appointment-participation-frontend-test-spec.md
 
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { buildSlotsForWeek, compareSlotKeys, formatDateKey, getWeekStart } from '../utils/slotKey.js';
+import { buildSlotsForWeek, buildSlotsForMonth, compareSlotKeys, formatDateKey, getWeekStart, getMonthStart, getMonthEnd } from '../utils/slotKey.js';
 
 const baseDate = new Date('2024-05-08T12:00:00Z');
 
@@ -51,5 +51,45 @@ describe('slotKey utilities', () => {
     const keys = ['2024-05-07#DINNER', '2024-05-06#BREAKFAST', '2024-05-06#DINNER'];
     const sorted = [...keys].sort(compareSlotKeys);
     expect(sorted).toEqual(['2024-05-06#BREAKFAST', '2024-05-06#DINNER', '2024-05-07#DINNER']);
+  });
+
+  it('computes the first day of the month with offset', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(baseDate);
+    const start = getMonthStart(0);
+    expect(start.toISOString().slice(0, 10)).toBe('2024-05-01');
+
+    const nextMonth = getMonthStart(1);
+    expect(nextMonth.toISOString().slice(0, 10)).toBe('2024-06-01');
+  });
+
+  it('computes the last day of the month with offset', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(baseDate);
+    const end = getMonthEnd(0);
+    expect(end.toISOString().slice(0, 10)).toBe('2024-05-31');
+
+    const febEnd = getMonthEnd(-3); // February 2024 (leap year)
+    expect(febEnd.toISOString().slice(0, 10)).toBe('2024-02-29');
+  });
+
+  it('builds slot options for the entire month', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(baseDate);
+
+    const slots = buildSlotsForMonth(
+      [{ dayPattern: 'WEEKDAY', mealTypes: ['LUNCH'] }],
+      0
+    );
+
+    // May 2024 has 23 weekdays
+    expect(slots.length).toBe(23);
+    expect(slots[0].slotKey).toBe('2024-05-01#LUNCH');
+    expect(slots[0].dayLabel).toBe('수요일');
+
+    // Last weekday in May 2024 is May 31 (Friday)
+    const lastSlot = slots[slots.length - 1];
+    expect(lastSlot.slotKey).toBe('2024-05-31#LUNCH');
+    expect(lastSlot.dayLabel).toBe('금요일');
   });
 });

@@ -1,5 +1,3 @@
-// Tests for spec: agent/specs/meal-appointment-participation-frontend-test-spec.md
-
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -43,7 +41,6 @@ describe('SlotGrid', () => {
       />
     );
 
-    expect(screen.getByText('점심')).toBeInTheDocument();
     expect(screen.getByLabelText('2024-05-07 저녁')).toBeInTheDocument();
 
     await userEvent.click(screen.getByTestId('slot-2024-05-06#LUNCH'));
@@ -69,7 +66,7 @@ describe('SlotGrid', () => {
     expect(screen.getByTestId('slot-2024-05-07#DINNER')).toHaveClass('cursor-not-allowed');
   });
 
-  it('renders weekly calendar table with day columns and meal rows', () => {
+  it('renders monthly calendar grid with day-of-week headers', () => {
     render(
       <SlotGrid
         slots={slots}
@@ -81,16 +78,18 @@ describe('SlotGrid', () => {
       />
     );
 
-    // Check day headers
-    expect(screen.getByText('월요일')).toBeInTheDocument();
-    expect(screen.getByText('화요일')).toBeInTheDocument();
+    // Check day-of-week headers (월~일)
+    expect(screen.getByText('월')).toBeInTheDocument();
+    expect(screen.getByText('화')).toBeInTheDocument();
+    expect(screen.getByText('수')).toBeInTheDocument();
+    expect(screen.getByText('목')).toBeInTheDocument();
+    expect(screen.getByText('금')).toBeInTheDocument();
+    expect(screen.getByText('토')).toBeInTheDocument();
+    expect(screen.getByText('일')).toBeInTheDocument();
 
-    // Check meal row labels
-    expect(screen.getByText('점심')).toBeInTheDocument();
-    expect(screen.getByText('저녁')).toBeInTheDocument();
-
-    // Check table structure exists
-    expect(screen.getByRole('table')).toBeInTheDocument();
+    // Check meal labels inside cells
+    expect(screen.getAllByText('점심').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('저녁').length).toBeGreaterThanOrEqual(1);
   });
 
   it('shows check mark for selected slots', () => {
