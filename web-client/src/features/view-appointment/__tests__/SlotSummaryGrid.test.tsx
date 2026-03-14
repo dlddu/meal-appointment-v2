@@ -38,7 +38,7 @@ const slotGroups: SlotGroup[] = [
 ];
 
 describe('SlotSummaryGrid', () => {
-  it('renders weekly calendar with tone badges for each availability ratio threshold', () => {
+  it('renders monthly calendar with tone badges for each availability ratio threshold', () => {
     render(<SlotSummaryGrid slotGroups={slotGroups} />);
 
     const badges = screen.getAllByText(/% 응답/, { selector: 'span' });
@@ -49,16 +49,22 @@ describe('SlotSummaryGrid', () => {
   it('renders meal row labels (점심, 저녁)', () => {
     render(<SlotSummaryGrid slotGroups={slotGroups} />);
 
-    expect(screen.getByText('점심')).toBeInTheDocument();
-    expect(screen.getByText('저녁')).toBeInTheDocument();
+    expect(screen.getAllByText('점심').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('저녁').length).toBeGreaterThan(0);
   });
 
-  it('renders weekday column headers', () => {
+  it('renders day-of-week column headers', () => {
     render(<SlotSummaryGrid slotGroups={slotGroups} />);
 
     expect(screen.getByText('월')).toBeInTheDocument();
     expect(screen.getByText('금')).toBeInTheDocument();
     expect(screen.getByText('일')).toBeInTheDocument();
+  });
+
+  it('renders month label', () => {
+    render(<SlotSummaryGrid slotGroups={slotGroups} />);
+
+    expect(screen.getByText('2024년 5월')).toBeInTheDocument();
   });
 
   it('shows an empty message and retry button when there are no slot groups', () => {

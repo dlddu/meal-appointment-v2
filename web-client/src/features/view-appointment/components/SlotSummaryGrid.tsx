@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { SlotGroup } from '../utils/groupSlotSummaries.js';
-import { buildWeeklyCalendar } from '../utils/buildWeeklyCalendar.js';
-import { WeeklyCalendar } from './WeeklyCalendar.js';
+import { buildMonthlyCalendar } from '../utils/buildMonthlyCalendar.js';
+import { MonthlyCalendar } from './MonthlyCalendar.js';
 import { viewAppointmentStrings } from '../strings.js';
 import { StatusMessage } from './StatusMessage.js';
 
@@ -11,7 +11,7 @@ type SlotSummaryGridProps = {
 };
 
 export function SlotSummaryGrid({ slotGroups, onRetry }: SlotSummaryGridProps) {
-  const weeks = useMemo(() => buildWeeklyCalendar(slotGroups), [slotGroups]);
+  const months = useMemo(() => buildMonthlyCalendar(slotGroups), [slotGroups]);
 
   if (slotGroups.length === 0) {
     return (
@@ -30,7 +30,7 @@ export function SlotSummaryGrid({ slotGroups, onRetry }: SlotSummaryGridProps) {
   return (
     <section>
       <div className="mb-3 text-sm font-semibold text-slate-700">슬롯 현황</div>
-      <WeeklyCalendar weeks={weeks} />
+      <MonthlyCalendar months={months} />
     </section>
   );
 }
