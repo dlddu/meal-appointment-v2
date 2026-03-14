@@ -114,12 +114,12 @@ function AppointmentContent({ data, slotGroups, participantMatrix, onRetry }: Ap
   return (
     <div className="space-y-6">
       <AppointmentOverviewCard appointment={data.appointment} template={data.template} />
+      <ParticipantTabs participants={data.participants} participantMatrix={participantMatrix} />
       <SlotSummaryGrid
         slotGroups={slotGroups}
         participantCount={data.aggregates.participantCount}
         onRetry={onRetry}
       />
-      <ParticipantTabs participants={data.participants} participantMatrix={participantMatrix} />
     </div>
   );
 }
