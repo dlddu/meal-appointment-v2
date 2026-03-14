@@ -1,5 +1,6 @@
 // Implemented for spec: agent/specs/meal-appointment-view-appointment-frontend-spec.md
 
+import { useMemo, useState } from 'react';
 import type { SlotGroup } from '../utils/groupSlotSummaries.js';
 import { viewAppointmentStrings } from '../strings.js';
 import { StatusMessage } from './StatusMessage.js';
@@ -17,6 +18,13 @@ const toneStyles: Record<string, string> = {
 };
 
 export function SlotSummaryGrid({ slotGroups, participantCount, onRetry }: SlotSummaryGridProps) {
+  const [filterDate, setFilterDate] = useState('');
+
+  const filteredGroups = useMemo(() => {
+    if (!filterDate) return slotGroups;
+    return slotGroups.filter((group) => group.date >= filterDate);
+  }, [slotGroups, filterDate]);
+
   if (slotGroups.length === 0) {
     return (
       <div className="bg-white rounded-2xl border border-[var(--color-view-border)] p-6">
@@ -33,9 +41,20 @@ export function SlotSummaryGrid({ slotGroups, participantCount, onRetry }: SlotS
 
   return (
     <section>
-      <div className="mb-3 text-sm font-semibold text-slate-700">슬롯 현황</div>
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-sm font-semibold text-slate-700">슬롯 현황</span>
+        <label className="flex items-center gap-2 text-sm text-slate-600">
+          <span>{viewAppointmentStrings.dateFilterLabel}</span>
+          <input
+            type="date"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+            className="rounded-lg border border-[var(--color-view-border)] px-3 py-1.5 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-[var(--color-view-primary)]"
+          />
+        </label>
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {slotGroups.map((group) => (
+        {filteredGroups.map((group) => (
           <article
             key={group.date}
             className="bg-white rounded-2xl border border-[var(--color-view-border)] shadow-[0_12px_24px_rgba(15,23,42,0.08)] p-6"

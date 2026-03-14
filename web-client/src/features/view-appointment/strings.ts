@@ -16,6 +16,7 @@ export const viewAppointmentStrings = {
   networkError: '네트워크 오류가 발생했습니다',
   copySuccess: '링크를 복사했어요',
   copyFailure: '클립보드 권한을 확인해 주세요',
+  dateFilterLabel: '이 날짜 이후만 보기',
   participationLabel: '참여 안내',
   participationHeading: '이 약속에 참여하시나요?',
   participationDescription: '슬롯 현황을 살펴본 뒤 응답을 제출하면 호스트가 선호도를 한눈에 확인할 수 있어요.',
