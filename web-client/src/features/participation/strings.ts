@@ -31,5 +31,6 @@ export const participationStrings = {
   refresh: '새로고침',
   slotAvailableCount: (available: number, total: number) => `${available}/${total}`,
   emptySlots: '선택할 수 있는 슬롯이 없습니다',
-  mobileOverflowLabel: '메뉴'
+  mobileOverflowLabel: '메뉴',
+  backToStatus: '참여 현황'
 };

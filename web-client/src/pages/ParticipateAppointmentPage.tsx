@@ -117,6 +117,7 @@ export function ParticipateAppointmentPage({ apiBaseUrl }: Props) {
       <ParticipationAppBar
         title={flow.summary?.participantCount ? `${participationStrings.pageTitle}` : participationStrings.pageTitle}
         isLoading={flow.isLoading}
+        backTo={`/appointments/${appointmentId}`}
       />
       <HelpCard />
       {renderBody()}
