@@ -44,7 +44,7 @@ export class PrismaParticipantRepository implements ParticipantRepository {
         SELECT id, appointment_id, nickname, pin_hash, submitted_at
         FROM participants
         WHERE appointment_id = $1
-        ORDER BY submitted_at ASC NULLS LAST, created_at ASC
+        ORDER BY submitted_at DESC NULLS LAST, created_at DESC
       `,
       [appointmentId]
     );
