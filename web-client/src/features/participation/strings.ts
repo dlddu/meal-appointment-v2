@@ -21,7 +21,7 @@ export const participationStrings = {
   temporaryFailure: '일시적인 오류가 발생했습니다. 다시 시도해 주세요.',
   networkError: '네트워크에 연결할 수 없습니다',
   submitSuccess: '가용 시간을 제출했어요',
-  toggleInstruction: '요일별로 가능한 식사 시간을 선택하세요.',
+  toggleInstruction: '날짜별로 가능한 식사 시간을 선택하세요.',
   summaryTitle: '요약',
   selectedCount: (count: number) => `선택됨 ${count}개`,
   unselectedCount: (count: number) => `미선택 ${count}개`,
