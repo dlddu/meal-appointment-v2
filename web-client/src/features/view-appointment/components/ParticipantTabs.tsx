@@ -16,6 +16,17 @@ function formatSubmittedAt(date: string) {
   return new Intl.DateTimeFormat('ko-KR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(date));
 }
 
+const mealOrder: Record<string, number> = { BREAKFAST: 0, LUNCH: 1, DINNER: 2 };
+
+function sortSlotKeys(slotKeys: string[]): string[] {
+  return [...slotKeys].sort((a, b) => {
+    const [dateA, mealA] = a.split('#');
+    const [dateB, mealB] = b.split('#');
+    if (dateA !== dateB) return dateA.localeCompare(dateB);
+    return (mealOrder[mealA] ?? 9) - (mealOrder[mealB] ?? 9);
+  });
+}
+
 export function ParticipantTabs({ participants, participantMatrix }: ParticipantTabsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [minParticipants, setMinParticipants] = useState(0);
@@ -96,7 +107,7 @@ export function ParticipantTabs({ participants, participantMatrix }: Participant
                     {participant.responses.length === 0 ? (
                       <span className="text-xs text-slate-500">선택한 슬롯이 없습니다</span>
                     ) : (
-                      participant.responses.map((slotKey) => (
+                      sortSlotKeys(participant.responses).map((slotKey) => (
                         <span
                           key={slotKey}
                           className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 border border-[var(--color-view-border)]"
