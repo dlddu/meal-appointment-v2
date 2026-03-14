@@ -6,9 +6,10 @@ type ParticipationGuideCardProps = {
   appointmentTitle?: string;
   onNavigateToRespond?: () => void;
   onShare?: () => Promise<void> | void;
+  onCreateNew?: () => void;
 };
 
-export function ParticipationGuideCard({ appointmentTitle, onNavigateToRespond, onShare }: ParticipationGuideCardProps) {
+export function ParticipationGuideCard({ appointmentTitle, onNavigateToRespond, onShare, onCreateNew }: ParticipationGuideCardProps) {
   return (
     <section className="flex flex-col gap-4 rounded-2xl border border-[var(--color-view-border)] bg-white p-6 shadow-[0_12px_24px_rgba(15,23,42,0.08)] sm:flex-row sm:items-center sm:justify-between sm:gap-6">
       <div className="flex flex-1 items-start gap-3">
@@ -44,6 +45,13 @@ export function ParticipationGuideCard({ appointmentTitle, onNavigateToRespond, 
           className="rounded-xl bg-[var(--color-view-secondary)] px-4 py-2 text-sm font-semibold text-white focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-view-secondary)]"
         >
           {viewAppointmentStrings.share}
+        </button>
+        <button
+          type="button"
+          onClick={onCreateNew}
+          className="rounded-xl border border-[var(--color-view-primary)] bg-white px-4 py-2 text-sm font-semibold text-[var(--color-view-primary)] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-view-primary)]"
+        >
+          {viewAppointmentStrings.createNew}
         </button>
       </div>
     </section>

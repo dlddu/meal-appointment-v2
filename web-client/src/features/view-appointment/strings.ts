@@ -20,5 +20,6 @@ export const viewAppointmentStrings = {
   participationHeading: '이 약속에 참여하시나요?',
   participationDescription: '슬롯 현황을 살펴본 뒤 응답을 제출하면 호스트가 선호도를 한눈에 확인할 수 있어요.',
   participationStepRespond: '를 눌러 바로 슬롯을 선택하고 응답을 제출하세요.',
-  participationStepShare: '를 눌러 동료에게도 참여 링크를 알려주세요.'
+  participationStepShare: '를 눌러 동료에게도 참여 링크를 알려주세요.',
+  createNew: '새 약속 생성하기'
 };

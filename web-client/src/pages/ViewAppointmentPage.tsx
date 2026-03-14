@@ -42,6 +42,10 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
     navigate(`/appointments/${appointmentId}/participate`);
   }, [appointmentId, navigate]);
 
+  const handleCreateNew = useCallback(() => {
+    navigate('/create');
+  }, [navigate]);
+
   const renderContent = () => {
     if (query.isLoading) {
       return (
@@ -80,6 +84,7 @@ export function ViewAppointmentPage({ apiBaseUrl }: { apiBaseUrl: string }) {
           appointmentTitle={query.data.appointment.title}
           onNavigateToRespond={handleNavigateRespond}
           onShare={handleShare}
+          onCreateNew={handleCreateNew}
         />
         <AppointmentContent
           data={query.data}
