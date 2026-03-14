@@ -69,15 +69,6 @@ function buildCalendarGrid(slots: SlotOption[]): CalendarCell[][] {
   return weeks;
 }
 
-const SHORT_MEAL_LABELS: Record<string, string> = {
-  LUNCH: '점',
-  DINNER: '저'
-};
-
-function getShortMealLabel(meal: string): string {
-  return SHORT_MEAL_LABELS[meal] ?? meal.charAt(0);
-}
-
 export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, summaryMap, participantCount }: Props) {
   const lookup = useMemo(() => buildSlotLookup(slots), [slots]);
   const weeks = useMemo(() => buildCalendarGrid(slots), [slots]);
@@ -156,7 +147,7 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
                             {isSelected && (
                               <span className="text-[var(--participation-primary)] text-[10px] leading-none">✓</span>
                             )}
-                            <span className="font-medium text-slate-500">{getShortMealLabel(meal)}</span>
+                            <span className="font-medium text-slate-500">{getMealRowLabel(meal)}</span>
                           </span>
                           <span
                             className={`font-semibold text-[10px] ${badgeClass(ratio)}`}
