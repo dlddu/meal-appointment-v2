@@ -113,7 +113,7 @@ type AppointmentContentProps = {
 function AppointmentContent({ data, slotGroups, participantMatrix, onRetry }: AppointmentContentProps) {
   return (
     <div className="space-y-6">
-      <AppointmentOverviewCard appointment={data.appointment} template={data.template} />
+      <AppointmentOverviewCard appointment={data.appointment} template={data.template} participants={data.participants} />
       <ParticipantTabs participants={data.participants} participantMatrix={participantMatrix} />
       <SlotSummaryGrid
         slotGroups={slotGroups}

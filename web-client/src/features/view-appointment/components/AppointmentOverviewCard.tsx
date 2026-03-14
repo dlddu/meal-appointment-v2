@@ -9,9 +9,14 @@ function formatDateTime(value: string) {
 type AppointmentOverviewCardProps = {
   appointment: AppointmentViewResponse['appointment'];
   template: AppointmentViewResponse['template'];
+  participants: AppointmentViewResponse['participants'];
 };
 
-export function AppointmentOverviewCard({ appointment, template }: AppointmentOverviewCardProps) {
+export function AppointmentOverviewCard({ appointment, template, participants }: AppointmentOverviewCardProps) {
+  const lastResponseAt = participants
+    .filter((p) => p.submittedAt)
+    .map((p) => new Date(p.submittedAt).getTime())
+    .reduce<number | null>((max, t) => (max === null || t > max ? t : max), null);
   return (
     <section className="bg-white rounded-2xl border border-[var(--color-view-border)] shadow-[0_12px_24px_rgba(15,23,42,0.08)] p-7 sm:p-6">
       <h2 className="mb-2 text-sm font-semibold text-slate-700">약속 개요</h2>
@@ -30,7 +35,7 @@ export function AppointmentOverviewCard({ appointment, template }: AppointmentOv
         </div>
         <div className="flex flex-col gap-1">
           <dt className="font-semibold text-slate-800">마지막 업데이트</dt>
-          <dd>{formatDateTime(appointment.updatedAt)}</dd>
+          <dd>{lastResponseAt ? formatDateTime(new Date(lastResponseAt).toISOString()) : '-'}</dd>
         </div>
       </dl>
     </section>
