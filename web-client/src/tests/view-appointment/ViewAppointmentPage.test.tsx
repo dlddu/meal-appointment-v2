@@ -46,7 +46,7 @@ describe('ViewAppointmentPage', () => {
     await waitFor(() =>
       expect(screen.getByRole('heading', { level: 1, name: '점심 약속' })).toBeInTheDocument()
     );
-    expect(screen.getAllByText(/% 응답/)).toHaveLength(3);
+    expect(screen.getAllByText(/\/2/)).toHaveLength(3);
     expect(screen.getByRole('tab', { name: '응답자 목록' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: '슬롯별 상세' })).toBeInTheDocument();
   });
