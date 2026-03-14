@@ -1,6 +1,6 @@
 // Implemented for spec: agent/specs/meal-appointment-view-appointment-frontend-spec.md
 
-import { useMemo, useState, type KeyboardEvent } from 'react';
+import { useCallback, useMemo, useState, type KeyboardEvent } from 'react';
 import type { AppointmentViewResponse } from '../api/getAppointment.js';
 import { viewAppointmentStrings } from '../strings.js';
 import { formatSlotKey } from '../utils/formatSlot.js';
@@ -30,6 +30,19 @@ function sortSlotKeys(slotKeys: string[]): string[] {
 export function ParticipantTabs({ participants, participantMatrix }: ParticipantTabsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [minParticipants, setMinParticipants] = useState(0);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  const toggleExpanded = useCallback((id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
 
   const filterOptions = useMemo(() => {
     const max = participants.length;
@@ -94,31 +107,53 @@ export function ParticipantTabs({ participants, participantMatrix }: Participant
             {participants.length === 0 ? (
               <StatusMessage variant="empty" label={viewAppointmentStrings.emptyParticipants} />
             ) : (
-              participants.map((participant) => (
-                <div
-                  key={participant.participantId}
-                  className="rounded-xl border border-[var(--color-view-border)] bg-[var(--color-view-neutral)] px-4 py-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-base font-semibold text-slate-900">{participant.nickname}</div>
-                    <div className="text-xs text-slate-500">{formatSubmittedAt(participant.submittedAt)}</div>
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {participant.responses.length === 0 ? (
-                      <span className="text-xs text-slate-500">선택한 슬롯이 없습니다</span>
-                    ) : (
-                      sortSlotKeys(participant.responses).map((slotKey) => (
+              participants.map((participant) => {
+                const isExpanded = expandedIds.has(participant.participantId);
+                return (
+                  <div
+                    key={participant.participantId}
+                    className="rounded-xl border border-[var(--color-view-border)] bg-[var(--color-view-neutral)] px-4 py-3"
+                  >
+                    <button
+                      type="button"
+                      className="flex w-full items-center justify-between text-left"
+                      aria-expanded={isExpanded}
+                      onClick={() => toggleExpanded(participant.participantId)}
+                    >
+                      <div className="flex items-center gap-2">
                         <span
-                          key={slotKey}
-                          className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 border border-[var(--color-view-border)]"
+                          className="inline-block text-xs text-slate-400 transition-transform duration-200"
+                          style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
+                          aria-hidden="true"
                         >
-                          {formatSlotKey(slotKey)}
+                          ▶
                         </span>
-                      ))
+                        <span className="text-base font-semibold text-slate-900">{participant.nickname}</span>
+                        <span className="rounded-full bg-[var(--color-view-secondary)]/10 px-2 py-0.5 text-xs font-medium text-[var(--color-view-secondary)]">
+                          {participant.responses.length}개 슬롯
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-500">{formatSubmittedAt(participant.submittedAt)}</span>
+                    </button>
+                    {isExpanded && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {participant.responses.length === 0 ? (
+                          <span className="text-xs text-slate-500">선택한 슬롯이 없습니다</span>
+                        ) : (
+                          sortSlotKeys(participant.responses).map((slotKey) => (
+                            <span
+                              key={slotKey}
+                              className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 border border-[var(--color-view-border)]"
+                            >
+                              {formatSlotKey(slotKey)}
+                            </span>
+                          ))
+                        )}
+                      </div>
                     )}
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         )}
