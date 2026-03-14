@@ -190,6 +190,10 @@ export function useParticipationFlow({ appointmentId, apiBaseUrl, initialNicknam
     submitMutation.mutate({ nickname: trimmed, pin: pin || undefined, availableSlots: selectedSlots });
   }, [nickname, pin, selectedSlots, submitMutation, participantId]);
 
+  const addToast = useCallback((message: string, variant: Toast['variant'] = 'warning') => {
+    setToasts((prev) => [...prev, { id: `${Date.now()}-custom`, message, variant }]);
+  }, []);
+
   const dismissToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
@@ -247,6 +251,7 @@ export function useParticipationFlow({ appointmentId, apiBaseUrl, initialNicknam
     queryError: query.error ? mapError(query.error) : null,
     refetch,
     toasts,
+    addToast,
     dismissToast,
     isCreating: createMutation.isLoading,
     isSubmitting: submitMutation.isLoading

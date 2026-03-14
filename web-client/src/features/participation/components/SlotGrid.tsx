@@ -8,6 +8,7 @@ type Props = {
   selectedSlots: string[];
   onToggleSlot: (slotKey: string) => void;
   allowSelection: boolean;
+  onDisabledSlotClick?: () => void;
   summaryMap: Record<string, ParticipationSlotSummary>;
   participantCount: number;
 };
@@ -82,7 +83,7 @@ function buildCalendarGrid(slots: SlotOption[]): CalendarCell[][] {
   return weeks;
 }
 
-export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, summaryMap, participantCount }: Props) {
+export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, onDisabledSlotClick, summaryMap, participantCount }: Props) {
   const lookup = useMemo(() => buildSlotLookup(slots), [slots]);
   const weeks = useMemo(() => buildCalendarGrid(slots), [slots]);
   const selectedSet = useMemo(() => new Set(selectedSlots), [selectedSlots]);
@@ -147,8 +148,13 @@ export function SlotGrid({ slots, selectedSlots, onToggleSlot, allowSelection, s
                         data-testid={`slot-${slotKey}`}
                         aria-pressed={isSelected}
                         aria-label={`${cell.date} ${formatMealLabel(meal)}`}
-                        disabled={!allowSelection}
-                        onClick={() => onToggleSlot(slotKey)}
+                        onClick={() => {
+                          if (!allowSelection) {
+                            onDisabledSlotClick?.();
+                            return;
+                          }
+                          onToggleSlot(slotKey);
+                        }}
                         className={`w-full rounded py-0.5 text-[10px] leading-tight transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[rgba(46,125,50,0.4)] ${
                           isSelected
                             ? 'bg-[rgba(46,125,50,0.12)] ring-1 ring-[var(--participation-primary)]'
