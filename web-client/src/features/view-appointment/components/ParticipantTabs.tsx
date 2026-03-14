@@ -18,6 +18,21 @@ function formatSubmittedAt(date: string) {
 
 export function ParticipantTabs({ participants, participantMatrix }: ParticipantTabsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [minParticipants, setMinParticipants] = useState(0);
+
+  const filterOptions = useMemo(() => {
+    const max = Math.max(0, ...participantMatrix.map((entry) => entry.participants.length));
+    return Array.from({ length: max + 1 }, (_, i) => i);
+  }, [participantMatrix]);
+
+  const filteredMatrix = useMemo(
+    () =>
+      minParticipants > 0
+        ? participantMatrix.filter((entry) => entry.participants.length >= minParticipants)
+        : participantMatrix,
+    [participantMatrix, minParticipants]
+  );
+
   const tabs = useMemo(
     () => [
       { id: 'responders', label: viewAppointmentStrings.participantsTab },
@@ -102,7 +117,28 @@ export function ParticipantTabs({ participants, participantMatrix }: Participant
             {participantMatrix.length === 0 ? (
               <StatusMessage variant="empty" label="슬롯 응답 정보가 없습니다" />
             ) : (
-              participantMatrix.map((entry) => (
+              <>
+                <div className="flex items-center gap-2 text-sm text-slate-700">
+                  <label htmlFor="min-participants-filter" className="font-medium whitespace-nowrap">
+                    최소 인원 필터
+                  </label>
+                  <select
+                    id="min-participants-filter"
+                    value={minParticipants}
+                    onChange={(e) => setMinParticipants(Number(e.target.value))}
+                    className="rounded-lg border border-[var(--color-view-border)] px-2 py-1 text-sm"
+                  >
+                    {filterOptions.map((n) => (
+                      <option key={n} value={n}>
+                        {n === 0 ? '전체' : `${n}명 이상`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {filteredMatrix.length === 0 ? (
+                  <StatusMessage variant="empty" label="조건에 맞는 슬롯이 없습니다" />
+                ) : (
+                  filteredMatrix.map((entry) => (
                 <div
                   key={entry.slotKey}
                   className="rounded-xl border border-[var(--color-view-border)] bg-[var(--color-view-neutral)] px-4 py-3"
@@ -124,6 +160,8 @@ export function ParticipantTabs({ participants, participantMatrix }: Participant
                   )}
                 </div>
               ))
+                )}
+              </>
             )}
           </div>
         )}
