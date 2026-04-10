@@ -6,3 +6,4 @@ dist
 .vite
 coverage
 *.log
+*.db
