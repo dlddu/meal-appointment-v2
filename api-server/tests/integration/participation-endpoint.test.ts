@@ -1,31 +1,36 @@
+import { randomUUID } from 'crypto';
 import request from 'supertest';
 import bcrypt from 'bcryptjs';
 import app from '../../src/app';
 import prisma from '../../src/infrastructure/prismaClient';
 
 async function resetDatabase() {
-  await prisma.query('TRUNCATE TABLE slot_availability, participants, appointments, time_slot_templates RESTART IDENTITY CASCADE;');
+  await prisma.query('DELETE FROM slot_availability');
+  await prisma.query('DELETE FROM participants');
+  await prisma.query('DELETE FROM appointments');
+  await prisma.query('DELETE FROM time_slot_templates');
 }
 
 async function seedAppointment() {
   const templateId = 'tmpl-weekly';
   await prisma.query(
-    `INSERT INTO time_slot_templates (id, name, description, ruleset_json) VALUES ($1, $2, $3, $4)` ,
+    `INSERT INTO time_slot_templates (id, name, description, ruleset_json) VALUES (?, ?, ?, ?)` ,
     [templateId, 'Weekly', 'Weekday dinners', JSON.stringify([{ dayPattern: 'WEEKDAY', mealTypes: ['DINNER'] }])]
   );
   const appointmentId = '00000000-0000-4000-8000-000000000099';
   await prisma.query(
-    `INSERT INTO appointments (id, title, summary, time_slot_template_id) VALUES ($1, $2, $3, $4)`,
-    [appointmentId, 'Team Dinner', 'Plan meals', templateId]
+    `INSERT INTO appointments (id, title, summary, time_slot_template_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+    [appointmentId, 'Team Dinner', 'Plan meals', templateId, new Date().toISOString(), new Date().toISOString()]
   );
   return appointmentId;
 }
 
 async function insertParticipant(appointmentId: string, nickname: string, pin?: string) {
   const pinHash = pin ? await bcrypt.hash(pin, 4) : null;
+  const id = randomUUID();
   const result = await prisma.query(
-    `INSERT INTO participants (appointment_id, nickname, pin_hash, submitted_at) VALUES ($1, $2, $3, NULL) RETURNING id`,
-    [appointmentId, nickname, pinHash]
+    `INSERT INTO participants (id, appointment_id, nickname, pin_hash, submitted_at, created_at) VALUES (?, ?, ?, ?, NULL, ?) RETURNING id`,
+    [id, appointmentId, nickname, pinHash, new Date().toISOString()]
   );
   return result.rows[0].id as string;
 }
@@ -54,7 +59,7 @@ describe('Participation endpoints', () => {
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({ nickname: 'Mina', hasPin: true, submittedAt: null, responses: [] });
 
-    const dbRow = await prisma.query('SELECT pin_hash FROM participants WHERE id = $1', [response.body.participantId]);
+    const dbRow = await prisma.query('SELECT pin_hash FROM participants WHERE id = ?', [response.body.participantId]);
     expect(dbRow.rows[0].pin_hash).toBeTruthy();
     expect(dbRow.rows[0].pin_hash).not.toBe('1234');
   });
@@ -83,7 +88,7 @@ describe('Participation endpoints', () => {
     expect(response.body.selected).toEqual(['2024-05-06#DINNER']);
     expect(response.body.summary.participantCount).toBe(1);
 
-    const slots = await prisma.query('SELECT slot_key FROM slot_availability WHERE participant_id = $1', [participantId]);
+    const slots = await prisma.query('SELECT slot_key FROM slot_availability WHERE participant_id = ?', [participantId]);
     expect(slots.rows.map((row) => row.slot_key)).toEqual(['2024-05-06#DINNER']);
   });
 

@@ -115,6 +115,7 @@ export class JoinParticipantService {
   }
 
   private isUniqueViolation(error: unknown): boolean {
-    return Boolean((error as { code?: string })?.code === '23505');
+    const code = (error as { code?: string })?.code;
+    return code === 'SQLITE_CONSTRAINT_UNIQUE' || code === 'SQLITE_CONSTRAINT';
   }
 }

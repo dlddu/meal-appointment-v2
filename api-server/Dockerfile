@@ -3,8 +3,8 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma
-RUN apk add --no-cache openssl
+# Install build dependencies for better-sqlite3 native module
+RUN apk add --no-cache build-base python3
 
 # Copy all package files to leverage workspace
 COPY package*.json ./
@@ -29,8 +29,8 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Install OpenSSL for Prisma
-RUN apk add --no-cache openssl
+# Install build dependencies for better-sqlite3 native module
+RUN apk add --no-cache build-base python3
 
 # Copy root package files
 COPY package*.json ./
@@ -44,6 +44,10 @@ RUN npm ci --omit=dev
 
 # Copy built files from builder
 COPY --from=builder /app/api-server/dist ./api-server/dist
+
+# Create data directory for SQLite
+RUN mkdir -p /app/api-server/data
+VOLUME /app/api-server/data
 
 # Expose port
 EXPOSE 4000

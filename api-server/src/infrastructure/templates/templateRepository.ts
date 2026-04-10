@@ -32,6 +32,13 @@ export interface TemplateRepository {
   findAll(): Promise<TemplateRecord[]>;
 }
 
+function parseRulesetJson(raw: unknown): unknown {
+  if (typeof raw === 'string') {
+    return JSON.parse(raw);
+  }
+  return raw;
+}
+
 export class PrismaTemplateRepository implements TemplateRepository {
   async findById(id: string): Promise<TemplateRecord | null> {
     const result = await prisma.query<{
@@ -43,7 +50,7 @@ export class PrismaTemplateRepository implements TemplateRepository {
       `
         SELECT id, name, description, ruleset_json
         FROM time_slot_templates
-        WHERE id = $1
+        WHERE id = ?
       `,
       [id]
     );
@@ -53,7 +60,7 @@ export class PrismaTemplateRepository implements TemplateRepository {
       return null;
     }
 
-    const parsed = templateRulesSchema.safeParse(row.ruleset_json);
+    const parsed = templateRulesSchema.safeParse(parseRulesetJson(row.ruleset_json));
     if (!parsed.success) {
       throw new TemplateParsingError();
     }
@@ -80,7 +87,7 @@ export class PrismaTemplateRepository implements TemplateRepository {
     );
 
     return result.rows.map((row) => {
-      const parsed = templateRulesSchema.safeParse(row.ruleset_json);
+      const parsed = templateRulesSchema.safeParse(parseRulesetJson(row.ruleset_json));
 
       return {
         id: row.id,

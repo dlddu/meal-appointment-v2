@@ -145,7 +145,7 @@ describe('JoinParticipantService', () => {
     const deps = createDependencies();
     deps.appointmentRepository.findById.mockResolvedValue(baseAppointment as any);
     const error: any = new Error('duplicate');
-    error.code = '23505';
+    error.code = 'SQLITE_CONSTRAINT_UNIQUE';
     deps.participantRepository.create.mockRejectedValue(error);
     deps.participantRepository.findByAppointmentAndNickname.mockResolvedValue(null);
     const service = new JoinParticipantService(

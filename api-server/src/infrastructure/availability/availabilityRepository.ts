@@ -2,7 +2,7 @@
 // Implemented for spec: agent/specs/meal-appointment-participation-backend-implementation-spec.md
 
 import type { TransactionClient } from '../prismaClient';
-import prisma from '../prismaClient';
+import prisma, { generateId } from '../prismaClient';
 
 export interface AvailabilityRecord {
   participantId: string;
@@ -36,7 +36,7 @@ export class PrismaAvailabilityRepository implements AvailabilityRepository {
       `
         SELECT participant_id, slot_key
         FROM slot_availability
-        WHERE appointment_id = $1
+        WHERE appointment_id = ?
         ORDER BY submitted_at ASC
       `,
       [appointmentId]
@@ -56,7 +56,7 @@ export class PrismaAvailabilityRepository implements AvailabilityRepository {
       `
         SELECT participant_id, slot_key
         FROM slot_availability
-        WHERE participant_id = $1
+        WHERE participant_id = ?
         ORDER BY slot_key ASC
       `,
       [participantId]
@@ -76,24 +76,24 @@ export class PrismaAvailabilityRepository implements AvailabilityRepository {
     tx: TransactionClient
   ): Promise<void> {
     const client = getClient(tx);
-    await client.query(`DELETE FROM slot_availability WHERE participant_id = $1`, [participantId]);
+    await client.query(`DELETE FROM slot_availability WHERE participant_id = ?`, [participantId]);
 
     if (slotKeys.length === 0) {
       return;
     }
 
+    const submittedAtStr = submittedAt.toISOString();
     const values: unknown[] = [];
     const placeholders = slotKeys
-      .map((slotKey, index) => {
-        const baseIndex = index * 4;
-        values.push(appointmentId, participantId, slotKey, submittedAt);
-        return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4})`;
+      .map((slotKey) => {
+        values.push(generateId(), appointmentId, participantId, slotKey, submittedAtStr);
+        return '(?, ?, ?, ?, ?)';
       })
       .join(', ');
 
     await client.query(
       `
-        INSERT INTO slot_availability (appointment_id, participant_id, slot_key, submitted_at)
+        INSERT INTO slot_availability (id, appointment_id, participant_id, slot_key, submitted_at)
         VALUES ${placeholders}
       `,
       values
