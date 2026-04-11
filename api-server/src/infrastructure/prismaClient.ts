@@ -1,71 +1,98 @@
-import pg from 'pg';
+import Database from 'better-sqlite3';
+import { randomUUID } from 'crypto';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { Pool } = pg;
-const connectionString = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL;
 
-export interface TransactionClient {
-  query<T extends pg.QueryResultRow = pg.QueryResultRow>(text: string, params?: unknown[]): Promise<pg.QueryResult<T>>;
+export interface QueryResult<T> {
+  rows: T[];
+  rowCount: number;
 }
 
-class PoolTransactionClient implements TransactionClient {
-  constructor(private readonly client: pg.PoolClient) {}
+export interface TransactionClient {
+  query<T extends Record<string, unknown> = Record<string, unknown>>(text: string, params?: unknown[]): Promise<QueryResult<T>>;
+}
 
-  async query<T extends pg.QueryResultRow = pg.QueryResultRow>(text: string, params?: unknown[]): Promise<pg.QueryResult<T>> {
-    return this.client.query<T>(text, params as unknown[] | undefined);
+class SQLiteTransactionClient implements TransactionClient {
+  constructor(private readonly db: Database.Database) {}
+
+  async query<T extends Record<string, unknown> = Record<string, unknown>>(text: string, params?: unknown[]): Promise<QueryResult<T>> {
+    return executeQuery<T>(this.db, text, params);
+  }
+}
+
+function executeQuery<T>(db: Database.Database, text: string, params?: unknown[]): QueryResult<T> {
+  const trimmed = text.trim().toUpperCase();
+  const isRead = trimmed.startsWith('SELECT') || trimmed.includes('RETURNING');
+
+  if (isRead) {
+    const stmt = db.prepare(text);
+    const rows = stmt.all(...(params ?? [])) as T[];
+    return { rows, rowCount: rows.length };
+  } else {
+    const stmt = db.prepare(text);
+    const info = stmt.run(...(params ?? []));
+    return { rows: [] as T[], rowCount: info.changes };
   }
 }
 
 class PrismaLikeClient {
-  private pool: pg.Pool | null = null;
+  private db: Database.Database | null = null;
 
-  private getPool(): pg.Pool {
-    if (!connectionString) {
+  private getDb(): Database.Database {
+    if (!databaseUrl) {
       throw new Error('DATABASE_URL is not set.');
     }
-    if (!this.pool) {
-      this.pool = new Pool({ connectionString });
+    if (!this.db) {
+      const dbPath = databaseUrl.replace(/^file:/, '');
+      this.db = new Database(dbPath);
+      this.db.pragma('journal_mode = WAL');
+      this.db.pragma('foreign_keys = ON');
+      this.db.pragma('busy_timeout = 5000');
     }
-    return this.pool;
+    return this.db;
   }
 
   async $connect() {
-    await this.getPool().query('SELECT 1');
+    const db = this.getDb();
+    db.exec('SELECT 1');
   }
 
   async $disconnect() {
-    if (this.pool) {
-      await this.pool.end();
+    if (this.db) {
+      this.db.close();
+      this.db = null;
     }
   }
 
   async $queryRaw(queryParts: TemplateStringsArray, ...values: unknown[]) {
-    const text = queryParts.reduce((acc, part, index) => acc + part + (index < values.length ? `$${index + 1}` : ''), '');
-    return this.getPool().query(text, values as unknown[]);
+    const text = queryParts.join('?');
+    return this.query(text, values);
   }
 
-  async query<T extends pg.QueryResultRow = pg.QueryResultRow>(text: string, params?: unknown[]) {
-    return this.getPool().query<T>(text, params as unknown[] | undefined);
+  async query<T extends Record<string, unknown> = Record<string, unknown>>(text: string, params?: unknown[]): Promise<QueryResult<T>> {
+    return executeQuery<T>(this.getDb(), text, params);
   }
 
   async $transaction<T>(callback: (tx: TransactionClient) => Promise<T>): Promise<T> {
-    const pool = this.getPool();
-    const client = await pool.connect();
+    const db = this.getDb();
+    db.exec('BEGIN');
     try {
-      await client.query('BEGIN');
-      const tx = new PoolTransactionClient(client);
+      const tx = new SQLiteTransactionClient(db);
       const result = await callback(tx);
-      await client.query('COMMIT');
+      db.exec('COMMIT');
       return result;
     } catch (error) {
-      await client.query('ROLLBACK');
+      db.exec('ROLLBACK');
       throw error;
-    } finally {
-      client.release();
     }
   }
+}
+
+export function generateId(): string {
+  return randomUUID();
 }
 
 const prisma = new PrismaLikeClient();

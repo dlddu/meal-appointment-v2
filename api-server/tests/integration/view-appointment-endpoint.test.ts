@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import request from 'supertest';
 import app from '../../src/app';
 import prisma from '../../src/infrastructure/prismaClient';
@@ -10,7 +11,7 @@ async function insertTemplate(templateId: string, rules: TemplateRule[]) {
   await prisma.query(
     `
       INSERT INTO time_slot_templates (id, name, description, ruleset_json)
-      VALUES ($1, $2, $3, $4::jsonb)
+      VALUES (?, ?, ?, ?)
     `,
     [templateId, 'Weekly template', 'desc', JSON.stringify(rules)]
   );
@@ -19,30 +20,30 @@ async function insertTemplate(templateId: string, rules: TemplateRule[]) {
 async function insertAppointment(appointmentId: string, templateId: string) {
   await prisma.query(
     `
-      INSERT INTO appointments (id, title, summary, time_slot_template_id)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO appointments (id, title, summary, time_slot_template_id, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?)
     `,
-    [appointmentId, 'Team dinner', 'Summary', templateId]
+    [appointmentId, 'Team dinner', 'Summary', templateId, new Date().toISOString(), new Date().toISOString()]
   );
 }
 
 async function insertParticipant(participantId: string, appointmentId: string, nickname: string, submittedAt: string) {
   await prisma.query(
     `
-      INSERT INTO participants (id, appointment_id, nickname, submitted_at)
-      VALUES ($1, $2, $3, $4::timestamptz)
+      INSERT INTO participants (id, appointment_id, nickname, submitted_at, created_at)
+      VALUES (?, ?, ?, ?, ?)
     `,
-    [participantId, appointmentId, nickname, submittedAt]
+    [participantId, appointmentId, nickname, submittedAt, new Date().toISOString()]
   );
 }
 
 async function insertAvailability(appointmentId: string, participantId: string, slotKey: string, submittedAt: string) {
   await prisma.query(
     `
-      INSERT INTO slot_availability (appointment_id, participant_id, slot_key, submitted_at)
-      VALUES ($1, $2, $3, $4::timestamptz)
+      INSERT INTO slot_availability (id, appointment_id, participant_id, slot_key, submitted_at)
+      VALUES (?, ?, ?, ?, ?)
     `,
-    [appointmentId, participantId, slotKey, submittedAt]
+    [randomUUID(), appointmentId, participantId, slotKey, submittedAt]
   );
 }
 
@@ -56,10 +57,10 @@ describe('GET /api/appointments/:appointmentId', () => {
   });
 
   beforeEach(async () => {
-    await prisma.query('TRUNCATE TABLE slot_availability RESTART IDENTITY CASCADE;');
-    await prisma.query('TRUNCATE TABLE participants RESTART IDENTITY CASCADE;');
-    await prisma.query('TRUNCATE TABLE appointments RESTART IDENTITY CASCADE;');
-    await prisma.query('TRUNCATE TABLE time_slot_templates RESTART IDENTITY CASCADE;');
+    await prisma.query('DELETE FROM slot_availability');
+    await prisma.query('DELETE FROM participants');
+    await prisma.query('DELETE FROM appointments');
+    await prisma.query('DELETE FROM time_slot_templates');
     app.locals.metrics.reset();
     app.locals.templateCache.clear();
   });

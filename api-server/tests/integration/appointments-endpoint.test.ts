@@ -12,7 +12,9 @@ describe('POST /api/appointments', () => {
   });
 
   beforeEach(async () => {
-    await prisma.query('TRUNCATE TABLE appointments RESTART IDENTITY CASCADE;');
+    await prisma.query('DELETE FROM slot_availability');
+    await prisma.query('DELETE FROM participants');
+    await prisma.query('DELETE FROM appointments');
     app.locals.metrics.reset();
   });
 
@@ -28,7 +30,7 @@ describe('POST /api/appointments', () => {
     expect(response.body.summary).toBe('Monthly sync');
     expect(response.body.createdAt).toMatch(/Z$/);
 
-    const dbResult = await prisma.query('SELECT * FROM appointments WHERE id = $1', [response.body.appointmentId]);
+    const dbResult = await prisma.query('SELECT * FROM appointments WHERE id = ?', [response.body.appointmentId]);
     expect(dbResult.rows).toHaveLength(1);
     expect(dbResult.rows[0].summary).toBe('Monthly sync');
   });
@@ -42,7 +44,7 @@ describe('POST /api/appointments', () => {
     expect(response.status).toBe(201);
     expect(response.body.summary).toBe('');
 
-    const dbResult = await prisma.query('SELECT summary FROM appointments WHERE id = $1', [response.body.appointmentId]);
+    const dbResult = await prisma.query('SELECT summary FROM appointments WHERE id = ?', [response.body.appointmentId]);
     expect(dbResult.rows[0].summary).toBe('');
   });
 

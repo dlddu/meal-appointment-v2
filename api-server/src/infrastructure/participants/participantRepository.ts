@@ -2,7 +2,7 @@
 // Implemented for spec: agent/specs/meal-appointment-participation-backend-implementation-spec.md
 
 import type { TransactionClient } from '../prismaClient';
-import prisma from '../prismaClient';
+import prisma, { generateId } from '../prismaClient';
 
 export interface ParticipantRecord {
   id: string;
@@ -31,45 +31,51 @@ function getClient(tx?: TransactionClient): Queryable {
   return tx ?? prisma;
 }
 
+function toParticipantRecord(row: {
+  id: string;
+  appointment_id: string;
+  nickname: string;
+  pin_hash: string | null;
+  submitted_at: string | null;
+}): ParticipantRecord {
+  return {
+    id: row.id,
+    appointmentId: row.appointment_id,
+    nickname: row.nickname,
+    pinHash: row.pin_hash,
+    submittedAt: row.submitted_at ? new Date(row.submitted_at) : null
+  };
+}
+
+type ParticipantRow = {
+  id: string;
+  appointment_id: string;
+  nickname: string;
+  pin_hash: string | null;
+  submitted_at: string | null;
+};
+
 export class PrismaParticipantRepository implements ParticipantRepository {
   async listByAppointment(appointmentId: string): Promise<ParticipantRecord[]> {
-    const result = await prisma.query<{
-      id: string;
-      appointment_id: string;
-      nickname: string;
-      pin_hash: string | null;
-      submitted_at: Date | null;
-    }>(
+    const result = await prisma.query<ParticipantRow>(
       `
         SELECT id, appointment_id, nickname, pin_hash, submitted_at
         FROM participants
-        WHERE appointment_id = $1
-        ORDER BY submitted_at ASC NULLS LAST, created_at ASC
+        WHERE appointment_id = ?
+        ORDER BY CASE WHEN submitted_at IS NULL THEN 1 ELSE 0 END, submitted_at ASC, created_at ASC
       `,
       [appointmentId]
     );
 
-    return result.rows.map((row) => ({
-      id: row.id,
-      appointmentId: row.appointment_id,
-      nickname: row.nickname,
-      pinHash: row.pin_hash,
-      submittedAt: row.submitted_at
-    }));
+    return result.rows.map(toParticipantRecord);
   }
 
   async findByAppointmentAndNickname(appointmentId: string, nickname: string): Promise<ParticipantRecord | null> {
-    const result = await prisma.query<{
-      id: string;
-      appointment_id: string;
-      nickname: string;
-      pin_hash: string | null;
-      submitted_at: Date | null;
-    }>(
+    const result = await prisma.query<ParticipantRow>(
       `
         SELECT id, appointment_id, nickname, pin_hash, submitted_at
         FROM participants
-        WHERE appointment_id = $1 AND nickname = $2
+        WHERE appointment_id = ? AND nickname = ?
         LIMIT 1
       `,
       [appointmentId, nickname]
@@ -80,27 +86,15 @@ export class PrismaParticipantRepository implements ParticipantRepository {
       return null;
     }
 
-    return {
-      id: row.id,
-      appointmentId: row.appointment_id,
-      nickname: row.nickname,
-      pinHash: row.pin_hash,
-      submittedAt: row.submitted_at
-    };
+    return toParticipantRecord(row);
   }
 
   async findById(id: string): Promise<ParticipantRecord | null> {
-    const result = await prisma.query<{
-      id: string;
-      appointment_id: string;
-      nickname: string;
-      pin_hash: string | null;
-      submitted_at: Date | null;
-    }>(
+    const result = await prisma.query<ParticipantRow>(
       `
         SELECT id, appointment_id, nickname, pin_hash, submitted_at
         FROM participants
-        WHERE id = $1
+        WHERE id = ?
       `,
       [id]
     );
@@ -110,13 +104,7 @@ export class PrismaParticipantRepository implements ParticipantRepository {
       return null;
     }
 
-    return {
-      id: row.id,
-      appointmentId: row.appointment_id,
-      nickname: row.nickname,
-      pinHash: row.pin_hash,
-      submittedAt: row.submitted_at
-    };
+    return toParticipantRecord(row);
   }
 
   async create(
@@ -126,29 +114,19 @@ export class PrismaParticipantRepository implements ParticipantRepository {
     tx: TransactionClient
   ): Promise<ParticipantRecord> {
     const client = getClient(tx);
-    const result = await client.query<{
-      id: string;
-      appointment_id: string;
-      nickname: string;
-      pin_hash: string | null;
-      submitted_at: Date | null;
-    }>(
+    const id = generateId();
+    const now = new Date().toISOString();
+    const result = await client.query<ParticipantRow>(
       `
-        INSERT INTO participants (appointment_id, nickname, pin_hash, submitted_at)
-        VALUES ($1, $2, $3, NULL)
+        INSERT INTO participants (id, appointment_id, nickname, pin_hash, submitted_at, created_at)
+        VALUES (?, ?, ?, ?, NULL, ?)
         RETURNING id, appointment_id, nickname, pin_hash, submitted_at
       `,
-      [appointmentId, nickname, pinHash]
+      [id, appointmentId, nickname, pinHash, now]
     );
 
     const row = result.rows[0];
-    return {
-      id: row.id,
-      appointmentId: row.appointment_id,
-      nickname: row.nickname,
-      pinHash: row.pin_hash,
-      submittedAt: row.submitted_at
-    };
+    return toParticipantRecord(row);
   }
 
   async updateSubmittedAt(id: string, submittedAt: Date, tx: TransactionClient): Promise<void> {
@@ -156,10 +134,10 @@ export class PrismaParticipantRepository implements ParticipantRepository {
     await client.query(
       `
         UPDATE participants
-        SET submitted_at = $2
-        WHERE id = $1
+        SET submitted_at = ?
+        WHERE id = ?
       `,
-      [id, submittedAt]
+      [submittedAt.toISOString(), id]
     );
   }
 }

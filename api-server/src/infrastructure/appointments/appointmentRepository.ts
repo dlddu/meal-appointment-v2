@@ -2,7 +2,7 @@
 // Implemented for spec: agent/specs/meal-appointment-view-appointment-backend-implementation-spec.md
 
 import type { TransactionClient } from '../prismaClient';
-import prisma from '../prismaClient';
+import prisma, { generateId } from '../prismaClient';
 
 export interface AppointmentRecord {
   id: string;
@@ -26,20 +26,22 @@ export interface AppointmentRepository {
 
 export class PrismaAppointmentRepository implements AppointmentRepository {
   async create(input: CreateAppointmentRecordInput, tx: TransactionClient): Promise<AppointmentRecord> {
+    const now = new Date().toISOString();
+    const id = generateId();
     const result = await tx.query<{
       id: string;
       title: string;
       summary: string;
       time_slot_template_id: string;
-      created_at: Date;
-      updated_at: Date;
+      created_at: string;
+      updated_at: string;
     }>(
       `
-        INSERT INTO appointments (title, summary, time_slot_template_id)
-        VALUES ($1, $2, $3)
+        INSERT INTO appointments (id, title, summary, time_slot_template_id, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?)
         RETURNING id, title, summary, time_slot_template_id, created_at, updated_at
       `,
-      [input.title, input.summary, input.timeSlotTemplateId]
+      [id, input.title, input.summary, input.timeSlotTemplateId, now, now]
     );
 
     const row = result.rows[0];
@@ -48,8 +50,8 @@ export class PrismaAppointmentRepository implements AppointmentRepository {
       title: row.title,
       summary: row.summary,
       timeSlotTemplateId: row.time_slot_template_id,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at
+      createdAt: new Date(row.created_at),
+      updatedAt: new Date(row.updated_at)
     };
   }
 
@@ -59,13 +61,13 @@ export class PrismaAppointmentRepository implements AppointmentRepository {
       title: string;
       summary: string;
       time_slot_template_id: string;
-      created_at: Date;
-      updated_at: Date;
+      created_at: string;
+      updated_at: string;
     }>(
       `
         SELECT id, title, summary, time_slot_template_id, created_at, updated_at
         FROM appointments
-        WHERE id = $1
+        WHERE id = ?
       `,
       [id]
     );
@@ -80,8 +82,8 @@ export class PrismaAppointmentRepository implements AppointmentRepository {
       title: row.title,
       summary: row.summary,
       timeSlotTemplateId: row.time_slot_template_id,
-      createdAt: row.created_at,
-      updatedAt: row.updated_at
+      createdAt: new Date(row.created_at),
+      updatedAt: new Date(row.updated_at)
     };
   }
 }
