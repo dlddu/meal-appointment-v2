@@ -45,6 +45,9 @@ RUN npm ci --omit=dev
 # Copy built files from builder
 COPY --from=builder /app/api-server/dist ./api-server/dist
 
+# Copy migration scripts (run at container startup via tsx)
+COPY api-server/scripts ./api-server/scripts
+
 # Create data directory for SQLite
 RUN mkdir -p /app/api-server/data
 VOLUME /app/api-server/data
