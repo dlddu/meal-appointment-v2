@@ -32,8 +32,11 @@ Commands:
   web-unit         Run web-client unit tests with Vitest.
   api-unit         Run api-server unit tests with Jest.
   api-integration  Run api-server integration tests against the SQLite test database.
-  e2e              Run end-to-end tests (API + Web) using Playwright.
+  e2e              Provision a kind cluster and run Playwright end-to-end tests against it.
   all              Run all of the above in sequence.
+
+Environment:
+  KEEP_CLUSTER=1   Skip the kind teardown step after the e2e suite finishes.
 USAGE
 }
 
@@ -85,17 +88,21 @@ function run_api_integration() {
 }
 
 function run_e2e() {
-  ensure_db_connection "$ROOT_DIR/api-server/.env.e2e"
-  (
-    cd "$ROOT_DIR/api-server"
-    npm run build
-    npm run db:migrate:e2e
-    npm run db:seed:e2e
-  )
+  "$ROOT_DIR/scripts/e2e-kind.sh" up
+
+  local exit_code=0
   (
     cd "$ROOT_DIR/web-client"
-    npm run test:e2e
-  )
+    E2E_USE_KIND=1 npm run test:e2e
+  ) || exit_code=$?
+
+  if [[ "${KEEP_CLUSTER:-0}" == "1" ]]; then
+    echo "[run-tests] KEEP_CLUSTER=1 set; leaving kind cluster running"
+  else
+    "$ROOT_DIR/scripts/e2e-kind.sh" down || true
+  fi
+
+  return $exit_code
 }
 
 cmd="${1:-all}"
