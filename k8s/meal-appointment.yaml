@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: meal-appointment
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Mi
+  storageClassName: efs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meal-appointment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: meal-appointment
+  template:
+    metadata:
+      labels:
+        app: meal-appointment
+    spec:
+      containers:
+        - name: api-server
+          image: ghcr.io/dlddu/meal-appointment-v2/api-server:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -euo pipefail
+              npx tsx scripts/migrate.ts
+              npx -y prisma db seed --schema prisma/schema.prisma
+              npm start
+          env:
+            - name: PORT
+              value: "4000"
+            - name: NODE_ENV
+              value: production
+            - name: LOG_LEVEL
+              value: info
+            - name: DATABASE_URL
+              value: ./data/meal_appointment.db
+          ports:
+            - containerPort: 4000
+          volumeMounts:
+            - mountPath: /app/api-server/data
+              name: database
+        - name: web-client
+          image: ghcr.io/dlddu/meal-appointment-v2/web-client:latest
+          env:
+            - name: VITE_API_BASE_URL
+              value: https://meal-appointment.${PUBLIC_DOMAIN}/api
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: ghcr
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: meal-appointment
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: meal-appointment
+spec:
+  selector:
+    app: meal-appointment
+  ports:
+    - name: api
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+    - name: web
+      protocol: TCP
+      port: 80
+      targetPort: 80
