@@ -274,10 +274,10 @@
   {
     "spec": "agent/specs/meal-appointment-local-testing-spec.md",
     "files": [
-      "k8s/e2e/kind-config.yaml",
-      "k8s/e2e/namespace.yaml",
-      "k8s/e2e/deployment.yaml",
-      "k8s/e2e/service.yaml",
+      "e2e/kind-config.yaml",
+      "e2e/namespace.yaml",
+      "e2e/deployment.yaml",
+      "e2e/service.yaml",
       "scripts/e2e-kind.sh",
       "scripts/run-tests.sh",
       "web-client/playwright.e2e.config.ts",
@@ -285,6 +285,6 @@
       "agent/specs/meal-appointment-local-testing-spec.md",
       "README.md"
     ],
-    "summary": "Switch the E2E pipeline from locally spawned dev servers to a kind cluster. Adds k8s/e2e/ manifests (kind config, namespace, Deployment with migrate+seed init, NodePort Service), a scripts/e2e-kind.sh orchestrator that builds the api-server and web-client images, loads them into kind, applies manifests and waits for host-side endpoints, plus updates run-tests.sh to drive the cluster lifecycle. Playwright config skips its local webServer when E2E_USE_KIND=1, and the GitHub Actions e2e job now provisions kind via helm/kind-action instead of a Postgres service container."
+    "summary": "Switch the E2E pipeline from locally spawned dev servers to a kind cluster. Adds e2e/ manifests (kind config, namespace, Deployment with migrate+seed init, NodePort Service), a scripts/e2e-kind.sh orchestrator that builds the api-server and web-client images, loads them into kind, applies manifests and waits for host-side endpoints, plus updates run-tests.sh to drive the cluster lifecycle. Playwright config skips its local webServer when E2E_USE_KIND=1, and the GitHub Actions e2e job now provisions kind via helm/kind-action instead of a Postgres service container."
   }
 ]

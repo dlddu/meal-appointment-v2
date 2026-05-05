@@ -125,7 +125,7 @@ jobs:
         with:
           version: v0.24.0
           cluster_name: meal-appointment-e2e
-          config: k8s/e2e/kind-config.yaml
+          config: e2e/kind-config.yaml
 
       - name: Run end-to-end tests against kind cluster
         run: npm run test:web:e2e

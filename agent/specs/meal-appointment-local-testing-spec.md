@@ -88,19 +88,19 @@ E2E 단계는 로컬 프로세스가 아니라 [`kind`](https://kind.sigs.k8s.io
    - [`kind`](https://kind.sigs.k8s.io/) 0.24 이상
    - `kubectl` 1.30 이상
    - Playwright 브라우저 (`npx playwright install --with-deps chromium`)
-   - 호스트 포트 `5173`(웹), `4002`(API)는 다른 프로세스에서 사용 중이지 않아야 한다. 이 두 포트는 `k8s/e2e/kind-config.yaml`의 `extraPortMappings`을 통해 클러스터 내 NodePort 30173/30400과 매핑된다.
+   - 호스트 포트 `5173`(웹), `4002`(API)는 다른 프로세스에서 사용 중이지 않아야 한다. 이 두 포트는 `e2e/kind-config.yaml`의 `extraPortMappings`을 통해 클러스터 내 NodePort 30173/30400과 매핑된다.
 2. **클러스터 매니페스트 구성**
-   - `k8s/e2e/kind-config.yaml` – kind 클러스터 정의(포트 매핑 포함).
-   - `k8s/e2e/namespace.yaml` – `meal-appointment-e2e` 네임스페이스.
-   - `k8s/e2e/deployment.yaml` – api-server + web-client 컨테이너를 포함한 Deployment. 시작 시 `npx tsx scripts/migrate.ts` 실행 후 `node dist/prisma/seed.js`로 기본 템플릿을 시드한다.
-   - `k8s/e2e/service.yaml` – api(NodePort 30400)/web(NodePort 30173)을 노출하는 Service.
+   - `e2e/kind-config.yaml` – kind 클러스터 정의(포트 매핑 포함).
+   - `e2e/namespace.yaml` – `meal-appointment-e2e` 네임스페이스.
+   - `e2e/deployment.yaml` – api-server + web-client 컨테이너를 포함한 Deployment. 시작 시 `npx tsx scripts/migrate.ts` 실행 후 `node dist/prisma/seed.js`로 기본 템플릿을 시드한다.
+   - `e2e/service.yaml` – api(NodePort 30400)/web(NodePort 30173)을 노출하는 Service.
 3. **이미지 빌드와 배포**
    - 루트에서 `npm run test:web:e2e`를 실행하면 `scripts/run-tests.sh e2e`가 호출되고, 이는 다시 `scripts/e2e-kind.sh up`을 실행한다.
    - `scripts/e2e-kind.sh up`은 다음 작업을 수행한다.
      1. `meal-appointment-api:e2e` 이미지를 `api-server/Dockerfile`로 빌드.
      2. `meal-appointment-web:e2e` 이미지를 `web-client/Dockerfile`로 빌드. Playwright가 호스트에서 직접 API에 접근할 수 있도록 `VITE_API_BASE_URL=http://127.0.0.1:4002/api`를 빌드 인자로 주입한다.
      3. kind 클러스터(`meal-appointment-e2e`)가 없으면 생성하고, 빌드한 이미지를 `kind load docker-image`로 적재.
-     4. `k8s/e2e/`의 매니페스트를 적용하고 `kubectl rollout status`로 준비 완료를 대기.
+     4. `e2e/`의 매니페스트를 적용하고 `kubectl rollout status`로 준비 완료를 대기.
      5. 호스트 포트 5173/4002에 HTTP 응답이 올 때까지 대기.
 4. **Playwright 실행**
    ```bash
@@ -115,7 +115,7 @@ E2E 단계는 로컬 프로세스가 아니라 [`kind`](https://kind.sigs.k8s.io
    - 실패 분석에는 `scripts/e2e-kind.sh logs`로 컨테이너 로그를 확인한다.
 
 ## 7. 문제 해결 가이드
-- **포트 충돌**: API 서버(4000~4002), Vite(5173) 포트가 사용 중이면 `.env`의 포트를 변경하고 Playwright 설정도 동기화한다. kind 기반 E2E의 경우 `k8s/e2e/kind-config.yaml`의 `extraPortMappings`도 함께 수정한다.
+- **포트 충돌**: API 서버(4000~4002), Vite(5173) 포트가 사용 중이면 `.env`의 포트를 변경하고 Playwright 설정도 동기화한다. kind 기반 E2E의 경우 `e2e/kind-config.yaml`의 `extraPortMappings`도 함께 수정한다.
 - **SSL 요구**: 로컬 테스트는 HTTP로 진행하며, 프록시/SSL 설정은 비활성화한다.
 - **kind 이미지 미반영**: `scripts/e2e-kind.sh up`은 매번 이미지를 재빌드해 `kind load docker-image`로 적재하고 Deployment를 `rollout restart`한다. 그래도 변경 사항이 반영되지 않으면 `scripts/e2e-kind.sh down`으로 클러스터를 초기화한다.
 - **테스트 간 격리**: Jest 프로젝트 설정에서 `--runInBand`를 유지한다. E2E의 경우 Deployment 볼륨이 `emptyDir`이라 Pod이 재생성될 때마다 SQLite DB가 새로 시드된다.
