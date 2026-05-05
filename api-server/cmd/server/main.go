@@ -92,8 +92,11 @@ func main() {
 }
 
 func loadEnvFiles() {
-	candidates := []string{".env.local", ".env"}
-	for _, name := range candidates {
+	if path := os.Getenv("ENV_FILE"); path != "" {
+		_ = godotenv.Load(path)
+		return
+	}
+	for _, name := range []string{".env.local", ".env"} {
 		if _, err := os.Stat(name); err == nil {
 			_ = godotenv.Load(name)
 			return

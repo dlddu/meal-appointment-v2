@@ -23,12 +23,12 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: 'npm run start:e2e',
+      command: 'go run ./cmd/server',
       port: 4002,
       reuseExistingServer: reuse,
       cwd: path.resolve(__dirname, '../api-server'),
       env: {
-        NODE_ENV: 'e2e'
+        ENV_FILE: '.env.e2e'
       }
     },
     {
