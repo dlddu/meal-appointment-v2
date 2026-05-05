@@ -16,8 +16,9 @@ A monorepo that bootstraps the architecture for a meal appointment coordination 
 * Node.js 20+
 * npm 9+
 * Playwright browser binaries (installed automatically on demand)
+* For the E2E suite: Docker, [`kind`](https://kind.sigs.k8s.io/) ≥ 0.24, and `kubectl` ≥ 1.30. Host ports `5173` and `4002` must be available — they are mapped into the kind cluster.
 
-No external database service is required. The project uses SQLite via `better-sqlite3`, and database files are created automatically on first run.
+No external database service is required for unit/integration tests. The project uses SQLite via `better-sqlite3`, and database files are created automatically on first run. The E2E suite runs the same SQLite-backed images on a kind cluster.
 
 ## Installation
 
@@ -66,11 +67,12 @@ The `scripts/run-tests.sh` helper implements the end-to-end workflow from the lo
 ./scripts/run-tests.sh web-unit       # Web client TypeScript build + Vitest suite
 ./scripts/run-tests.sh api-unit       # API server Jest unit tests
 ./scripts/run-tests.sh api-integration# API server integration tests (real DB)
-./scripts/run-tests.sh e2e            # Playwright end-to-end checks
+./scripts/run-tests.sh e2e            # Build container images, deploy on kind, and run Playwright
 ```
 
-Behind the scenes the script applies SQL migrations, reseeds the database when needed, and launches Playwright. The E2E step exercises the health endpoint and the rendered shell via Playwright's API testing mode, ensuring the running servers respond correctly without depending on extra browser downloads.
-The `web-unit` command first compiles the web client with `npm run build` so TypeScript regressions are surfaced alongside the Vitest suite.
+Behind the scenes the script applies SQL migrations, reseeds the database when needed, and launches Playwright. The `web-unit` command first compiles the web client with `npm run build` so TypeScript regressions are surfaced alongside the Vitest suite.
+
+The `e2e` command delegates to `scripts/e2e-kind.sh`, which builds the `meal-appointment-api:e2e` and `meal-appointment-web:e2e` images, loads them into a single-node kind cluster (`meal-appointment-e2e`), applies the manifests under `k8s/e2e/`, and waits for the host-side endpoints (`http://127.0.0.1:5173` for the SPA and `http://127.0.0.1:4002/api` for the API) before invoking Playwright. The cluster is deleted after the suite finishes; set `KEEP_CLUSTER=1` to keep it for debugging and tear it down later via `scripts/e2e-kind.sh down`.
 
 ## Architecture highlights
 

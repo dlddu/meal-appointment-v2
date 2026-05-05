@@ -1,0 +1,5 @@
+# Implemented for spec: agent/specs/meal-appointment-local-testing-spec.md
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: meal-appointment-e2e

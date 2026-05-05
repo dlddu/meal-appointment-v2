@@ -96,23 +96,8 @@ jobs:
             postgresql://meal_user:meal_pass@localhost:5432/meal_appointment_test
 
   e2e-tests:
-    name: End-to-End Tests
+    name: End-to-End Tests (kind)
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: meal_user
-          POSTGRES_PASSWORD: meal_pass
-          POSTGRES_DB: meal_appointment_e2e
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
 
     steps:
       - name: Checkout code
@@ -130,20 +115,27 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
-      - name: Create .env.e2e files
-        run: |
-          if [ ! -f api-server/.env.e2e ]; then
-            cp api-server/.env.e2e.example api-server/.env.e2e
-          fi
-          if [ ! -f web-client/.env.e2e ]; then
-            echo "VITE_API_BASE_URL=http://127.0.0.1:4002/api" > web-client/.env.e2e
-          fi
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.30.0
 
-      - name: Run end-to-end tests
+      - name: Create kind cluster
+        uses: helm/kind-action@v1
+        with:
+          version: v0.24.0
+          cluster_name: meal-appointment-e2e
+          config: k8s/e2e/kind-config.yaml
+
+      - name: Run end-to-end tests against kind cluster
         run: npm run test:web:e2e
-        env:
-          DATABASE_URL: >-
-            postgresql://meal_user:meal_pass@localhost:5432/meal_appointment_e2e
+
+      - name: Dump kind cluster diagnostics
+        if: failure()
+        run: |
+          kubectl get pods -A -o wide || true
+          kubectl -n meal-appointment-e2e describe deployment meal-appointment-e2e || true
+          kubectl -n meal-appointment-e2e logs deployment/meal-appointment-e2e --all-containers --tail=400 || true
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4

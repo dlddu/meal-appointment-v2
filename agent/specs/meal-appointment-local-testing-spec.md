@@ -80,40 +80,45 @@
 5. **정리**
    - 테스트 완료 후 데이터를 초기화하려면 `psql meal_appointment_test -c 'TRUNCATE TABLE slot_availability, participants, appointments RESTART IDENTITY CASCADE;'` 실행.
 
-## 6. E2E 테스트 (Playwright)
+## 6. E2E 테스트 (Playwright + kind)
+E2E 단계는 로컬 프로세스가 아니라 [`kind`](https://kind.sigs.k8s.io/)로 띄운 단일 노드 Kubernetes 클러스터 위에서 컨테이너 이미지를 배포한 뒤 Playwright를 실행한다. 이렇게 하면 실제 컨테이너 빌드와 매니페스트가 검증되며, 운영에 가까운 환경에서 시나리오를 재현할 수 있다.
+
 1. **전제 조건**
-   - 로컬 PostgreSQL에서 E2E 전용 DB 준비:
-     ```bash
-     createdb meal_appointment_e2e
-     ```
-   - `api-server/.env.e2e`에 `DATABASE_URL`과 `PORT=4002`, `VITE_API_BASE_URL` 등 설정.
-   - `web-client/.env.e2e`에 `VITE_API_BASE_URL=http://localhost:4002` 지정.
-2. **데이터 시드**
-   ```bash
-   cd api-server
-   npx prisma migrate deploy --schema prisma/schema.prisma --env-file .env.e2e
-   npx prisma db seed --schema prisma/schema.prisma --env-file .env.e2e
-   cd ..
-   ```
-   - 기본 시간 슬롯 템플릿을 삽입하여 테스트 시 UI가 슬롯을 렌더링할 수 있게 한다.
-3. **서비스 기동**
-   - 터미널 A: `cd api-server && npm run start:e2e` (`NODE_ENV=e2e`로 Express 서버 실행).
-   - 터미널 B: `cd web-client && npm run dev -- --mode e2e --host localhost --port 5173` (E2E용 환경변수를 적용한 Vite 개발 서버 실행).
+   - Docker 25 이상 (containerd 또는 docker 호환 데몬)
+   - [`kind`](https://kind.sigs.k8s.io/) 0.24 이상
+   - `kubectl` 1.30 이상
+   - Playwright 브라우저 (`npx playwright install --with-deps chromium`)
+   - 호스트 포트 `5173`(웹), `4002`(API)는 다른 프로세스에서 사용 중이지 않아야 한다. 이 두 포트는 `k8s/e2e/kind-config.yaml`의 `extraPortMappings`을 통해 클러스터 내 NodePort 30173/30400과 매핑된다.
+2. **클러스터 매니페스트 구성**
+   - `k8s/e2e/kind-config.yaml` – kind 클러스터 정의(포트 매핑 포함).
+   - `k8s/e2e/namespace.yaml` – `meal-appointment-e2e` 네임스페이스.
+   - `k8s/e2e/deployment.yaml` – api-server + web-client 컨테이너를 포함한 Deployment. 시작 시 `npx tsx scripts/migrate.ts` 실행 후 `node dist/prisma/seed.js`로 기본 템플릿을 시드한다.
+   - `k8s/e2e/service.yaml` – api(NodePort 30400)/web(NodePort 30173)을 노출하는 Service.
+3. **이미지 빌드와 배포**
+   - 루트에서 `npm run test:web:e2e`를 실행하면 `scripts/run-tests.sh e2e`가 호출되고, 이는 다시 `scripts/e2e-kind.sh up`을 실행한다.
+   - `scripts/e2e-kind.sh up`은 다음 작업을 수행한다.
+     1. `meal-appointment-api:e2e` 이미지를 `api-server/Dockerfile`로 빌드.
+     2. `meal-appointment-web:e2e` 이미지를 `web-client/Dockerfile`로 빌드. Playwright가 호스트에서 직접 API에 접근할 수 있도록 `VITE_API_BASE_URL=http://127.0.0.1:4002/api`를 빌드 인자로 주입한다.
+     3. kind 클러스터(`meal-appointment-e2e`)가 없으면 생성하고, 빌드한 이미지를 `kind load docker-image`로 적재.
+     4. `k8s/e2e/`의 매니페스트를 적용하고 `kubectl rollout status`로 준비 완료를 대기.
+     5. 호스트 포트 5173/4002에 HTTP 응답이 올 때까지 대기.
 4. **Playwright 실행**
    ```bash
    cd web-client
-   npx playwright install --with-deps
-   npm run test:e2e
+   E2E_USE_KIND=1 npm run test:e2e
    ```
-   - `playwright test --config playwright.e2e.config.ts`를 호출해 브라우저 자동화. 시나리오 예: 약속 생성 → 공유 링크 접속 → 참여자 응답 제출 → 요약 확인.
+   - `playwright.e2e.config.ts`는 `E2E_USE_KIND=1`이 설정되면 로컬 webServer 블록을 비활성화하고 kind가 노출하는 엔드포인트를 그대로 사용한다.
+   - `scripts/run-tests.sh e2e`가 자동으로 이 환경 변수를 설정한다.
 5. **테스트 후 정리**
-   - 서버 프로세스를 종료하고, 필요 시 `dropdb meal_appointment_e2e`로 데이터베이스 삭제.
+   - 기본적으로 `scripts/run-tests.sh e2e`는 테스트 종료 후 `scripts/e2e-kind.sh down`을 호출해 kind 클러스터를 삭제한다.
+   - 디버깅을 위해 클러스터를 유지하려면 `KEEP_CLUSTER=1 npm run test:web:e2e`를 사용한다. 이후 `scripts/e2e-kind.sh down`으로 수동 제거할 수 있다.
+   - 실패 분석에는 `scripts/e2e-kind.sh logs`로 컨테이너 로그를 확인한다.
 
 ## 7. 문제 해결 가이드
-- **포트 충돌**: API 서버(4000~4002), Vite(5173) 포트가 사용 중이면 `.env`의 포트를 변경하고 Playwright 설정도 동기화한다.
+- **포트 충돌**: API 서버(4000~4002), Vite(5173) 포트가 사용 중이면 `.env`의 포트를 변경하고 Playwright 설정도 동기화한다. kind 기반 E2E의 경우 `k8s/e2e/kind-config.yaml`의 `extraPortMappings`도 함께 수정한다.
 - **SSL 요구**: 로컬 테스트는 HTTP로 진행하며, 프록시/SSL 설정은 비활성화한다.
-- **Prisma 캐시 이슈**: 스키마 변경 후 테스트 실패 시 `rm -rf node_modules/.cache/prisma` 후 `npx prisma generate` 재실행.
-- **테스트 간 격리**: Jest 프로젝트 설정에서 `--runInBand`를 유지하거나 Prisma 테스트 클라이언트를 각 테스트마다 `beforeEach`에서 초기화한다.
+- **kind 이미지 미반영**: `scripts/e2e-kind.sh up`은 매번 이미지를 재빌드해 `kind load docker-image`로 적재하고 Deployment를 `rollout restart`한다. 그래도 변경 사항이 반영되지 않으면 `scripts/e2e-kind.sh down`으로 클러스터를 초기화한다.
+- **테스트 간 격리**: Jest 프로젝트 설정에서 `--runInBand`를 유지한다. E2E의 경우 Deployment 볼륨이 `emptyDir`이라 Pod이 재생성될 때마다 SQLite DB가 새로 시드된다.
 
 ## 8. 참조 명세
 - 본 테스트 명세는 다음을 기반으로 작성되었다.
