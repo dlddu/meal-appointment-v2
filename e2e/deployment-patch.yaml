@@ -1,0 +1,28 @@
+# Implemented for spec: agent/specs/meal-appointment-local-testing-spec.md
+#
+# Strategic-merge overrides applied on top of k8s/deployment.yaml when running
+# inside the kind-based e2e cluster: rebuild strategy, kind-loaded images,
+# verbose-but-quieter logs, the e2e database file, and per-container readiness
+# probes.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meal-appointment
+spec:
+  strategy:
+    type: Recreate
+    rollingUpdate: null
+  template:
+    spec:
+      containers:
+        - name: api-server
+          image: meal-appointment-api:e2e
+          imagePullPolicy: Never
+          env:
+            - name: LOG_LEVEL
+              value: warn
+            - name: DATABASE_URL
+              value: ./data/meal_appointment_e2e.db
+        - name: web-client
+          image: meal-appointment-web:e2e
+          imagePullPolicy: Never

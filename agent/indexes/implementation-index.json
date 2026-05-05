@@ -344,5 +344,17 @@
       "README.md"
     ],
     "summary": "Migrate the api-server backend from TypeScript/Express to Go (chi + zerolog + Prometheus client + modernc.org/sqlite). Preserves every public HTTP contract — POST /api/appointments, GET /api/appointments/:id, POST /api/appointments/:id/participants, PUT .../responses, GET /api/templates, GET /api/health — including status codes, response shapes, request-id propagation, Korean view-appointment error messages, and Prometheus metric names/labels. Replaces the prisma client wrapper with a thin database/sql + transaction helper, the in-memory template cache, default template provider, PIN bcrypt logic, and slot validator. Adds cmd/server, cmd/migrate, and cmd/seed binaries; rewrites the Dockerfile to a CGO-free Go multi-stage build; updates the kind deployment to invoke /app/migrate, /app/seed, /app/server; rewrites scripts/run-tests.sh api-unit/api-integration to use go test; and removes api-server from the npm workspaces array. Domain helpers (slot key compare, availability aggregator, share URL builder), the active template service cache, and the slot validator all carry Go unit tests."
+  },
+  {
+    "spec": "agent/specs/meal-appointment-local-testing-spec.md",
+    "files": [
+      "k8s/kustomization.yaml",
+      "k8s/deployment.yaml",
+      "k8s/service.yaml",
+      "e2e/kustomization.yaml",
+      "e2e/deployment-patch.yaml",
+      "scripts/e2e-kind.sh"
+    ],
+    "summary": "Restructure the kind/e2e Kubernetes manifests as a kustomize overlay. k8s/ is now the kustomize base (deployment, service, pvc) shaped for the Go runtime — Go binary commands, /app/data mount, named ports, readiness probes — and e2e/ is an overlay that references ../k8s, sets the meal-appointment-e2e namespace and -e2e nameSuffix, swaps in kind-loaded images with imagePullPolicy: Never and the e2e database file, replaces the PVC with an emptyDir, drops the ghcr imagePullSecret and the production VITE_API_BASE_URL env, and converts the Service to a NodePort with the host-mapped ports. scripts/e2e-kind.sh now applies via kubectl apply -k e2e instead of looping over individual manifest files."
   }
 ]

@@ -24,23 +24,31 @@ spec:
             - /bin/sh
             - -c
             - |
-              set -euo pipefail
-              npx tsx scripts/migrate.ts
-              npx -y prisma db seed --schema prisma/schema.prisma
-              npm start
+              set -eu
+              /app/migrate
+              /app/seed
+              exec /app/server
           env:
             - name: PORT
               value: "4000"
-            - name: NODE_ENV
-              value: production
             - name: LOG_LEVEL
               value: info
             - name: DATABASE_URL
               value: ./data/meal_appointment.db
+            - name: MIGRATION_FILE
+              value: /app/migrations/0001_init.sql
           ports:
-            - containerPort: 4000
+            - name: api
+              containerPort: 4000
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: api
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            failureThreshold: 30
           volumeMounts:
-            - mountPath: /app/api-server/data
+            - mountPath: /app/data
               name: database
         - name: web-client
           image: ghcr.io/dlddu/meal-appointment-v2/web-client:latest
@@ -48,7 +56,15 @@ spec:
             - name: VITE_API_BASE_URL
               value: https://meal-appointment.${PUBLIC_DOMAIN}/api
           ports:
-            - containerPort: 80
+            - name: web
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: web
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            failureThreshold: 30
       imagePullSecrets:
         - name: ghcr
       volumes:
