@@ -27,18 +27,18 @@ spec:
             - -c
             - |
               set -eu
-              npx tsx scripts/migrate.ts
-              node dist/prisma/seed.js
-              npm start
+              /app/migrate
+              /app/seed
+              exec /app/server
           env:
             - name: PORT
               value: "4000"
-            - name: NODE_ENV
-              value: e2e
             - name: LOG_LEVEL
               value: warn
             - name: DATABASE_URL
               value: ./data/meal_appointment_e2e.db
+            - name: MIGRATION_FILE
+              value: /app/migrations/0001_init.sql
           ports:
             - name: api
               containerPort: 4000
@@ -50,7 +50,7 @@ spec:
             periodSeconds: 3
             failureThreshold: 30
           volumeMounts:
-            - mountPath: /app/api-server/data
+            - mountPath: /app/data
               name: database
         - name: web-client
           image: meal-appointment-web:e2e

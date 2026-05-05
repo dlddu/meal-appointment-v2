@@ -30,8 +30,8 @@ Usage: $0 [web-unit|api-unit|api-integration|e2e|all]
 
 Commands:
   web-unit         Run web-client unit tests with Vitest.
-  api-unit         Run api-server unit tests with Jest.
-  api-integration  Run api-server integration tests against the SQLite test database.
+  api-unit         Run api-server Go unit tests (go test ./...).
+  api-integration  Migrate the SQLite test database and run Go integration tests.
   e2e              Provision a kind cluster and run Playwright end-to-end tests against it.
   all              Run all of the above in sequence.
 
@@ -75,15 +75,15 @@ function run_web_unit() {
 }
 
 function run_api_unit() {
-  (cd "$ROOT_DIR/api-server" && npm run test:unit)
+  (cd "$ROOT_DIR/api-server" && go test ./...)
 }
 
 function run_api_integration() {
   ensure_db_connection "$ROOT_DIR/api-server/.env.test"
   (
     cd "$ROOT_DIR/api-server"
-    npm run db:migrate:test
-    npm run test:integration
+    ENV_FILE="$ROOT_DIR/api-server/.env.test" go run ./cmd/migrate
+    ENV_FILE="$ROOT_DIR/api-server/.env.test" go test -tags=integration ./...
   )
 }
 

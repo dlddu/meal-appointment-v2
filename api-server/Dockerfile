@@ -1,60 +1,39 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM golang:1.25-alpine AS builder
+
+WORKDIR /src
+
+# Cache module downloads.
+COPY api-server/go.mod api-server/go.sum ./
+RUN go mod download
+
+# Copy the rest of the API server source.
+COPY api-server/ ./
+
+# Build all three binaries with CGO disabled (modernc.org/sqlite is pure Go).
+ENV CGO_ENABLED=0
+RUN go build -trimpath -ldflags="-s -w" -o /out/server ./cmd/server \
+ && go build -trimpath -ldflags="-s -w" -o /out/migrate ./cmd/migrate \
+ && go build -trimpath -ldflags="-s -w" -o /out/seed ./cmd/seed
+
+# Runtime stage
+FROM alpine:3.20 AS production
 
 WORKDIR /app
 
-# Install build dependencies for better-sqlite3 native module
-RUN apk add --no-cache build-base python3
+RUN adduser -D -H -u 10001 app && mkdir -p /app/data && chown -R app:app /app
 
-# Copy all package files to leverage workspace
-COPY package*.json ./
-COPY api-server/package*.json ./api-server/
-COPY web-client/package*.json ./web-client/
-COPY api-server/prisma ./api-server/prisma/
+COPY --from=builder /out/server /app/server
+COPY --from=builder /out/migrate /app/migrate
+COPY --from=builder /out/seed /app/seed
+COPY api-server/migrations /app/migrations
 
-# Install all workspace dependencies from root
-RUN npm ci
+ENV PORT=4000 \
+    DATABASE_URL=./data/meal_appointment.db \
+    MIGRATION_FILE=/app/migrations/0001_init.sql
 
-# Copy api-server source code
-COPY api-server/src ./api-server/src
-COPY api-server/tsconfig*.json ./api-server/
-
-# Build the api-server
-RUN npm run build --workspace=api-server
-
-# Production stage
-FROM node:20-alpine AS production
-
-WORKDIR /app
-
-ENV NODE_ENV=production
-
-# Install build dependencies for better-sqlite3 native module
-RUN apk add --no-cache build-base python3
-
-# Copy root package files
-COPY package*.json ./
-COPY api-server/package*.json ./api-server/
-COPY api-server/prisma ./api-server/prisma/
-
-# Install production dependencies
-# Note: npm workspaces require all workspace package.json files to be present for dependency resolution
-COPY web-client/package*.json ./web-client/
-RUN npm ci --omit=dev
-
-# Copy built files from builder
-COPY --from=builder /app/api-server/dist ./api-server/dist
-
-# Copy migration scripts (run at container startup via tsx)
-COPY api-server/scripts ./api-server/scripts
-
-# Create data directory for SQLite
-RUN mkdir -p /app/api-server/data
-VOLUME /app/api-server/data
-
-# Expose port
+VOLUME /app/data
 EXPOSE 4000
+USER app
 
-# Start the api-server
-WORKDIR /app/api-server
-CMD ["npm", "start"]
+CMD ["/app/server"]
