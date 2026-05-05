@@ -8,7 +8,6 @@ WORKDIR /app
 
 # Copy all package files to leverage workspace
 COPY package*.json ./
-COPY api-server/package*.json ./api-server/
 COPY web-client/package*.json ./web-client/
 
 # Install all workspace dependencies from root
