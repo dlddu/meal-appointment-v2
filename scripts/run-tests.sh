@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+API_DIR="$ROOT_DIR/api-server"
 
 function ensure_env_file() {
   local env_file="$1"
@@ -30,8 +31,8 @@ Usage: $0 [web-unit|api-unit|api-integration|e2e|all]
 
 Commands:
   web-unit         Run web-client unit tests with Vitest.
-  api-unit         Run api-server unit tests with Jest.
-  api-integration  Run api-server integration tests against the SQLite test database.
+  api-unit         Run api-server Go unit tests.
+  api-integration  Run api-server Go integration tests against the SQLite test database.
   e2e              Run end-to-end tests (API + Web) using Playwright.
   all              Run all of the above in sequence.
 USAGE
@@ -55,7 +56,6 @@ function ensure_db_connection() {
     exit 1
   fi
 
-  # Strip file: prefix if present
   local db_path="${db_url#file:}"
   local db_dir
   db_dir="$(dirname "$db_path")"
@@ -72,25 +72,24 @@ function run_web_unit() {
 }
 
 function run_api_unit() {
-  (cd "$ROOT_DIR/api-server" && npm run test:unit)
+  (cd "$API_DIR" && go test ./...)
 }
 
 function run_api_integration() {
-  ensure_db_connection "$ROOT_DIR/api-server/.env.test"
+  ensure_db_connection "$API_DIR/.env.test"
   (
-    cd "$ROOT_DIR/api-server"
-    npm run db:migrate:test
-    npm run test:integration
+    cd "$API_DIR"
+    ENV_FILE=.env.test go run ./cmd/migrate
+    ENV_FILE=.env.test go test ./...
   )
 }
 
 function run_e2e() {
-  ensure_db_connection "$ROOT_DIR/api-server/.env.e2e"
+  ensure_db_connection "$API_DIR/.env.e2e"
   (
-    cd "$ROOT_DIR/api-server"
-    npm run build
-    npm run db:migrate:e2e
-    npm run db:seed:e2e
+    cd "$API_DIR"
+    ENV_FILE=.env.e2e go run ./cmd/migrate
+    ENV_FILE=.env.e2e go run ./cmd/seed
   )
   (
     cd "$ROOT_DIR/web-client"

@@ -1,60 +1,32 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
-WORKDIR /app
+WORKDIR /src
 
-# Install build dependencies for better-sqlite3 native module
-RUN apk add --no-cache build-base python3
+COPY api-server/go.mod api-server/go.sum ./
+RUN go mod download
 
-# Copy all package files to leverage workspace
-COPY package*.json ./
-COPY api-server/package*.json ./api-server/
-COPY web-client/package*.json ./web-client/
-COPY api-server/prisma ./api-server/prisma/
+COPY api-server/ ./
 
-# Install all workspace dependencies from root
-RUN npm ci
-
-# Copy api-server source code
-COPY api-server/src ./api-server/src
-COPY api-server/tsconfig*.json ./api-server/
-
-# Build the api-server
-RUN npm run build --workspace=api-server
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/server ./cmd/server \
+    && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/migrate ./cmd/migrate \
+    && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/seed ./cmd/seed
 
 # Production stage
-FROM node:20-alpine AS production
+FROM alpine:3.20
 
 WORKDIR /app
 
-ENV NODE_ENV=production
+RUN adduser -D -H app && mkdir -p /app/data && chown -R app:app /app
 
-# Install build dependencies for better-sqlite3 native module
-RUN apk add --no-cache build-base python3
+COPY --from=builder /out/server /app/server
+COPY --from=builder /out/migrate /app/migrate
+COPY --from=builder /out/seed /app/seed
+COPY --from=builder /src/migrations /app/migrations
 
-# Copy root package files
-COPY package*.json ./
-COPY api-server/package*.json ./api-server/
-COPY api-server/prisma ./api-server/prisma/
+USER app
 
-# Install production dependencies
-# Note: npm workspaces require all workspace package.json files to be present for dependency resolution
-COPY web-client/package*.json ./web-client/
-RUN npm ci --omit=dev
-
-# Copy built files from builder
-COPY --from=builder /app/api-server/dist ./api-server/dist
-
-# Copy migration scripts (run at container startup via tsx)
-COPY api-server/scripts ./api-server/scripts
-
-# Create data directory for SQLite
-RUN mkdir -p /app/api-server/data
-VOLUME /app/api-server/data
-
-# Expose port
+VOLUME /app/data
 EXPOSE 4000
 
-# Start the api-server
-WORKDIR /app/api-server
-CMD ["npm", "start"]
+CMD ["/app/server"]
