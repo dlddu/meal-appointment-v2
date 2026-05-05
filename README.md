@@ -72,7 +72,7 @@ The `scripts/run-tests.sh` helper implements the end-to-end workflow from the lo
 
 Behind the scenes the script applies SQL migrations, reseeds the database when needed, and launches Playwright. The `web-unit` command first compiles the web client with `npm run build` so TypeScript regressions are surfaced alongside the Vitest suite.
 
-The `e2e` command delegates to `scripts/e2e-kind.sh`, which builds the `meal-appointment-api:e2e` and `meal-appointment-web:e2e` images, loads them into a single-node kind cluster (`meal-appointment-e2e`), applies the manifests under `k8s/e2e/`, and waits for the host-side endpoints (`http://127.0.0.1:5173` for the SPA and `http://127.0.0.1:4002/api` for the API) before invoking Playwright. The cluster is deleted after the suite finishes; set `KEEP_CLUSTER=1` to keep it for debugging and tear it down later via `scripts/e2e-kind.sh down`.
+The `e2e` command delegates to `scripts/e2e-kind.sh`, which builds the `meal-appointment-api:e2e` and `meal-appointment-web:e2e` images, loads them into a single-node kind cluster (`meal-appointment-e2e`), applies the manifests under `e2e/`, and waits for the host-side endpoints (`http://127.0.0.1:5173` for the SPA and `http://127.0.0.1:4002/api` for the API) before invoking Playwright. The cluster is deleted after the suite finishes; set `KEEP_CLUSTER=1` to keep it for debugging and tear it down later via `scripts/e2e-kind.sh down`.
 
 ## Architecture highlights
 

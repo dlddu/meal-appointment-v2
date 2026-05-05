@@ -2,7 +2,7 @@
 # Implemented for spec: agent/specs/meal-appointment-local-testing-spec.md
 #
 # Provisions a kind cluster, builds and loads the api-server and web-client
-# container images, applies the Kubernetes manifests under k8s/e2e/, and waits
+# container images, applies the Kubernetes manifests under e2e/, and waits
 # until the deployment is reachable on the host. Designed to be invoked from
 # scripts/run-tests.sh and from the GitHub Actions E2E job.
 set -euo pipefail
@@ -13,8 +13,8 @@ CLUSTER_NAME="${CLUSTER_NAME:-meal-appointment-e2e}"
 NAMESPACE="${NAMESPACE:-meal-appointment-e2e}"
 API_IMAGE="${API_IMAGE:-meal-appointment-api:e2e}"
 WEB_IMAGE="${WEB_IMAGE:-meal-appointment-web:e2e}"
-KIND_CONFIG="${KIND_CONFIG:-$ROOT_DIR/k8s/e2e/kind-config.yaml}"
-MANIFEST_DIR="${MANIFEST_DIR:-$ROOT_DIR/k8s/e2e}"
+KIND_CONFIG="${KIND_CONFIG:-$ROOT_DIR/e2e/kind-config.yaml}"
+MANIFEST_DIR="${MANIFEST_DIR:-$ROOT_DIR/e2e}"
 HOST_API_PORT="${HOST_API_PORT:-4002}"
 HOST_WEB_PORT="${HOST_WEB_PORT:-5173}"
 WAIT_TIMEOUT="${WAIT_TIMEOUT:-300}"
