@@ -1,0 +1,66 @@
+# Implemented for spec: agent/specs/meal-appointment-local-testing-spec.md
+#
+# Overlay that turns the production manifests in ../k8s into the e2e flavour
+# used by the kind cluster: dedicated namespace, "-e2e" naming, kind-loaded
+# images, NodePort service, ephemeral storage, and no ghcr pull secret.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: meal-appointment-e2e
+nameSuffix: -e2e
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app: meal-appointment-e2e
+
+resources:
+  - ../k8s
+  - namespace.yaml
+
+patches:
+  # Drop the production PVC — e2e uses an emptyDir volume instead.
+  - target:
+      kind: PersistentVolumeClaim
+      name: meal-appointment
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: meal-appointment
+
+  # Strategic merge for fields that are easy to express as YAML.
+  - path: deployment-patch.yaml
+
+  # JSON 6902: replace the volume with emptyDir, remove imagePullSecrets,
+  # and drop the public VITE_API_BASE_URL env var (the e2e image is built
+  # with the kind-internal URL baked in).
+  - target:
+      kind: Deployment
+      name: meal-appointment
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/volumes
+        value:
+          - name: database
+            emptyDir: {}
+      - op: remove
+        path: /spec/template/spec/imagePullSecrets
+      - op: remove
+        path: /spec/template/spec/containers/1/env
+
+  # Service tweaks: NodePort with fixed ports.
+  - target:
+      kind: Service
+      name: meal-appointment
+    patch: |-
+      - op: add
+        path: /spec/type
+        value: NodePort
+      - op: add
+        path: /spec/ports/0/nodePort
+        value: 30400
+      - op: add
+        path: /spec/ports/1/nodePort
+        value: 30173

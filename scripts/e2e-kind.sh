@@ -83,10 +83,8 @@ load_images() {
 }
 
 apply_manifests() {
-  log "Applying manifests in $MANIFEST_DIR"
-  kubectl apply -f "$MANIFEST_DIR/namespace.yaml"
-  kubectl apply -f "$MANIFEST_DIR/deployment.yaml"
-  kubectl apply -f "$MANIFEST_DIR/service.yaml"
+  log "Applying kustomize overlay in $MANIFEST_DIR"
+  kubectl apply -k "$MANIFEST_DIR"
 
   # Force a rollout so newly loaded images are picked up when reusing a cluster.
   kubectl -n "$NAMESPACE" rollout restart deployment/meal-appointment-e2e >/dev/null
