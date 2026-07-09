@@ -35,8 +35,12 @@ func Open(databaseURL string) (*DB, error) {
 		return nil, fmt.Errorf("open sqlite: %w", err)
 	}
 	conn.SetMaxOpenConns(1)
+	// The database file is on EFS. WAL needs a -shm mapping shared across every
+	// process holding the database open, which a network filesystem does not
+	// guarantee, so use the rollback journal. maxSurge=0 on the Deployment keeps
+	// exactly one writer, which is the invariant this mode relies on.
 	for _, pragma := range []string{
-		"PRAGMA journal_mode = WAL",
+		"PRAGMA journal_mode = DELETE",
 		"PRAGMA foreign_keys = ON",
 		"PRAGMA busy_timeout = 5000",
 	} {
