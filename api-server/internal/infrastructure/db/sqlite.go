@@ -39,10 +39,15 @@ func Open(databaseURL string) (*DB, error) {
 	// process holding the database open, which a network filesystem does not
 	// guarantee, so use the rollback journal. maxSurge=0 on the Deployment keeps
 	// exactly one writer, which is the invariant this mode relies on.
+	// synchronous is pinned to FULL: on the rollback journal, NORMAL does not
+	// guarantee that committed transactions survive a power loss. FULL is the
+	// SQLite default, but pinning it keeps a driver-default change or a future
+	// tuning pass from silently weakening durability.
 	for _, pragma := range []string{
 		"PRAGMA journal_mode = DELETE",
 		"PRAGMA foreign_keys = ON",
 		"PRAGMA busy_timeout = 5000",
+		"PRAGMA synchronous = FULL",
 	} {
 		if _, err := conn.Exec(pragma); err != nil {
 			_ = conn.Close()
