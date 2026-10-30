@@ -65,8 +65,6 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 3
             failureThreshold: 30
-      imagePullSecrets:
-        - name: ghcr
       volumes:
         - name: database
           persistentVolumeClaim:
