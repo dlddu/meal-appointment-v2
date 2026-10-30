@@ -83,7 +83,9 @@ jobs:
 
   e2e-tests:
     name: End-to-End Tests (kind)
-    runs-on: ubuntu-latest
+    # ubuntu-latest moved to 26.04, which Playwright 1.56 cannot install
+    # chromium on. Pin to 24.04 until Playwright supports the newer image.
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
